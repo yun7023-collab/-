@@ -222,18 +222,19 @@
         .match-card.selected { border-color: #60A5FA; background: #334155; }
         .match-card.matched { visibility: hidden; }
 
-        /* 모달 스타일 */
+        /* 모달 스타일 (키보드 대응 및 스크롤 최적화) */
         .modal {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+            background: rgba(0,0,0,0.4); display: flex; justify-content: center;
             align-items: center; z-index: 1000; padding: 20px;
-            box-sizing: border-box;
+            box-sizing: border-box; overflow-y: auto;
         }
         .modal-content {
             background: white; padding: 28px 24px; border-radius: 16px;
             width: 100%; max-width: 440px; box-sizing: border-box; position: relative;
-            max-height: 90vh; overflow-y: auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            max-height: calc(100vh - 40px); overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            margin: auto;
         }
         .close-x {
             position: absolute; top: 18px; right: 18px; font-size: 22px;
@@ -454,8 +455,8 @@
             <label>테마 프리셋 선택</label>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
                 <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #4A90E2;" onclick="applyPreset('simple')">심플</button>
-                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #FF6B81;" onclick="applyPreset('cute')">큐트</button>
-                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #2D3748;" onclick="applyPreset('hip')">힙</button>
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #FF80AB;" onclick="applyPreset('cute')">큐트</button>
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #4A4556;" onclick="applyPreset('hip')">힙</button>
             </div>
         </div>
 
@@ -603,26 +604,26 @@
 
         if (appConfig.currentPreset === 'cute') {
             bgContainer.style.display = 'block';
-            const cuteEmojis = ['🍒', '🎀', '🍓', '✨', '💖', '🧸', '🌸'];
-            for (let i = 0; i < 15; i++) {
+            const cuteEmojis = ['🍒', '🎀', '🤍', '✨', '🩰', '🧸', '🍓'];
+            for (let i = 0; i < 12; i++) {
                 const span = document.createElement('span');
                 span.innerText = cuteEmojis[Math.floor(Math.random() * cuteEmojis.length)];
                 span.style.top = `${Math.random() * 100}%`;
                 span.style.left = `${Math.random() * 100}%`;
                 span.style.animationDelay = `${Math.random() * 5}s`;
-                span.style.fontSize = `${20 + Math.random() * 16}px`;
+                span.style.fontSize = `${20 + Math.random() * 14}px`;
                 bgContainer.appendChild(span);
             }
         } else if (appConfig.currentPreset === 'hip') {
             bgContainer.style.display = 'block';
-            const hipEmojis = ['💿', '⭐', '🎧', '🔥', '👾', '⚡', '🖤', '🛹'];
-            for (let i = 0; i < 15; i++) {
+            const hipEmojis = ['💿', '⭐', '🖤', '🍒', '🎧', '⚡', '🎞️'];
+            for (let i = 0; i < 12; i++) {
                 const span = document.createElement('span');
                 span.innerText = hipEmojis[Math.floor(Math.random() * hipEmojis.length)];
                 span.style.top = `${Math.random() * 100}%`;
                 span.style.left = `${Math.random() * 100}%`;
                 span.style.animationDelay = `${Math.random() * 5}s`;
-                span.style.fontSize = `${20 + Math.random() * 16}px`;
+                span.style.fontSize = `${20 + Math.random() * 14}px`;
                 bgContainer.appendChild(span);
             }
         }
@@ -761,25 +762,27 @@
             appConfig.borderDk = "#E2E8F0";
             appConfig.topBtnBg = "#E2E8F0";
         } else if (type === 'cute') {
-            appConfig.primaryColor = "#FF6B81";
-            appConfig.bgColor = "#FFF0F5";
+            /* 핀터레스트 감성 큐트 테마 (부드러운 파스텔 핑크/크림 톤) */
+            appConfig.primaryColor = "#D4839E";
+            appConfig.bgColor = "#FCF6F7";
             appConfig.cardBg = "#FFFFFF";
-            appConfig.textColor = "#4A4045";
-            appConfig.fontFamily = "'Comic Sans MS', cursive, sans-serif";
-            appConfig.borderRadius = "30px";
-            appConfig.btnRadius = "20px";
-            appConfig.borderDk = "#FFD1DC";
-            appConfig.topBtnBg = "#FFE4E9";
+            appConfig.textColor = "#4A3B40";
+            appConfig.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+            appConfig.borderRadius = "20px";
+            appConfig.btnRadius = "12px";
+            appConfig.borderDk = "#F0D6DC";
+            appConfig.topBtnBg = "#F7EBEF";
         } else if (type === 'hip') {
-            appConfig.primaryColor = "#10B981";
-            appConfig.bgColor = "#18181B";
-            appConfig.cardBg = "#27272A";
-            appConfig.textColor = "#F4F4F5";
-            appConfig.fontFamily = "'Courier New', Courier, monospace";
-            appConfig.borderRadius = "0px";
-            appConfig.btnRadius = "0px";
-            appConfig.borderDk = "#3F3F46";
-            appConfig.topBtnBg = "#27272A";
+            /* 핀터레스트 감성 힙 테마 (모던 미니멀 모노크롬 & 무드 있는 다크 그레이) */
+            appConfig.primaryColor = "#262626";
+            appConfig.bgColor = "#F4F4F2";
+            appConfig.cardBg = "#FFFFFF";
+            appConfig.textColor = "#1A1A1A";
+            appConfig.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+            appConfig.borderRadius = "12px";
+            appConfig.btnRadius = "8px";
+            appConfig.borderDk = "#E5E5E0";
+            appConfig.topBtnBg = "#EBEBE6";
         }
         saveData();
         applyAppConfig();
@@ -821,7 +824,7 @@
         updateDaySelects();
     });
 
-    /* 단어장 목록(카테고리) 편집 모드 토글 */
+    /* 단어장 목록 화면에서 편집 모드 토글 */
     function toggleCategoryEditMode() {
         isCategoryEditMode = !isCategoryEditMode;
         const btn = document.getElementById('category-edit-toggle-btn');
@@ -1373,3 +1376,4 @@
 
 </body>
 </html>
+
