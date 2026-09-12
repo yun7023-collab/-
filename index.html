@@ -49,6 +49,9 @@
             color: var(--primary-color);
             font-size: 24px;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .backup-icon-btn {
@@ -166,7 +169,6 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
         .card-word-title { font-size: 72px; font-weight: bold; margin-bottom: 20px; word-break: break-all; line-height: 1.1; }
-        /* 한글 뜻 색상을 영단어와 동일하게 화이트(#FFFFFF)로 수정 */
         .card-meaning-text { font-size: 50px; color: #FFFFFF; font-weight: bold; margin-bottom: 20px; line-height: 1.2; }
         .card-ex-text { font-size: 32px; color: #CBD5E1; margin-top: 12px; font-style: italic; line-height: 1.3; }
         .card-exmeaning-text { font-size: 28px; color: #94A3B8; margin-top: 8px; line-height: 1.3; }
@@ -217,7 +219,7 @@
 
 <div class="container">
     <div class="header-bar">
-        <h1 onclick="goHome()">나만의 영단어장</h1>
+        <h1 id="main-title-text" onclick="openAppSettingModal()">나만의 영단어장</h1>
         <button class="backup-icon-btn" onclick="openBackupModal()">⚙️ 백업 / 복구</button>
     </div>
 
@@ -271,7 +273,10 @@
         <button class="nav-back-btn" onclick="goHome()">← 뒤로가기</button>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="font-size: 20px; margin: 0; color: #1E293B;">단어장 선택</h3>
-            <button id="category-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleCategoryEditMode()">편집</button>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #34C759;" onclick="openQuickAddCategoryModal()">+ 단어장 추가</button>
+                <button id="category-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleCategoryEditMode()">편집</button>
+            </div>
         </div>
         <!-- 단어장 전체선택 영역 -->
         <div id="category-select-all-area" class="hidden" style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px; padding-left: 4px;">
@@ -291,7 +296,7 @@
             <h3 id="selected-folder-title" style="margin: 0; font-size: 22px; color: #1E293B;">단어 목록</h3>
             <div style="display: flex; gap: 8px; align-items: center;">
                 <button id="word-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleWordEditMode()">편집</button>
-                <button id="card-view-btn" class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardViewFromList()">🎴 단어 보기 카드</button>
+                <button id="card-view-btn" class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardViewFromList()">📖 단어 보기 카드</button>
             </div>
         </div>
         <!-- 단어 전체선택 영역 -->
@@ -369,6 +374,39 @@
     </div>
 </div>
 
+<!-- 단어장 목록 화면에서 바로 단어장 추가하는 모달 -->
+<div id="quick-add-category-modal" class="modal hidden" onclick="closeQuickAddModalBg(event)">
+    <div class="modal-content">
+        <button class="close-x" onclick="closeQuickAddCategoryModal()">✕</button>
+        <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px; margin-bottom: 15px;">📖 새 단어장 추가</h3>
+        <div class="form-group">
+            <label>단어장 이름</label>
+            <input type="text" id="quick-new-day-input" placeholder="예: Day 2, 숙어 모음">
+        </div>
+        <button class="submit-btn" style="background-color: #34C759;" onclick="quickAddNewDaySubmit()">단어장 추가하기</button>
+    </div>
+</div>
+
+<!-- 앱 타이틀(나만의 영단어장) 설정 모달 -->
+<div id="app-setting-modal" class="modal hidden" onclick="closeAppSettingModalBg(event)">
+    <div class="modal-content">
+        <button class="close-x" onclick="closeAppSettingModal()">✕</button>
+        <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px; margin-bottom: 15px;">⚙️ 단어장 설정</h3>
+        <div class="form-group" style="margin-bottom:12px;">
+            <label>단어장 이름</label>
+            <input type="text" id="app-title-input">
+        </div>
+        <div class="form-group" style="margin-bottom:15px;">
+            <label>메인 컬러 선택</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="color" id="app-color-input" style="width: 50px; height: 40px; border: none; background: none; cursor: pointer;">
+                <span id="app-color-text" style="align-self: center; font-weight: bold; color: #555;"></span>
+            </div>
+        </div>
+        <button class="submit-btn" onclick="saveAppSetting()">설정 저장</button>
+    </div>
+</div>
+
 <!-- 개별 단어 상세 및 수정/삭제 팝업 모달 -->
 <div id="word-detail-modal" class="modal hidden" onclick="closeWordDetailModalBg(event)">
     <div class="modal-content">
@@ -402,19 +440,36 @@
     let isCategoryEditMode = false;
     let isWordEditMode = false;
     
+    let appConfig = {
+        title: "나만의 영단어장",
+        primaryColor: "#4A90E2"
+    };
+    
     // 매칭 게임 변수
     let selectedMatchCards = [];
 
     window.onload = function() {
         vocaData = JSON.parse(localStorage.getItem('myVocaData_guest')) || [];
         dayList = JSON.parse(localStorage.getItem('myVocaDays_guest')) || [];
+        const savedConfig = JSON.parse(localStorage.getItem('myVocaConfig_guest'));
+        if (savedConfig) {
+            appConfig = savedConfig;
+        }
         vocaData.forEach(item => { if(item.starred === undefined) item.starred = false; });
+        applyAppConfig();
         updateDaySelects();
     };
 
     function saveData() {
         localStorage.setItem('myVocaData_guest', JSON.stringify(vocaData));
         localStorage.setItem('myVocaDays_guest', JSON.stringify(dayList));
+        localStorage.setItem('myVocaConfig_guest', JSON.stringify(appConfig));
+    }
+
+    function applyAppConfig() {
+        document.documentElement.style.setProperty('--primary-color', appConfig.primaryColor);
+        document.getElementById('main-title-text').innerText = appConfig.title;
+        document.title = appConfig.title;
     }
 
     function goHome() {
@@ -457,6 +512,59 @@
         updateDaySelects();
         input.value = '';
         alert(`'${newDay}' 단어장이 추가되었습니다.`);
+    }
+
+    /* 단어장 목록 화면에서 바로 단어장 추가 모달 관련 함수들 */
+    function openQuickAddCategoryModal() {
+        document.getElementById('quick-new-day-input').value = '';
+        document.getElementById('quick-add-category-modal').classList.remove('hidden');
+    }
+    function closeQuickAddCategoryModal() {
+        document.getElementById('quick-add-category-modal').classList.add('hidden');
+    }
+    function closeQuickAddModalBg(e) {
+        if (e.target.id === 'quick-add-category-modal') closeQuickAddCategoryModal();
+    }
+    function quickAddNewDaySubmit() {
+        const input = document.getElementById('quick-new-day-input');
+        const newDay = input.value.trim();
+        if (!newDay) return alert('단어장 이름을 입력해 주세요.');
+        if (dayList.includes(newDay)) return alert('이미 존재하는 단어장입니다.');
+
+        dayList.push(newDay);
+        saveData();
+        updateDaySelects();
+        closeQuickAddCategoryModal();
+        renderCategories();
+        alert(`'${newDay}' 단어장이 추가되었습니다.`);
+    }
+
+    /* 앱 타이틀/컬러 변경 모달 관련 */
+    function openAppSettingModal() {
+        document.getElementById('app-title-input').value = appConfig.title;
+        document.getElementById('app-color-input').value = appConfig.primaryColor;
+        document.getElementById('app-color-text').innerText = appConfig.primaryColor;
+        document.getElementById('app-setting-modal').classList.remove('hidden');
+    }
+    function closeAppSettingModal() {
+        document.getElementById('app-setting-modal').classList.add('hidden');
+    }
+    function closeAppSettingModalBg(e) {
+        if (e.target.id === 'app-setting-modal') closeAppSettingModal();
+    }
+    document.getElementById('app-color-input').addEventListener('input', function(e) {
+        document.getElementById('app-color-text').innerText = e.target.value;
+    });
+    function saveAppSetting() {
+        const titleVal = document.getElementById('app-title-input').value.trim();
+        const colorVal = document.getElementById('app-color-input').value;
+        if (!titleVal) return alert('단어장 이름을 입력해 주세요.');
+
+        appConfig.title = titleVal;
+        appConfig.primaryColor = colorVal;
+        saveData();
+        applyAppConfig();
+        closeAppSettingModal();
     }
 
     /* 단어 추가 등록 */
@@ -630,7 +738,7 @@
                         <input type="checkbox" class="word-checkbox" value="${item.id}" style="width: 20px; height: 20px; cursor: pointer;">
                         <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
                         <div class="word-text-title" style="flex:1;">${item.word}</div>
-                        <button style="background:none; border:none; color:#4A90E2; font-size:14px; font-weight:bold; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️ 수정</button>
+                        <button style="background:none; border:none; color:#4A90E2; font-size:18px; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️</button>
                     </div>
                 `;
             } else {
@@ -638,7 +746,7 @@
                     <div class="clean-word-item">
                         <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
                         <div class="word-text-title" style="flex:1;" onclick="openCardViewAtIndex(${index})">${item.word}</div>
-                        <button style="background:none; border:none; color:#4A90E2; font-size:14px; font-weight:bold; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️ 수정</button>
+                        <button style="background:none; border:none; color:#4A90E2; font-size:18px; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️</button>
                     </div>
                 `;
             }
@@ -986,7 +1094,7 @@
 
     function exportData() {
         if (vocaData.length === 0) return alert('내보낼 단어 데이터가 없습니다.');
-        const exportObj = { vocaData, dayList };
+        const exportObj = { vocaData, dayList, appConfig };
         const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1010,9 +1118,11 @@
                 } else if (importedObj.vocaData) {
                     vocaData = importedObj.vocaData || [];
                     dayList = importedObj.dayList || [];
+                    if (importedObj.appConfig) appConfig = importedObj.appConfig;
                 }
                 vocaData.forEach(item => { if(item.starred === undefined) item.starred = false; });
                 saveData();
+                applyAppConfig();
                 updateDaySelects();
                 alert('단어장을 성공적으로 불러왔습니다!');
                 closeBackupModal();
