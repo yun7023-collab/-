@@ -273,6 +273,11 @@
             <h3 style="font-size: 20px; margin: 0; color: #1E293B;">단어장 선택</h3>
             <button id="category-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleCategoryEditMode()">편집</button>
         </div>
+        <!-- 단어장 전체선택 영역 -->
+        <div id="category-select-all-area" class="hidden" style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px; padding-left: 4px;">
+            <input type="checkbox" id="category-select-all-checkbox" style="width: 20px; height: 20px; cursor: pointer;" onclick="toggleSelectAllCategories(this)">
+            <label for="category-select-all-checkbox" style="margin: 0; font-size: 15px; cursor: pointer; color: #475569;">전체선택</label>
+        </div>
         <div id="folder-list-container" class="folder-list"></div>
         <div id="category-delete-action-area" class="hidden" style="margin-top: 15px;">
             <button class="submit-btn" style="background-color: #FF3B30;" onclick="deleteSelectedCategories()">선택한 단어장 삭제</button>
@@ -284,9 +289,20 @@
         <button class="nav-back-btn" onclick="showView('category-view')">← 뒤로가기</button>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 id="selected-folder-title" style="margin: 0; font-size: 22px; color: #1E293B;">단어 목록</h3>
-            <button class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardViewFromList()">🎴 단어 보기 카드</button>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button id="word-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleWordEditMode()">편집</button>
+                <button id="card-view-btn" class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardViewFromList()">🎴 단어 보기 카드</button>
+            </div>
+        </div>
+        <!-- 단어 전체선택 영역 -->
+        <div id="word-select-all-area" class="hidden" style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px; padding-left: 4px;">
+            <input type="checkbox" id="word-select-all-checkbox" style="width: 20px; height: 20px; cursor: pointer;" onclick="toggleSelectAllWords(this)">
+            <label for="word-select-all-checkbox" style="margin: 0; font-size: 15px; cursor: pointer; color: #475569;">전체선택</label>
         </div>
         <div id="words-container" class="clean-word-list"></div>
+        <div id="word-delete-action-area" class="hidden" style="margin-top: 15px;">
+            <button class="submit-btn" style="background-color: #FF3B30;" onclick="deleteSelectedWords()">선택한 단어 삭제</button>
+        </div>
     </div>
 
     <!-- 2-3. 터치 카드형 단어 보기 화면 -->
@@ -384,6 +400,7 @@
     let currentFilteredWords = [];
     let currentCardIdx = 0;
     let isCategoryEditMode = false;
+    let isWordEditMode = false;
     
     // 매칭 게임 변수
     let selectedMatchCards = [];
@@ -412,6 +429,7 @@
         if (viewId === 'category-view') {
             isCategoryEditMode = false;
             document.getElementById('category-edit-toggle-btn').innerText = "편집";
+            document.getElementById('category-select-all-area').classList.add('hidden');
             document.getElementById('category-delete-action-area').classList.add('hidden');
             renderCategories();
         }
@@ -463,16 +481,25 @@
     function toggleCategoryEditMode() {
         isCategoryEditMode = !isCategoryEditMode;
         const btn = document.getElementById('category-edit-toggle-btn');
+        const selectAllArea = document.getElementById('category-select-all-area');
         const actionArea = document.getElementById('category-delete-action-area');
         
         if (isCategoryEditMode) {
             btn.innerText = "완료";
+            selectAllArea.classList.remove('hidden');
             actionArea.classList.remove('hidden');
         } else {
             btn.innerText = "편집";
+            selectAllArea.classList.add('hidden');
             actionArea.classList.add('hidden');
+            document.getElementById('category-select-all-checkbox').checked = false;
         }
         renderCategories();
+    }
+
+    function toggleSelectAllCategories(source) {
+        const checkboxes = document.querySelectorAll('.category-checkbox');
+        checkboxes.forEach(cb => cb.checked = source.checked);
     }
 
     /* 단어장 목록(카테고리) rendering */
@@ -526,15 +553,15 @@
 
         const targetDays = Array.from(checkboxes).map(cb => cb.value);
         
-        // 단어장 목록에서 제거
         dayList = dayList.filter(d => !targetDays.includes(d));
-        // 해당 단어장에 속한 단어들도 함께 삭제
         vocaData = vocaData.filter(w => !targetDays.includes(w.day));
 
         saveData();
         isCategoryEditMode = false;
         document.getElementById('category-edit-toggle-btn').innerText = "편집";
+        document.getElementById('category-select-all-area').classList.add('hidden');
         document.getElementById('category-delete-action-area').classList.add('hidden');
+        document.getElementById('category-select-all-checkbox').checked = false;
         renderCategories();
         alert('선택한 단어장이 삭제되었습니다.');
     }
@@ -542,11 +569,45 @@
     function selectCategory(cat) {
         if (isCategoryEditMode) return;
         currentSelectedCategory = cat;
+        isWordEditMode = false;
         showView('word-list-view');
+        document.getElementById('word-edit-toggle-btn').innerText = "편집";
+        document.getElementById('word-select-all-area').classList.add('hidden');
+        document.getElementById('word-delete-action-area').classList.add('hidden');
+        document.getElementById('card-view-btn').classList.remove('hidden');
+        document.getElementById('word-select-all-checkbox').checked = false;
         renderWordList();
     }
 
-    /* 영단어만 목록으로 노출하는 뷰 */
+    /* 단어 목록 편집 모드 토글 */
+    function toggleWordEditMode() {
+        isWordEditMode = !isWordEditMode;
+        const btn = document.getElementById('word-edit-toggle-btn');
+        const selectAllArea = document.getElementById('word-select-all-area');
+        const actionArea = document.getElementById('word-delete-action-area');
+        const cardBtn = document.getElementById('card-view-btn');
+
+        if (isWordEditMode) {
+            btn.innerText = "완료";
+            selectAllArea.classList.remove('hidden');
+            actionArea.classList.remove('hidden');
+            cardBtn.classList.add('hidden');
+        } else {
+            btn.innerText = "편집";
+            selectAllArea.classList.add('hidden');
+            actionArea.classList.add('hidden');
+            cardBtn.classList.remove('hidden');
+            document.getElementById('word-select-all-checkbox').checked = false;
+        }
+        renderWordList();
+    }
+
+    function toggleSelectAllWords(source) {
+        const checkboxes = document.querySelectorAll('.word-checkbox');
+        checkboxes.forEach(cb => cb.checked = source.checked);
+    }
+
+    /* 영단어 목록 노출 뷰 */
     function renderWordList() {
         const container = document.getElementById('words-container');
         const titleEl = document.getElementById('selected-folder-title');
@@ -562,13 +623,48 @@
             return;
         }
 
-        container.innerHTML = currentFilteredWords.map((item, index) => `
-            <div class="clean-word-item">
-                <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
-                <div class="word-text-title" style="flex:1;" onclick="openCardViewAtIndex(${index})">${item.word}</div>
-                <button style="background:none; border:none; color:#4A90E2; font-size:14px; font-weight:bold; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️ 수정</button>
-            </div>
-        `).join('');
+        container.innerHTML = currentFilteredWords.map((item, index) => {
+            if (isWordEditMode) {
+                return `
+                    <div class="clean-word-item" style="cursor: default;">
+                        <input type="checkbox" class="word-checkbox" value="${item.id}" style="width: 20px; height: 20px; cursor: pointer;">
+                        <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
+                        <div class="word-text-title" style="flex:1;">${item.word}</div>
+                        <button style="background:none; border:none; color:#4A90E2; font-size:14px; font-weight:bold; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️ 수정</button>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="clean-word-item">
+                        <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
+                        <div class="word-text-title" style="flex:1;" onclick="openCardViewAtIndex(${index})">${item.word}</div>
+                        <button style="background:none; border:none; color:#4A90E2; font-size:14px; font-weight:bold; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️ 수정</button>
+                    </div>
+                `;
+            }
+        }).join('');
+    }
+
+    /* 선택된 단어 삭제 기능 */
+    function deleteSelectedWords() {
+        const checkboxes = document.querySelectorAll('.word-checkbox:checked');
+        if (checkboxes.length === 0) return alert('삭제할 단어를 선택해 주세요.');
+        if (!confirm('선택한 단어들을 삭제하시겠습니까?')) return;
+
+        const targetIds = Array.from(checkboxes).map(cb => Number(cb.value));
+        
+        vocaData = vocaData.filter(w => !targetIds.includes(w.id));
+        saveData();
+
+        isWordEditMode = false;
+        document.getElementById('word-edit-toggle-btn').innerText = "편집";
+        document.getElementById('word-select-all-area').classList.add('hidden');
+        document.getElementById('word-delete-action-area').classList.add('hidden');
+        document.getElementById('card-view-btn').classList.remove('hidden');
+        document.getElementById('word-select-all-checkbox').checked = false;
+
+        renderWordList();
+        alert('선택한 단어가 삭제되었습니다.');
     }
 
     function getFilteredWords() {
@@ -593,6 +689,7 @@
 
     /* 단어 클릭 시 바로 해당 단어의 플래시카드로 이동 */
     function openCardViewAtIndex(index) {
+        if (isWordEditMode) return;
         getFilteredWords();
         if (currentFilteredWords.length === 0) return;
         currentCardIdx = index;
@@ -801,7 +898,7 @@
             }
             const regex = new RegExp(currentQuizItem.word, 'gi');
             questionEl.innerText = currentQuizItem.example.replace(regex, '_____');
-            inputAreaEl.classList.remove('hidden');
+            inputAreaEl.classList.add('hidden');
         }
     }
 
