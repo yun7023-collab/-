@@ -213,7 +213,7 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         .result-message {
@@ -240,6 +240,15 @@
             width: 90%;
             max-width: 500px;
             box-sizing: border-box;
+            position: relative;
+        }
+
+        .close-x {
+            position: absolute;
+            top: 15px; right: 15px;
+            font-size: 20px; font-weight: bold;
+            color: #888; cursor: pointer;
+            border: none; background: none; width: auto; padding: 0;
         }
     </style>
 </head>
@@ -274,9 +283,9 @@
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('input-tab')">단어 등록</button>
-            <button class="tab-btn" onclick="openTab('list-tab')">단어장 목록</button>
-            <button class="tab-btn" onclick="openTab('quiz-tab')">연습하기</button>
+            <button class="tab-btn active" onclick="openTab('input-tab', event)">단어 등록</button>
+            <button class="tab-btn" onclick="openTab('list-tab', event)">단어장 목록</button>
+            <button class="tab-btn" onclick="openTab('quiz-tab', event)">연습하기</button>
         </div>
 
         <!-- 1. 단어 입력 탭 -->
@@ -301,13 +310,13 @@
             <div class="sync-box">
                 <h3>📱 내 계정 데이터 백업 / 복구</h3>
                 <p style="font-size: 12px; color: #555; margin-bottom: 10px;">
-                    아이폰/아이패드 백업 파일 전달 또는 텍스트 복사 방식으로 기기간 단어를 복구할 수 있습니다.
+                    기기간 단어를 백업하거나 불러올 수 있습니다. (새로 시작하시려면 이용하지 않고 그대로 단어를 등록하세요!)
                 </p>
                 <div class="sync-btns">
                     <button class="sync-btn" onclick="exportData()">파일로 백업</button>
                     <button class="sync-btn import" onclick="document.getElementById('import-file').click()">파일로 복구</button>
                 </div>
-                <button onclick="showTextSyncModal()" style="background-color:#8E8E93; font-size:13px; padding:8px;">텍스트 코드 방식 백업/복구 (추천)</button>
+                <button onclick="showTextSyncModal()" style="background-color:#8E8E93; font-size:13px; padding:8px; margin-top:5px;">텍스트 코드 방식 백업/복구</button>
                 <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
             </div>
         </div>
@@ -343,16 +352,20 @@
 </div>
 
 <!-- 텍스트 백업/복구 모달 -->
-<div id="text-modal" class="modal hidden">
+<div id="text-modal" class="modal hidden" onclick="closeModalOnBg(event)">
     <div class="modal-content">
+        <button class="close-x" onclick="closeModal()">✕</button>
         <h3 style="margin-top:0;">텍스트 코드 백업 / 복구</h3>
-        <p style="font-size:12px; color:#666;">아래 코드를 복사해서 카카오톡으로 보낸 뒤, 다른 기기에서 여기에 붙여넣고 [복구 적용]을 누르면 됩니다.</p>
-        <textarea id="sync-text-area" rows="6" style="font-size:11px;"></textarea>
+        <p style="font-size:12px; color:#666;">
+            • <b>백업할 때</b>: 아래 창의 글자를 전체 선택해 카톡으로 보내세요.<br>
+            • <b>복구할 때</b>: 카톡으로 받은 글자를 아래 창에 붙여넣고 [복구 적용]을 누르세요.
+        </p>
+        <textarea id="sync-text-area" rows="6" style="font-size:12px; font-family:monospace;"></textarea>
         <div style="display:flex; gap:10px; margin-top:10px;">
             <button onclick="copySyncText()" style="background-color:#34C759; flex:1;">코드 전체 복사</button>
             <button onclick="applySyncText()" style="background-color:#FF9500; flex:1;">복구 적용</button>
         </div>
-        <button onclick="closeModal()" style="background-color:#8E8E93; margin-top:10px;">닫기</button>
+        <button onclick="closeModal()" style="background-color:#8E8E93; margin-top:10px;">창 닫기 (취소)</button>
     </div>
 </div>
 
@@ -440,11 +453,11 @@
         document.getElementById('auth-area').classList.remove('hidden');
     }
 
-    function openTab(tabId) {
+    function openTab(tabId, e) {
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
-        event.target.classList.add('active');
+        if(e && e.target) e.target.classList.add('active');
 
         if (tabId === 'list-tab') renderList();
         if (tabId === 'quiz-tab') startQuiz();
@@ -502,7 +515,7 @@
             alert('내보낼 단어 데이터가 없습니다.');
             return;
         }
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vocaData));
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vocaData, null, 2));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
         downloadAnchor.setAttribute("download", `${currentUser}_voca_backup.json`);
@@ -537,23 +550,41 @@
     // 텍스트 모달 관련
     function showTextSyncModal() {
         document.getElementById('text-modal').classList.remove('hidden');
-        document.getElementById('sync-text-area').value = JSON.stringify(vocaData);
+        document.getElementById('sync-text-area').value = JSON.stringify(vocaData, null, 2);
     }
 
     function closeModal() {
         document.getElementById('text-modal').classList.add('hidden');
     }
 
+    function closeModalOnBg(e) {
+        if(e.target.id === 'text-modal') {
+            closeModal();
+        }
+    }
+
     function copySyncText() {
         const textArea = document.getElementById('sync-text-area');
+        if(!textArea.value || textArea.value === "[]") {
+            alert('복사할 단어 데이터가 없습니다. 단어를 먼저 등록해 주세요.');
+            return;
+        }
         textArea.select();
-        document.execCommand('copy');
-        alert('백업 코드가 복사되었습니다! 카카오톡에 붙여넣어 보내세요.');
+        textArea.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(textArea.value).then(() => {
+            alert('단어 데이터 코드가 복사되었습니다! 카카오톡에 붙여넣어 전송하세요.');
+        }).catch(() => {
+            document.execCommand('copy');
+            alert('단어 데이터 코드가 복사되었습니다!');
+        });
     }
 
     function applySyncText() {
         const text = document.getElementById('sync-text-area').value.trim();
-        if(!text) return alert('코드를 입력해주세요.');
+        if(!text) {
+            alert('카카오톡으로 받은 코드를 창에 붙여넣어 주세요.');
+            return;
+        }
 
         try {
             const importedData = JSON.parse(text);
@@ -564,10 +595,10 @@
                 closeModal();
                 renderList();
             } else {
-                alert('올바르지 않은 코드 형식입니다.');
+                alert('올바르지 않은 백업 코드 형식입니다.');
             }
         } catch(e) {
-            alert('코드를 읽는 중 오류가 발생했습니다.');
+            alert('코드를 읽는 중 오류가 발생했습니다. 카카오톡으로 전달받은 텍스트 전체를 정확히 붙여넣었는지 확인해 주세요.');
         }
     }
 
