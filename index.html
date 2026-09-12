@@ -16,6 +16,7 @@
             --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             --border-color: #E2E8F0;
+            --top-btn-bg: #E2E8F0;
         }
 
         body {
@@ -29,6 +30,28 @@
             align-items: flex-start;
             min-height: 100vh;
             box-sizing: border-box;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 테마별 배경 이모지 오버레이 */
+        .theme-emoji-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+            display: none;
+        }
+        .theme-emoji-bg span {
+            position: absolute;
+            font-size: 28px;
+            opacity: 0.35;
+            animation: floatEmoji 6s ease-in-out infinite alternate;
+        }
+        @keyframes floatEmoji {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-15px) rotate(10deg); }
         }
 
         .container {
@@ -41,6 +64,7 @@
             position: relative;
             box-sizing: border-box;
             border: 1px solid var(--border-color);
+            z-index: 1;
         }
 
         .header-bar {
@@ -61,16 +85,20 @@
         }
 
         .backup-icon-btn {
-            background-color: #F0F4F8;
-            color: #4A90E2;
-            border: 1px solid #D0E1F9;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
+            background-color: var(--top-btn-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            border-radius: var(--btn-radius);
+            font-size: 18px;
             cursor: pointer;
-            width: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
         }
+        .backup-icon-btn:hover { opacity: 0.8; }
 
         .hidden { display: none !important; }
 
@@ -115,6 +143,7 @@
             cursor: pointer;
             text-align: center;
             transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
         .home-btn:hover {
@@ -223,12 +252,15 @@
 </head>
 <body>
 
+<!-- 테마별 배경 이모지 컨테이너 -->
+<div id="theme-emoji-bg" class="theme-emoji-bg"></div>
+
 <div class="container">
     <div class="header-bar">
         <h1 id="main-title-text" onclick="openAppSettingModal()">나만의 영단어장</h1>
         <div style="display: flex; gap: 8px;">
-            <button class="backup-icon-btn" onclick="openDesignModal()" style="background-color: #FEF3C7; color: #D97706; border-color: #FDE68A;">🎨 디자인 테마</button>
-            <button class="backup-icon-btn" onclick="openBackupModal()">⚙️ 백업 / 복구</button>
+            <button class="backup-icon-btn" onclick="openDesignModal()" title="디자인 테마">🎨</button>
+            <button class="backup-icon-btn" onclick="openBackupModal()" title="백업 / 복구">⚙️</button>
         </div>
     </div>
 
@@ -248,7 +280,7 @@
             <label>새 단어장(Day) 추가하기</label>
             <div style="display: flex; gap: 8px;">
                 <input type="text" id="new-day-input" placeholder="예: Day 1, 중요단어">
-                <button type="button" onclick="addNewDay()" style="width: 90px; background-color: #34C759; color: white; border: none; border-radius: var(--btn-radius); font-weight: bold; font-size: 15px; cursor: pointer;">추가</button>
+                <button type="button" onclick="addNewDay()" style="width: 90px; background-color: var(--primary-color); color: white; border: none; border-radius: var(--btn-radius); font-weight: bold; font-size: 15px; cursor: pointer;">추가</button>
             </div>
         </div>
 
@@ -286,7 +318,7 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="font-size: 20px; margin: 0; color: var(--text-color);">단어장 선택</h3>
             <div style="display: flex; gap: 8px; align-items: center;">
-                <button class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #34C759;" onclick="openQuickAddCategoryModal()">+ 단어장 추가</button>
+                <button class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: var(--primary-color);" onclick="openQuickAddCategoryModal()">+ 단어장 추가</button>
                 <button id="category-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleCategoryEditMode()">편집</button>
             </div>
         </div>
@@ -395,7 +427,7 @@
             <label>단어장 이름</label>
             <input type="text" id="quick-new-day-input" placeholder="예: Day 2, 숙어 모음">
         </div>
-        <button class="submit-btn" style="background-color: #34C759;" onclick="quickAddNewDaySubmit()">단어장 추가하기</button>
+        <button class="submit-btn" onclick="quickAddNewDaySubmit()">단어장 추가하기</button>
     </div>
 </div>
 
@@ -521,7 +553,9 @@
         fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         borderRadius: "16px",
         btnRadius: "8px",
-        borderDk: "#E2E8F0"
+        borderDk: "#E2E8F0",
+        topBtnBg: "#E2E8F0",
+        currentPreset: "simple"
     };
     
     let selectedMatchCards = [];
@@ -554,9 +588,44 @@
         root.style.setProperty('--border-radius', appConfig.borderRadius);
         root.style.setProperty('--btn-radius', appConfig.btnRadius);
         root.style.setProperty('--border-color', appConfig.borderDk || '#E2E8F0');
+        root.style.setProperty('--top-btn-bg', appConfig.topBtnBg || '#E2E8F0');
 
         document.getElementById('main-title-text').innerText = appConfig.title;
         document.title = appConfig.title;
+
+        renderThemeBackground();
+    }
+
+    function renderThemeBackground() {
+        const bgContainer = document.getElementById('theme-emoji-bg');
+        bgContainer.innerHTML = '';
+        bgContainer.style.display = 'none';
+
+        if (appConfig.currentPreset === 'cute') {
+            bgContainer.style.display = 'block';
+            const cuteEmojis = ['🍒', '🎀', '🍓', '✨', '💖', '🧸', '🌸'];
+            for (let i = 0; i < 15; i++) {
+                const span = document.createElement('span');
+                span.innerText = cuteEmojis[Math.floor(Math.random() * cuteEmojis.length)];
+                span.style.top = `${Math.random() * 100}%`;
+                span.style.left = `${Math.random() * 100}%`;
+                span.style.animationDelay = `${Math.random() * 5}s`;
+                span.style.fontSize = `${20 + Math.random() * 16}px`;
+                bgContainer.appendChild(span);
+            }
+        } else if (appConfig.currentPreset === 'hip') {
+            bgContainer.style.display = 'block';
+            const hipEmojis = ['💿', '⭐', '🎧', '🔥', '👾', '⚡', '🖤', '🛹'];
+            for (let i = 0; i < 15; i++) {
+                const span = document.createElement('span');
+                span.innerText = hipEmojis[Math.floor(Math.random() * hipEmojis.length)];
+                span.style.top = `${Math.random() * 100}%`;
+                span.style.left = `${Math.random() * 100}%`;
+                span.style.animationDelay = `${Math.random() * 5}s`;
+                span.style.fontSize = `${20 + Math.random() * 16}px`;
+                bgContainer.appendChild(span);
+            }
+        }
     }
 
     function goHome() {
@@ -680,6 +749,7 @@
     });
 
     function applyPreset(type) {
+        appConfig.currentPreset = type;
         if (type === 'simple') {
             appConfig.primaryColor = "#4A90E2";
             appConfig.bgColor = "#F5F7FA";
@@ -689,6 +759,7 @@
             appConfig.borderRadius = "16px";
             appConfig.btnRadius = "8px";
             appConfig.borderDk = "#E2E8F0";
+            appConfig.topBtnBg = "#E2E8F0";
         } else if (type === 'cute') {
             appConfig.primaryColor = "#FF6B81";
             appConfig.bgColor = "#FFF0F5";
@@ -698,6 +769,7 @@
             appConfig.borderRadius = "30px";
             appConfig.btnRadius = "20px";
             appConfig.borderDk = "#FFD1DC";
+            appConfig.topBtnBg = "#FFE4E9";
         } else if (type === 'hip') {
             appConfig.primaryColor = "#10B981";
             appConfig.bgColor = "#18181B";
@@ -707,6 +779,7 @@
             appConfig.borderRadius = "0px";
             appConfig.btnRadius = "0px";
             appConfig.borderDk = "#3F3F46";
+            appConfig.topBtnBg = "#27272A";
         }
         saveData();
         applyAppConfig();
@@ -714,6 +787,7 @@
     }
 
     function saveCustomDesign() {
+        appConfig.currentPreset = 'custom';
         appConfig.primaryColor = document.getElementById('custom-primary').value;
         appConfig.bgColor = document.getElementById('custom-bg').value;
         appConfig.cardBg = document.getElementById('custom-card-bg').value;
@@ -721,6 +795,7 @@
         const rad = document.getElementById('custom-radius').value;
         appConfig.borderRadius = rad;
         appConfig.btnRadius = rad === '0px' ? '0px' : (rad === '30px' ? '20px' : '8px');
+        appConfig.topBtnBg = appConfig.cardBg;
         
         saveData();
         applyAppConfig();
