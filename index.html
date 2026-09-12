@@ -122,38 +122,86 @@
             opacity: 0.8;
         }
 
-        .voca-list {
-            margin-top: 10px;
+        .day-add-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
-        .voca-card {
-            background: #F9F9F9;
-            border-left: 4px solid var(--primary-color);
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 4px;
+        /* 1개씩 단어 보기 카드 스타일 */
+        .card-view {
+            background: #F8FAFC;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: 15px;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             position: relative;
         }
 
-        .voca-card h4 {
-            margin: 0 0 5px 0;
-            font-size: 18px;
+        .voca-word-large {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1E293B;
+            margin-bottom: 10px;
         }
 
-        .voca-card p {
-            margin: 2px 0;
-            color: #666;
+        .voca-meaning-medium {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .voca-example-small {
+            font-size: 15px;
+            color: #475569;
+            margin-bottom: 4px;
+            font-style: italic;
+        }
+
+        .voca-exmeaning-xsmall {
+            font-size: 13px;
+            color: #64748B;
+        }
+
+        .card-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background-color: #64748B;
+            flex: 1;
+            padding: 10px;
+        }
+
+        .card-counter {
+            font-weight: bold;
+            color: #64748B;
             font-size: 14px;
         }
 
-        .del-btn {
+        .del-card-btn {
             position: absolute;
-            right: 10px;
             top: 10px;
-            width: auto;
+            right: 10px;
+            background: #FF3B30;
+            color: white;
+            border: none;
             padding: 4px 8px;
-            background-color: #FF3B30;
+            border-radius: 4px;
             font-size: 12px;
+            cursor: pointer;
+            width: auto;
         }
 
         .quiz-card {
@@ -245,30 +293,66 @@
 
     <!-- 1. 단어 입력 탭 -->
     <div id="input-tab" class="tab-content active">
+        <!-- Day 목록 추가 영역 -->
+        <div class="form-group">
+            <label>새 단어장(Day) 추가하기</label>
+            <div class="day-add-box">
+                <input type="text" id="new-day-input" placeholder="예: Day 1, 중요단어 등">
+                <button type="button" onclick="addNewDay()" style="width: 100px; background-color: #34C759;">추가</button>
+            </div>
+        </div>
+
         <form id="voca-form">
             <div class="form-group">
+                <label for="day-select">단어장(Day) 선택</label>
+                <select id="day-select" required></select>
+            </div>
+            <div class="form-group">
                 <label for="word">영어 단어</label>
-                <input type="text" id="word" placeholder="예: apple" required>
+                <input type="text" id="word" placeholder="예: name" required>
             </div>
             <div class="form-group">
                 <label for="meaning">뜻</label>
-                <input type="text" id="meaning" placeholder="예: 사과" required>
+                <input type="text" id="meaning" placeholder="예: 이름" required>
             </div>
             <div class="form-group">
                 <label for="example">예문 (선택)</label>
-                <textarea id="example" rows="2" placeholder="예: I eat an apple."></textarea>
+                <textarea id="example" rows="2" placeholder="예: My name is Yoon."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="exmeaning">예문 뜻 (선택)</label>
+                <input type="text" id="exmeaning" placeholder="예: 내 이름은 윤이에요.">
             </div>
             <button type="submit">단어 저장하기</button>
         </form>
     </div>
 
-    <!-- 2. 단어 목록 탭 -->
+    <!-- 2. 단어 목록 탭 (1개씩 카드 형태로 보기) -->
     <div id="list-tab" class="tab-content">
-        <div id="voca-list" class="voca-list"></div>
+        <div class="form-group">
+            <label for="list-filter">보기 선택</label>
+            <select id="list-filter" onchange="filterList()"></select>
+        </div>
+
+        <div id="card-container">
+            <div id="card-display" class="card-view">
+                <p style="color:#888;">등록된 단어가 없습니다.</p>
+            </div>
+            <div id="card-nav-bar" class="card-nav hidden">
+                <button class="nav-btn" onclick="prevCard()">← 이전</button>
+                <span id="card-counter" class="card-counter">0 / 0</span>
+                <button class="nav-btn" onclick="nextCard()">다음 →</button>
+            </div>
+        </div>
     </div>
 
     <!-- 3. 퀴즈 연습 탭 -->
     <div id="quiz-tab" class="tab-content">
+        <div class="form-group">
+            <label for="quiz-filter">시험 범위 선택</label>
+            <select id="quiz-filter" onchange="startQuiz()"></select>
+        </div>
+
         <div class="form-group">
             <label for="quiz-mode">학습 모드 선택</label>
             <select id="quiz-mode" onchange="startQuiz()">
@@ -311,11 +395,53 @@
 
 <script>
     let vocaData = [];
+    let dayList = ["Day 1"];
+    let currentFilteredList = [];
+    let currentCardIndex = 0;
     let currentCorrectAnswer = "";
 
     window.onload = function() {
         vocaData = JSON.parse(localStorage.getItem('myVocaData_guest')) || [];
+        dayList = JSON.parse(localStorage.getItem('myVocaDays_guest')) || ["Day 1"];
+        updateDaySelects();
     };
+
+    function saveData() {
+        localStorage.setItem('myVocaData_guest', JSON.stringify(vocaData));
+        localStorage.setItem('myVocaDays_guest', JSON.stringify(dayList));
+    }
+
+    function addNewDay() {
+        const input = document.getElementById('new-day-input');
+        const newDay = input.value.trim();
+        if (!newDay) {
+            alert('단어장 이름을 입력해 주세요.');
+            return;
+        }
+        if (dayList.includes(newDay)) {
+            alert('이미 존재하는 단어장입니다.');
+            return;
+        }
+        dayList.push(newDay);
+        saveData();
+        updateDaySelects();
+        input.value = '';
+        alert(`'${newDay}' 단어장이 추가되었습니다.`);
+    }
+
+    function updateDaySelects() {
+        const daySelect = document.getElementById('day-select');
+        const listFilter = document.getElementById('list-filter');
+        const quizFilter = document.getElementById('quiz-filter');
+
+        daySelect.innerHTML = dayList.map(d => `<option value="${d}">${d}</option>`).join('');
+
+        const filterOptions = `<option value="all">전체 보기</option>` + dayList.map(d => `<option value="${d}">${d}</option>`).join('');
+        listFilter.innerHTML = filterOptions;
+
+        const quizFilterOptions = `<option value="all">전체 시험</option>` + dayList.map(d => `<option value="${d}">${d}</option>`).join('');
+        quizFilter.innerHTML = quizFilterOptions;
+    }
 
     function openTab(tabId, e) {
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -323,91 +449,99 @@
         document.getElementById(tabId).classList.add('active');
         if(e && e.target) e.target.classList.add('active');
 
-        if (tabId === 'list-tab') renderList();
+        if (tabId === 'list-tab') filterList();
         if (tabId === 'quiz-tab') startQuiz();
     }
 
     document.getElementById('voca-form').addEventListener('submit', function(e) {
         e.preventDefault();
+        const day = document.getElementById('day-select').value;
         const word = document.getElementById('word').value.trim();
         const meaning = document.getElementById('meaning').value.trim();
         const example = document.getElementById('example').value.trim();
+        const exmeaning = document.getElementById('exmeaning').value.trim();
 
-        vocaData.push({ id: Date.now(), word, meaning, example });
+        vocaData.push({ id: Date.now(), day, word, meaning, example, exmeaning });
         saveData();
 
         alert('단어가 저장되었습니다!');
         this.reset();
     });
 
-    function saveData() {
-        localStorage.setItem('myVocaData_guest', JSON.stringify(vocaData));
+    // 카드형 목록 로직
+    function filterList() {
+        const selected = document.getElementById('list-filter').value;
+        if (selected === 'all') {
+            currentFilteredList = [...vocaData];
+        } else {
+            currentFilteredList = vocaData.filter(item => item.day === selected);
+        }
+        currentCardIndex = 0;
+        renderCard();
     }
 
-    function renderList() {
-        const listContainer = document.getElementById('voca-list');
-        listContainer.innerHTML = '';
+    function renderCard() {
+        const cardDisplay = document.getElementById('card-display');
+        const navBar = document.getElementById('card-nav-bar');
+        const counter = document.getElementById('card-counter');
 
-        if (vocaData.length === 0) {
-            listContainer.innerHTML = '<p style="text-align:center; color:#888;">등록된 단어가 없습니다.</p>';
+        if (currentFilteredList.length === 0) {
+            cardDisplay.innerHTML = `<p style="color:#888;">등록된 단어가 없습니다.</p>`;
+            navBar.classList.add('hidden');
             return;
         }
 
-        vocaData.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'voca-card';
-            card.innerHTML = `
-                <h4>${item.word}</h4>
-                <p><b>뜻:</b> ${item.meaning}</p>
-                ${item.example ? `<p><b>예문:</b> ${item.example}</p>` : ''}
-                <button class="del-btn" onclick="deleteWord(${item.id})">삭제</button>
-            `;
-            listContainer.appendChild(card);
-        });
+        navBar.classList.remove('hidden');
+        const item = currentFilteredList[currentCardIndex];
+        counter.innerText = `${currentCardIndex + 1} / ${currentFilteredList.length}`;
+
+        cardDisplay.innerHTML = `
+            <button class="del-card-btn" onclick="deleteWord(${item.id})">삭제</button>
+            <div class="voca-word-large">${item.word}</div>
+            <div class="voca-meaning-medium">${item.meaning}</div>
+            ${item.example ? `<div class="voca-example-small">${item.example}</div>` : ''}
+            ${item.exmeaning ? `<div class="voca-exmeaning-xsmall">${item.exmeaning}</div>` : ''}
+        `;
+    }
+
+    function prevCard() {
+        if (currentFilteredList.length === 0) return;
+        currentCardIndex = (currentCardIndex - 1 + currentFilteredList.length) % currentFilteredList.length;
+        renderCard();
+    }
+
+    function nextCard() {
+        if (currentFilteredList.length === 0) return;
+        currentCardIndex = (currentCardIndex + 1) % currentFilteredList.length;
+        renderCard();
     }
 
     function deleteWord(id) {
+        if(!confirm('이 단어를 삭제하시겠습니까?')) return;
         vocaData = vocaData.filter(item => item.id !== id);
         saveData();
-        renderList();
+        filterList();
     }
 
-    // 모달 제어
-    function openBackupModal() {
-        document.getElementById('backup-modal').classList.remove('hidden');
-    }
+    // 백업/복구 모달
+    function openBackupModal() { document.getElementById('backup-modal').classList.remove('hidden'); }
+    function closeBackupModal() { document.getElementById('backup-modal').classList.add('hidden'); }
+    function closeModalOnBg(e) { if(e.target.id === 'backup-modal') closeBackupModal(); }
 
-    function closeBackupModal() {
-        document.getElementById('backup-modal').classList.add('hidden');
-    }
-
-    function closeModalOnBg(e) {
-        if(e.target.id === 'backup-modal') {
-            closeBackupModal();
-        }
-    }
-
-    // 백업/복구 로직
     function exportData() {
         if (vocaData.length === 0) {
             alert('내보낼 단어 데이터가 없습니다.');
             return;
         }
-
-        const dataStr = JSON.stringify(vocaData, null, 2);
-        const blob = new Blob([dataStr], { type: "application/json" });
+        const exportObj = { vocaData, dayList };
+        const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
-        
         const a = document.createElement('a');
         a.href = url;
         a.download = `voca_backup.json`;
         document.body.appendChild(a);
         a.click();
-        
-        setTimeout(() => {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        }, 100);
+        setTimeout(() => { document.body.removeChild(a); window.URL.revokeObjectURL(url); }, 100);
     }
 
     function importData(event) {
@@ -417,16 +551,18 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
-                const importedData = JSON.parse(e.target.result);
-                if (Array.isArray(importedData)) {
-                    vocaData = importedData;
-                    saveData();
-                    alert('단어장을 성공적으로 불러왔습니다!');
-                    closeBackupModal();
-                    renderList();
-                } else {
-                    alert('올바르지 않은 백업 파일 형식입니다.');
+                const importedObj = JSON.parse(e.target.result);
+                if (Array.isArray(importedObj)) {
+                    vocaData = importedObj;
+                } else if (importedObj.vocaData) {
+                    vocaData = importedObj.vocaData || [];
+                    dayList = importedObj.dayList || ["Day 1"];
                 }
+                saveData();
+                updateDaySelects();
+                alert('단어장을 성공적으로 불러왔습니다!');
+                closeBackupModal();
+                filterList();
             } catch (err) {
                 alert('파일을 읽는 중 오류가 발생했습니다.');
             }
@@ -436,23 +572,32 @@
 
     // 퀴즈 로직
     function startQuiz() {
-        if (vocaData.length === 0) {
-            document.getElementById('quiz-question').innerText = "단어를 먼저 등록해 주세요.";
+        const filter = document.getElementById('quiz-filter').value;
+        let quizList = vocaData;
+        if (filter !== 'all') {
+            quizList = vocaData.filter(item => item.day === filter);
+        }
+
+        if (quizList.length === 0) {
+            document.getElementById('quiz-question').innerText = "해당 단어장에 등록된 단어가 없습니다.";
             document.getElementById('quiz-options').innerHTML = "";
             document.getElementById('quiz-input-area').classList.add('hidden');
             return;
         }
-        nextQuestion();
+        nextQuestionWithList(quizList);
     }
 
     function nextQuestion() {
+        startQuiz();
+    }
+
+    function nextQuestionWithList(quizList) {
         document.getElementById('quiz-result').innerText = "";
         document.getElementById('next-btn').classList.add('hidden');
         document.getElementById('quiz-answer-input').value = "";
 
         const mode = document.getElementById('quiz-mode').value;
-        const randomIndex = Math.floor(Math.random() * vocaData.length);
-        const currentItem = vocaData[randomIndex];
+        const currentItem = quizList[Math.floor(Math.random() * quizList.length)];
 
         const questionEl = document.getElementById('quiz-question');
         const optionsEl = document.getElementById('quiz-options');
@@ -466,8 +611,8 @@
             currentCorrectAnswer = currentItem.meaning;
 
             let choices = [currentItem.meaning];
-            while (choices.length < Math.min(4, vocaData.length)) {
-                let randomMeaning = vocaData[Math.floor(Math.random() * vocaData.length)].meaning;
+            while (choices.length < Math.min(4, quizList.length)) {
+                let randomMeaning = quizList[Math.floor(Math.random() * quizList.length)].meaning;
                 if (!choices.includes(randomMeaning)) choices.push(randomMeaning);
             }
             choices.sort(() => Math.random() - 0.5);
@@ -485,7 +630,7 @@
             inputAreaEl.classList.remove('hidden');
         } else if (mode === 'blank') {
             if (!currentItem.example || !currentItem.example.toLowerCase().includes(currentItem.word.toLowerCase())) {
-                nextQuestion();
+                startQuiz();
                 return;
             }
             const regex = new RegExp(currentItem.word, 'gi');
