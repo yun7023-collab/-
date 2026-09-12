@@ -11,10 +11,15 @@
             --card-bg: #FFFFFF;
             --text-color: #333333;
             --star-color: #FFC107;
+            --border-radius: 16px;
+            --btn-radius: 8px;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-color: #E2E8F0;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: var(--font-family);
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
@@ -30,11 +35,12 @@
             width: 100%;
             max-width: 600px;
             background-color: var(--card-bg);
-            border-radius: 16px;
+            border-radius: var(--border-radius);
             padding: 30px 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--box-shadow);
             position: relative;
             box-sizing: border-box;
+            border: 1px solid var(--border-color);
         }
 
         .header-bar {
@@ -102,10 +108,10 @@
             padding: 22px;
             font-size: 20px;
             font-weight: bold;
-            background-color: #FFFFFF;
-            color: #333;
-            border: 2px solid #E2E8F0;
-            border-radius: 12px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            border-radius: var(--btn-radius);
             cursor: pointer;
             text-align: center;
             transition: all 0.2s;
@@ -122,24 +128,24 @@
         label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 15px; color: #334155; }
         input[type="text"], textarea, select {
             width: 100%; padding: 12px 14px; border: 1px solid #CBD5E1;
-            border-radius: 8px; box-sizing: border-box; font-size: 16px; background-color: #FAFAFA;
+            border-radius: var(--btn-radius); box-sizing: border-box; font-size: 16px; background-color: #FAFAFA;
         }
         input[type="text"]:focus, textarea:focus, select:focus {
             outline: none; border-color: var(--primary-color); background-color: #FFF;
         }
         button.submit-btn {
             width: 100%; padding: 14px; background-color: var(--primary-color);
-            color: white; border: none; border-radius: 8px; font-size: 17px;
+            color: white; border: none; border-radius: var(--btn-radius); font-size: 17px;
             cursor: pointer; font-weight: bold;
             transition: background-color 0.2s;
         }
-        button.submit-btn:hover { background-color: #357ABD; }
+        button.submit-btn:hover { opacity: 0.9; }
 
         /* 단어장 폴더 목록 스타일 */
         .folder-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
         .folder-item {
-            padding: 18px 20px; background: #F8FAFC; border: 1px solid #E2E8F0;
-            border-radius: 10px; display: flex; justify-content: space-between;
+            padding: 18px 20px; background: #F8FAFC; border: 1px solid var(--border-color);
+            border-radius: var(--btn-radius); display: flex; justify-content: space-between;
             align-items: center; cursor: pointer; font-weight: bold; font-size: 18px;
             transition: background 0.15s, border-color 0.15s;
         }
@@ -148,7 +154,7 @@
         /* 단어 목록 깔끔한 리스트 스타일 */
         .clean-word-list { display: flex; flex-direction: column; margin-top: 10px; }
         .clean-word-item {
-            padding: 16px 10px; border-bottom: 1px solid #E2E8F0;
+            padding: 16px 10px; border-bottom: 1px solid var(--border-color);
             display: flex; align-items: center; gap: 14px; cursor: pointer;
             transition: background 0.15s;
         }
@@ -158,11 +164,11 @@
             line-height: 1;
         }
         .star-btn.active { color: var(--star-color); }
-        .word-text-title { font-size: 20px; font-weight: 600; color: #1E293B; }
+        .word-text-title { font-size: 20px; font-weight: 600; color: var(--text-color); }
 
         /* 단어 보기 플래시카드 스타일 */
         .flashcard-box {
-            background: #1E293B; color: white; border-radius: 16px;
+            background: #1E293B; color: white; border-radius: var(--border-radius);
             padding: 40px 20px; text-align: center; min-height: 320px;
             display: flex; flex-direction: column; justify-content: center;
             align-items: center; cursor: pointer; position: relative; margin-top: 15px;
@@ -180,7 +186,7 @@
         }
         .match-card {
             background: #1E293B; color: white; border: 2px solid #334155;
-            border-radius: 8px; padding: 15px 10px; font-size: 16px; font-weight: bold;
+            border-radius: var(--btn-radius); padding: 15px 10px; font-size: 16px; font-weight: bold;
             display: flex; justify-content: center; align-items: center;
             min-height: 75px; text-align: center; cursor: pointer; word-break: break-word;
         }
@@ -220,7 +226,10 @@
 <div class="container">
     <div class="header-bar">
         <h1 id="main-title-text" onclick="openAppSettingModal()">나만의 영단어장</h1>
-        <button class="backup-icon-btn" onclick="openBackupModal()">⚙️ 백업 / 복구</button>
+        <div style="display: flex; gap: 8px;">
+            <button class="backup-icon-btn" onclick="openDesignModal()" style="background-color: #FEF3C7; color: #D97706; border-color: #FDE68A;">🎨 디자인 테마</button>
+            <button class="backup-icon-btn" onclick="openBackupModal()">⚙️ 백업 / 복구</button>
+        </div>
     </div>
 
     <!-- 0. 홈 화면 -->
@@ -239,13 +248,16 @@
             <label>새 단어장(Day) 추가하기</label>
             <div style="display: flex; gap: 8px;">
                 <input type="text" id="new-day-input" placeholder="예: Day 1, 중요단어">
-                <button type="button" onclick="addNewDay()" style="width: 90px; background-color: #34C759; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;">추가</button>
+                <button type="button" onclick="addNewDay()" style="width: 90px; background-color: #34C759; color: white; border: none; border-radius: var(--btn-radius); font-weight: bold; font-size: 15px; cursor: pointer;">추가</button>
             </div>
         </div>
 
         <form id="voca-form" style="margin-top: 15px;">
             <div class="form-group">
-                <label for="day-select">단어장 선택</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label for="day-select" style="margin-bottom:0;">단어장 선택</label>
+                    <button type="button" onclick="openQuickAddCategoryModal()" style="background: none; border: none; color: var(--primary-color); font-weight: bold; font-size: 14px; cursor: pointer; padding: 0;">+ 단어장 추가</button>
+                </div>
                 <select id="day-select" required></select>
             </div>
             <div class="form-group">
@@ -272,7 +284,7 @@
     <div id="category-view" class="hidden">
         <button class="nav-back-btn" onclick="goHome()">← 뒤로가기</button>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 style="font-size: 20px; margin: 0; color: #1E293B;">단어장 선택</h3>
+            <h3 style="font-size: 20px; margin: 0; color: var(--text-color);">단어장 선택</h3>
             <div style="display: flex; gap: 8px; align-items: center;">
                 <button class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #34C759;" onclick="openQuickAddCategoryModal()">+ 단어장 추가</button>
                 <button id="category-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleCategoryEditMode()">편집</button>
@@ -293,7 +305,7 @@
     <div id="word-list-view" class="hidden">
         <button class="nav-back-btn" onclick="showView('category-view')">← 뒤로가기</button>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 id="selected-folder-title" style="margin: 0; font-size: 22px; color: #1E293B;">단어 목록</h3>
+            <h3 id="selected-folder-title" style="margin: 0; font-size: 22px; color: var(--text-color);">단어 목록</h3>
             <div style="display: flex; gap: 8px; align-items: center;">
                 <button id="word-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleWordEditMode()">편집</button>
                 <button id="card-view-btn" class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardViewFromList()">📖 단어 보기 카드</button>
@@ -356,7 +368,7 @@
         
         <!-- 일반 퀴즈 영역 -->
         <div id="standard-quiz-area" style="text-align: center; padding: 20px 0;">
-            <div id="quiz-question" style="font-size: 26px; font-weight: bold; margin-bottom: 20px; color: #1E293B;"></div>
+            <div id="quiz-question" style="font-size: 26px; font-weight: bold; margin-bottom: 20px; color: var(--text-color);"></div>
             <div id="quiz-options" style="display: grid; gap: 10px;"></div>
             <div id="quiz-input-area" class="hidden" style="margin-top: 15px;">
                 <input type="text" id="quiz-answer-input" placeholder="정답을 입력하세요">
@@ -391,19 +403,79 @@
 <div id="app-setting-modal" class="modal hidden" onclick="closeAppSettingModalBg(event)">
     <div class="modal-content">
         <button class="close-x" onclick="closeAppSettingModal()">✕</button>
-        <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px; margin-bottom: 15px;">⚙️ 단어장 설정</h3>
+        <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px; margin-bottom: 15px;">⚙️ 단어장 이름 설정</h3>
         <div class="form-group" style="margin-bottom:12px;">
             <label>단어장 이름</label>
             <input type="text" id="app-title-input">
         </div>
-        <div class="form-group" style="margin-bottom:15px;">
-            <label>메인 컬러 선택</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="color" id="app-color-input" style="width: 50px; height: 40px; border: none; background: none; cursor: pointer;">
-                <span id="app-color-text" style="align-self: center; font-weight: bold; color: #555;"></span>
+        <button class="submit-btn" onclick="saveAppSetting()">설정 저장</button>
+    </div>
+</div>
+
+<!-- 디자인 테마 프리셋 및 세부 커스텀 모달 -->
+<div id="design-modal" class="modal hidden" onclick="closeDesignModalBg(event)">
+    <div class="modal-content">
+        <button class="close-x" onclick="closeDesignModal()">✕</button>
+        <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px; margin-bottom: 15px;">🎨 디자인 테마 및 커스텀</h3>
+        
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label>테마 프리셋 선택</label>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #4A90E2;" onclick="applyPreset('simple')">심플</button>
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #FF6B81;" onclick="applyPreset('cute')">큐트</button>
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #2D3748;" onclick="applyPreset('hip')">힙</button>
             </div>
         </div>
-        <button class="submit-btn" onclick="saveAppSetting()">설정 저장</button>
+
+        <hr style="border:0; border-top:1px solid #E2E8F0; margin: 15px 0;">
+
+        <div style="font-weight: bold; margin-bottom: 12px; color: #334155; font-size: 15px;">🛠️ 세부 커스텀 설정</div>
+        
+        <div class="form-group" style="margin-bottom:10px;">
+            <label style="font-size: 13px;">메인 포인트 컬러</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="color" id="custom-primary" style="width: 45px; height: 36px; border: none; background: none; cursor: pointer;">
+                <span id="custom-primary-text" style="align-self: center; font-size: 14px; color: #555;"></span>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+            <label style="font-size: 13px;">배경 컬러</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="color" id="custom-bg" style="width: 45px; height: 36px; border: none; background: none; cursor: pointer;">
+                <span id="custom-bg-text" style="align-self: center; font-size: 14px; color: #555;"></span>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+            <label style="font-size: 13px;">카드/박스 배경 컬러</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="color" id="custom-card-bg" style="width: 45px; height: 36px; border: none; background: none; cursor: pointer;">
+                <span id="custom-card-bg-text" style="align-self: center; font-size: 14px; color: #555;"></span>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+            <label style="font-size: 13px;">글자 폰트 스타일</label>
+            <select id="custom-font">
+                <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">기본 고딕 (Sans-serif)</option>
+                <option value="'Courier New', Courier, monospace">모노스페이스 (타자기 느낌)</option>
+                <option value="Georgia, serif">세리프 (클래식/책 느낌)</option>
+                <option value="'Comic Sans MS', cursive, sans-serif">둥글둥글 큐트 폰트</option>
+            </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:15px;">
+            <label style="font-size: 13px;">테두리 둥글기 (모서리 곡률)</label>
+            <select id="custom-radius">
+                <option value="0px">네모 반듯하게 (0px)</option>
+                <option value="8px">약간 둥글게 (8px)</option>
+                <option value="16px">부드럽게 (16px)</option>
+                <option value="30px">완전 동글동글 (30px)</option>
+            </select>
+        </div>
+
+        <button class="submit-btn" onclick="saveCustomDesign()">커스텀 적용 저장</button>
     </div>
 </div>
 
@@ -442,10 +514,16 @@
     
     let appConfig = {
         title: "나만의 영단어장",
-        primaryColor: "#4A90E2"
+        primaryColor: "#4A90E2",
+        bgColor: "#F5F7FA",
+        cardBg: "#FFFFFF",
+        textColor: "#333333",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        borderRadius: "16px",
+        btnRadius: "8px",
+        borderDk: "#E2E8F0"
     };
     
-    // 매칭 게임 변수
     let selectedMatchCards = [];
 
     window.onload = function() {
@@ -453,7 +531,7 @@
         dayList = JSON.parse(localStorage.getItem('myVocaDays_guest')) || [];
         const savedConfig = JSON.parse(localStorage.getItem('myVocaConfig_guest'));
         if (savedConfig) {
-            appConfig = savedConfig;
+            appConfig = { ...appConfig, ...savedConfig };
         }
         vocaData.forEach(item => { if(item.starred === undefined) item.starred = false; });
         applyAppConfig();
@@ -467,7 +545,16 @@
     }
 
     function applyAppConfig() {
-        document.documentElement.style.setProperty('--primary-color', appConfig.primaryColor);
+        const root = document.documentElement;
+        root.style.setProperty('--primary-color', appConfig.primaryColor);
+        root.style.setProperty('--bg-color', appConfig.bgColor);
+        root.style.setProperty('--card-bg', appConfig.cardBg);
+        root.style.setProperty('--text-color', appConfig.textColor);
+        root.style.setProperty('--font-family', appConfig.fontFamily);
+        root.style.setProperty('--border-radius', appConfig.borderRadius);
+        root.style.setProperty('--btn-radius', appConfig.btnRadius);
+        root.style.setProperty('--border-color', appConfig.borderDk || '#E2E8F0');
+
         document.getElementById('main-title-text').innerText = appConfig.title;
         document.title = appConfig.title;
     }
@@ -535,15 +622,15 @@
         saveData();
         updateDaySelects();
         closeQuickAddCategoryModal();
-        renderCategories();
+        if(!document.getElementById('category-view').classList.contains('hidden')) {
+            renderCategories();
+        }
         alert(`'${newDay}' 단어장이 추가되었습니다.`);
     }
 
-    /* 앱 타이틀/컬러 변경 모달 관련 */
+    /* 앱 타이틀(나만의 영단어장) 설정 모달 */
     function openAppSettingModal() {
         document.getElementById('app-title-input').value = appConfig.title;
-        document.getElementById('app-color-input').value = appConfig.primaryColor;
-        document.getElementById('app-color-text').innerText = appConfig.primaryColor;
         document.getElementById('app-setting-modal').classList.remove('hidden');
     }
     function closeAppSettingModal() {
@@ -552,19 +639,93 @@
     function closeAppSettingModalBg(e) {
         if (e.target.id === 'app-setting-modal') closeAppSettingModal();
     }
-    document.getElementById('app-color-input').addEventListener('input', function(e) {
-        document.getElementById('app-color-text').innerText = e.target.value;
-    });
     function saveAppSetting() {
         const titleVal = document.getElementById('app-title-input').value.trim();
-        const colorVal = document.getElementById('app-color-input').value;
         if (!titleVal) return alert('단어장 이름을 입력해 주세요.');
 
         appConfig.title = titleVal;
-        appConfig.primaryColor = colorVal;
         saveData();
         applyAppConfig();
         closeAppSettingModal();
+    }
+
+    /* 디자인 테마 모달 관련 함수 */
+    function openDesignModal() {
+        document.getElementById('custom-primary').value = appConfig.primaryColor;
+        document.getElementById('custom-primary-text').innerText = appConfig.primaryColor;
+        document.getElementById('custom-bg').value = appConfig.bgColor;
+        document.getElementById('custom-bg-text').innerText = appConfig.bgColor;
+        document.getElementById('custom-card-bg').value = appConfig.cardBg;
+        document.getElementById('custom-card-bg-text').innerText = appConfig.cardBg;
+        document.getElementById('custom-font').value = appConfig.fontFamily;
+        document.getElementById('custom-radius').value = appConfig.borderRadius;
+
+        document.getElementById('design-modal').classList.remove('hidden');
+    }
+    function closeDesignModal() {
+        document.getElementById('design-modal').classList.add('hidden');
+    }
+    function closeDesignModalBg(e) {
+        if (e.target.id === 'design-modal') closeDesignModal();
+    }
+
+    document.getElementById('custom-primary').addEventListener('input', e => {
+        document.getElementById('custom-primary-text').innerText = e.target.value;
+    });
+    document.getElementById('custom-bg').addEventListener('input', e => {
+        document.getElementById('custom-bg-text').innerText = e.target.value;
+    });
+    document.getElementById('custom-card-bg').addEventListener('input', e => {
+        document.getElementById('custom-card-bg-text').innerText = e.target.value;
+    });
+
+    function applyPreset(type) {
+        if (type === 'simple') {
+            appConfig.primaryColor = "#4A90E2";
+            appConfig.bgColor = "#F5F7FA";
+            appConfig.cardBg = "#FFFFFF";
+            appConfig.textColor = "#333333";
+            appConfig.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+            appConfig.borderRadius = "16px";
+            appConfig.btnRadius = "8px";
+            appConfig.borderDk = "#E2E8F0";
+        } else if (type === 'cute') {
+            appConfig.primaryColor = "#FF6B81";
+            appConfig.bgColor = "#FFF0F5";
+            appConfig.cardBg = "#FFFFFF";
+            appConfig.textColor = "#4A4045";
+            appConfig.fontFamily = "'Comic Sans MS', cursive, sans-serif";
+            appConfig.borderRadius = "30px";
+            appConfig.btnRadius = "20px";
+            appConfig.borderDk = "#FFD1DC";
+        } else if (type === 'hip') {
+            appConfig.primaryColor = "#10B981";
+            appConfig.bgColor = "#18181B";
+            appConfig.cardBg = "#27272A";
+            appConfig.textColor = "#F4F4F5";
+            appConfig.fontFamily = "'Courier New', Courier, monospace";
+            appConfig.borderRadius = "0px";
+            appConfig.btnRadius = "0px";
+            appConfig.borderDk = "#3F3F46";
+        }
+        saveData();
+        applyAppConfig();
+        closeDesignModal();
+    }
+
+    function saveCustomDesign() {
+        appConfig.primaryColor = document.getElementById('custom-primary').value;
+        appConfig.bgColor = document.getElementById('custom-bg').value;
+        appConfig.cardBg = document.getElementById('custom-card-bg').value;
+        appConfig.fontFamily = document.getElementById('custom-font').value;
+        const rad = document.getElementById('custom-radius').value;
+        appConfig.borderRadius = rad;
+        appConfig.btnRadius = rad === '0px' ? '0px' : (rad === '30px' ? '20px' : '8px');
+        
+        saveData();
+        applyAppConfig();
+        closeDesignModal();
+        alert('디자인 테마가 커스텀 적용되었습니다.');
     }
 
     /* 단어 추가 등록 */
@@ -738,7 +899,7 @@
                         <input type="checkbox" class="word-checkbox" value="${item.id}" style="width: 20px; height: 20px; cursor: pointer;">
                         <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
                         <div class="word-text-title" style="flex:1;">${item.word}</div>
-                        <button style="background:none; border:none; color:#4A90E2; font-size:18px; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️</button>
+                        <button style="background:none; border:none; color:var(--primary-color); font-size:18px; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️</button>
                     </div>
                 `;
             } else {
@@ -746,7 +907,7 @@
                     <div class="clean-word-item">
                         <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
                         <div class="word-text-title" style="flex:1;" onclick="openCardViewAtIndex(${index})">${item.word}</div>
-                        <button style="background:none; border:none; color:#4A90E2; font-size:18px; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️</button>
+                        <button style="background:none; border:none; color:var(--primary-color); font-size:18px; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️</button>
                     </div>
                 `;
             }
