@@ -1,218 +1,450 @@
+아, 단어장 기능(단어 등록, 목록, 연습하기 등의 화면이나 실제 단어장 내부 데이터 구조/기능 로직)이 빠져 있었네!
+요청하신 **핀터레스트 감성의 배경 테마(심플, 큐트 2개 중 하나는 스누피 무드, 키치 2개)**와 디바이스 중앙 정렬을 모두 유지하면서, 실제 단어장을 관리하고 연습할 수 있는 핵심 화면과 기능(단어 등록 폼, 단어 목록 보기, 퀴즈/연습 모드)을 포함한 전체 통합 코드로 다시 구성해서 보낼게.
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나만의 영단어장 - 테마 적용</title>
+    <title>나만의 영단어장</title>
     <style>
-        /* 초기화 및 공통 스타일 */
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --btn-bg: #ffffff;
+            --btn-border: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 1. 심플 테마 (기본) */
+        body.theme-simple {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --btn-bg: #ffffff;
+            --btn-border: #e2e8f0;
+        }
+
+        /* 2. 큐트 테마 1: 파스텔 버터크림 */
+        body.theme-cute-1 {
+            --bg-color: #fff6ed;
+            --card-bg: #fffdfa;
+            --text-main: #d97706;
+            --btn-bg: #fffbeb;
+            --btn-border: #fde68a;
+            --shadow: 0 12px 30px -5px rgba(245, 158, 11, 0.12);
+        }
+
+        /* 3. 큐트 테마 2: 스누피 감성 (레트로 피너츠 무드) */
+        body.theme-cute-snoopy {
+            --bg-color: #e3f2fd;
+            --card-bg: #ffffff;
+            --text-main: #1d4ed8;
+            --btn-bg: #f8fafc;
+            --btn-border: #bfdbfe;
+            --shadow: 0 12px 30px -5px rgba(37, 99, 235, 0.1);
+        }
+
+        /* 4. 키치 테마 1: Y2K 팝핑크 */
+        body.theme-kitsch-1 {
+            --bg-color: #ffe4e6;
+            --card-bg: #fff1f2;
+            --text-main: #e11d48;
+            --btn-bg: #ffffff;
+            --btn-border: #fda4af;
+            --shadow: 0 12px 30px -5px rgba(225, 29, 72, 0.15);
+        }
+
+        /* 5. 키치 테마 2: 네온 스트릿/사이버 */
+        body.theme-kitsch-2 {
+            --bg-color: #1e1b4b;
+            --card-bg: #312e81;
+            --text-main: #a5b4fc;
+            --btn-bg: #3730a3;
+            --btn-border: #4f46e5;
+            --shadow: 0 12px 30px -5px rgba(99, 102, 241, 0.3);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #F8FAFC;
-        }
-
-        /* 뷰포트 및 기기별 중앙 정렬 (Optical Center) */
-        .device-viewport {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            width: 100vw;
-            padding: env(safe-area-inset-top, 20px) 20px env(safe-area-inset-bottom, 20px) 20px;
+            padding: 20px;
+            transition: background-color 0.3s ease;
         }
 
-        /* 메인 카드 공통 레이아웃 */
-        .main-card-container {
+        /* 디바이스 화면 컨테이너 (완벽한 중앙 정렬) */
+        .device-wrapper {
             width: 100%;
-            max-width: 380px;
-            padding: 36px 28px;
-            border-radius: 32px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            max-width: 400px;
+            height: 750px;
+            background-color: var(--card-bg);
+            border-radius: 36px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 32px 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.4);
             transition: all 0.3s ease;
         }
 
-        .card-header {
+        /* 상단 헤더 영역 */
+        .header-area {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 36px;
+            margin-bottom: 20px;
         }
 
-        .app-title {
+        .title {
             font-size: 22px;
             font-weight: 700;
+            letter-spacing: -0.5px;
+            cursor: pointer;
         }
 
-        .action-buttons {
+        .action-icons {
             display: flex;
             gap: 8px;
         }
 
         .icon-btn {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
-            border: none;
-            cursor: pointer;
+            background: var(--btn-bg);
+            border: 1px solid var(--btn-border);
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
-        .menu-group {
+        /* 화면 컨텐츠 영역 (중앙 정렬 유지) */
+        .content-area {
+            flex: 1;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            margin: auto 0;
+        }
+
+        /* 메인 메뉴 화면 */
+        .view-section {
+            display: none;
+            flex-direction: column;
             gap: 16px;
+            width: 100%;
+        }
+
+        .view-section.active {
+            display: flex;
         }
 
         .menu-btn {
             width: 100%;
-            padding: 18px;
+            padding: 20px;
+            background-color: var(--btn-bg);
+            border: 1px solid var(--btn-border);
+            border-radius: 18px;
             font-size: 16px;
             font-weight: 600;
+            color: var(--text-main);
             text-align: center;
             cursor: pointer;
-            transition: transform 0.1s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: transform 0.1s ease, background-color 0.2s ease;
         }
 
         .menu-btn:active {
             transform: scale(0.98);
         }
 
-
-        /* ==================== [테마별 디자인 스타일] ==================== */
-
-        /* 1. 심플 (Simple) */
-        .theme-simple {
-            background-color: #FFFFFF;
-            border: 1px solid #E2E8F0;
-        }
-        .theme-simple .app-title { color: #3B82F6; }
-        .theme-simple .menu-btn {
-            background-color: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            color: #1E293B;
+        /* 단어 등록 및 기타 폼 스타일 */
+        .form-group {
+            margin-bottom: 14px;
         }
 
-        /* 2. 큐트 A: 파스텔 크림 무드 (Cute Type A) */
-        .theme-cute-cream {
-            background-color: #FFFDF4;
-            border: 2px solid #CDE7BE;
-            box-shadow: 6px 6px 0px #CDE7BE;
-        }
-        .theme-cute-cream .app-title { color: #5C5446; }
-        .theme-cute-cream .menu-btn {
-            background-color: #FFF9DE;
-            border: 2px solid #F3E5AB;
-            border-radius: 20px;
-            color: #5C5446;
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
         }
 
-        /* 3. 큐트 B: 스누피 아기자기 감성 (Cute Type B - Snoopy) */
-        .theme-cute-snoopy {
-            background-color: #FFFFFF;
-            border: 3px solid #1E293B;
-            box-shadow: 5px 5px 0px #1E293B;
-            position: relative;
-        }
-        /* 상단 스누피 일러스트 대체 영역 스타일링 */
-        .snoopy-badge {
-            font-size: 12px;
-            font-weight: 700;
-            background: #1E293B;
-            color: #FFF;
-            padding: 4px 8px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            display: inline-block;
-        }
-        .theme-cute-snoopy .app-title { color: #1E293B; }
-        .theme-cute-snoopy .menu-btn {
-            background-color: #FFFFFF;
-            border: 2px solid #1E293B;
+        .form-input {
+            width: 100%;
+            padding: 14px;
             border-radius: 12px;
-            font-weight: 700;
-            color: #1E293B;
-            box-shadow: 3px 3px 0px #1E293B;
+            border: 1px solid var(--btn-border);
+            background: var(--btn-bg);
+            color: var(--text-main);
+            font-size: 15px;
+            outline: none;
         }
 
-        /* 4. 키치 A: 팝앤드림 유니버스 (Kitsch Type A) */
-        .theme-kitsch-pop {
-            background: repeating-linear-gradient(
-                45deg,
-                #E0F2FE,
-                #E0F2FE 12px,
-                #BAE6FD 12px,
-                #BAE6FD 24px
-            );
-            border: 3px solid #FF8FAB;
-            box-shadow: 0 12px 0px rgba(255, 143, 171, 0.4);
-        }
-        .theme-kitsch-pop .app-title { color: #FF477E; font-weight: 900; }
-        .theme-kitsch-pop .menu-btn {
-            background-color: #FFFFFF;
-            border: 2.5px solid #FF8FAB;
-            border-radius: 24px;
-            color: #FF477E;
-            font-weight: 800;
+        /* 단어 목록 리스트 박스 */
+        .word-list-box {
+            max-height: 380px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
         }
 
-        /* 5. 키치 B: 하이틴 손글씨 스케치 (Kitsch Type B) */
-        .theme-kitsch-sketch {
-            background-color: #FFFBEB;
-            border: 2px dashed #F59E0B;
+        .word-item {
+            padding: 14px 16px;
+            background: var(--btn-bg);
+            border: 1px solid var(--btn-border);
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .theme-kitsch-sketch .app-title { color: #D97706; font-style: italic; }
-        .theme-kitsch-sketch .menu-btn {
-            background-color: #FEF3C7;
-            border: 2px solid #D97706;
-            border-radius: 8px;
-            color: #92400E;
+
+        .word-item .en {
             font-weight: 700;
+            font-size: 15px;
+        }
+
+        .word-item .ko {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        /* 테마 테스트용 셀렉터 플로팅 박스 */
+        .theme-switcher {
+            position: fixed;
+            bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 16px;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 6px;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            flex-wrap: wrap;
+            max-width: 90vw;
+            justify-content: center;
+        }
+
+        .theme-switcher button {
+            border: none;
+            background: #e2e8f0;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .theme-switcher button.active {
+            background: #2563eb;
+            color: #ffffff;
         }
     </style>
 </head>
-<body>
+<body class="theme-simple">
 
-    <!-- 
-      ※ 테마 클래스를 아래 div에 변경해 가면서 확인해보세요!
-      - 기본(심플): theme-simple
-      - 큐트 1(크림): theme-cute-cream
-      - 큐트 2(스누피): theme-cute-snoopy
-      - 키치 1(팝 스트라이프): theme-kitsch-pop
-      - 키치 2(하이틴 스케치): theme-kitsch-sketch
-    -->
-    <div class="device-viewport">
-        <main class="main-card-container theme-cute-snoopy">
+    <div class="device-wrapper">
+        <!-- 상단 타이틀 및 아이콘 -->
+        <div class="header-area">
+            <h1 class="title" onclick="switchView('menu-view')">나만의 영단어장</h1>
+            <div class="action-icons">
+                <div class="icon-btn" title="테마 변경">🎨</div>
+                <div class="icon-btn" title="설정">⚙️</div>
+            </div>
+        </div>
+
+        <!-- 중앙 컨텐츠 영역 -->
+        <div class="content-area">
             
-            <header class="card-header">
-                <div>
-                    <!-- 스누피 테마일 때 보여줄 수 있는 감성 태그 예시 -->
-                    <!-- <span class="snoopy-badge">🐶 SNOOPY MOOD</span> -->
-                    <h1 class="app-title">나만의 영단어장</h1>
-                </div>
-                <div class="action-buttons">
-                    <button class="icon-btn" aria-label="테마 변경">🎨</button>
-                    <button class="icon-btn" aria-label="설정">⚙️</button>
-                </div>
-            </header>
+            <!-- 1. 메인 메뉴 화면 -->
+            <div id="menu-view" class="view-section active">
+                <button class="menu-btn" onclick="switchView('add-view')">단어 등록</button>
+                <button class="menu-btn" onclick="switchView('list-view')">단어장 목록</button>
+                <button class="menu-btn" onclick="switchView('practice-view')">연습하기</button>
+            </div>
 
-            <nav class="menu-group">
-                <button class="menu-btn">단어 등록</button>
-                <button class="menu-btn">단어장 목록</button>
-                <button class="menu-btn">연습하기</button>
-            </nav>
+            <!-- 2. 단어 등록 화면 -->
+            <div id="add-view" class="view-section">
+                <div class="form-group">
+                    <label>영단어</label>
+                    <input type="text" id="en-input" class="form-input" placeholder="예: Serendipity">
+                </div>
+                <div class="form-group">
+                    <label>뜻</label>
+                    <input type="text" id="ko-input" class="form-input" placeholder="예: 뜻밖의 행운">
+                </div>
+                <button class="menu-btn" style="margin-top: 10px;" onclick="addWord()">저장하기</button>
+                <div class="back-link" onclick="switchView('menu-view')">← 홈으로 돌아가기</div>
+            </div>
 
-        </main>
+            <!-- 3. 단어장 목록 화면 -->
+            <div id="list-view" class="view-section">
+                <div class="word-list-box" id="word-list-container">
+                    <!-- 동적으로 단어 목록이 들어갑니다 -->
+                </div>
+                <div class="back-link" onclick="switchView('menu-view')">← 홈으로 돌아가기</div>
+            </div>
+
+            <!-- 4. 연습하기 화면 -->
+            <div id="practice-view" class="view-section" style="text-align: center;">
+                <div style="font-size: 13px; font-weight: 600; opacity: 0.6; margin-bottom: 8px;">단어 카드 뒤집기 퀴즈</div>
+                <div id="quiz-card" style="padding: 40px 20px; background: var(--btn-bg); border: 1px solid var(--btn-border); border-radius: 20px; margin-bottom: 20px; cursor: pointer;" onclick="toggleAnswer()">
+                    <div id="quiz-question" style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">단어가 없습니다</div>
+                    <div id="quiz-hint" style="font-size: 13px; opacity: 0.5;">카드를 눌러 뜻 확인</div>
+                </div>
+                <button class="menu-btn" onclick="nextQuiz()">다음 단어</button>
+                <div class="back-link" onclick="switchView('menu-view')">← 홈으로 돌아가기</div>
+            </div>
+
+        </div>
+        
+        <!-- 하단 여백 균형 -->
+        <div style="height: 10px;"></div>
     </div>
 
+    <!-- 테마 테스트용 셀렉터 -->
+    <div class="theme-switcher">
+        <button onclick="setTheme('theme-simple', this)" class="active">심플</button>
+        <button onclick="setTheme('theme-cute-1', this)">큐트1</button>
+        <button onclick="setTheme('theme-cute-snoopy', this)">스누피(큐트2)</button>
+        <button onclick="setTheme('theme-kitsch-1', this)">키치1</button>
+        <button onclick="setTheme('theme-kitsch-2', this)">키치2</button>
+    </div>
+
+    <script>
+        // 샘플 단어 데이터
+        let words = [
+            { en: 'Apple', ko: '사과' },
+            { en: 'Serendipity', ko: '뜻밖의 발견' },
+            { en: 'Effort', ko: '노력' }
+        ];
+
+        let currentQuizIndex = 0;
+        let showMeaning = false;
+
+        // 화면 전환 함수
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            
+            if (viewId === 'list-view') {
+                renderWordList();
+            } else if (viewId === 'practice-view') {
+                initQuiz();
+            }
+        }
+
+        // 테마 변경 함수
+        function setTheme(themeName, element) {
+            document.body.className = themeName;
+            document.querySelectorAll('.theme-switcher button').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // 단어 추가 기능
+        function addWord() {
+            const enInput = document.getElementById('en-input');
+            const koInput = document.getElementById('ko-input');
+            
+            if(!enInput.value || !koInput.value) {
+                alert('영단어와 뜻을 모두 입력해주세요!');
+                return;
+            }
+
+            words.push({ en: enInput.value, ko: koInput.value });
+            enInput.value = '';
+            koInput.value = '';
+            alert('단어가 등록되었습니다!');
+            switchView('list-view');
+        }
+
+        // 단어 목록 렌더링
+        function renderWordList() {
+            const container = document.getElementById('word-list-container');
+            if (words.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">등록된 단어가 없습니다.</div>';
+                return;
+            }
+            
+            container.innerHTML = words.map(w => `
+                <div class="word-item">
+                    <span class="en">${w.en}</span>
+                    <span class="ko">${w.ko}</span>
+                </div>
+            `).join('');
+        }
+
+        // 퀴즈 초기화
+        function initQuiz() {
+            currentQuizIndex = 0;
+            showMeaning = false;
+            updateQuizCard();
+        }
+
+        function updateQuizCard() {
+            const qBox = document.getElementById('quiz-question');
+            const hintBox = document.getElementById('quiz-hint');
+            
+            if (words.length === 0) {
+                qBox.innerText = '등록된 단어가 없습니다';
+                hintBox.innerText = '단어를 먼저 등록해주세요';
+                return;
+            }
+
+            if (!showMeaning) {
+                qBox.innerText = words[currentQuizIndex].en;
+                hintBox.innerText = '카드를 눌러 뜻 확인';
+            } else {
+                qBox.innerText = words[currentQuizIndex].ko;
+                hintBox.innerText = '영어: ' + words[currentQuizIndex].en;
+            }
+        }
+
+        function toggleAnswer() {
+            if (words.length === 0) return;
+            showMeaning = !showMeaning;
+            updateQuizCard();
+        }
+
+        function nextQuiz() {
+            if (words.length === 0) return;
+            showMeaning = false;
+            currentQuizIndex = (currentQuizIndex + 1) % words.length;
+            updateQuizCard();
+        }
+    </script>
 </body>
 </html>
+
