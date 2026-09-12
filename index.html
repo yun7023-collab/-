@@ -18,27 +18,30 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 15px;
+            padding: 20px;
             display: flex;
             justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
 
         .container {
             width: 100%;
             max-width: 600px;
             background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 30px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             position: relative;
-            min-height: 500px;
+            box-sizing: border-box;
         }
 
         .header-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         h1 {
@@ -62,15 +65,15 @@
 
         .hidden { display: none !important; }
 
-        /* 뒤로가기 버튼 - 기존 대비 2배 확대 */
+        /* 뒤로가기 버튼 - 기존 대비 0.5배 크기로 축소 (18px) */
         .nav-back-btn {
             background: none;
             border: none;
             color: #475569;
-            font-size: 28px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            padding: 5px 0;
+            padding: 0;
             margin-bottom: 20px;
             display: inline-flex;
             align-items: center;
@@ -84,7 +87,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: 20px;
         }
 
         .home-btn {
@@ -107,32 +110,38 @@
         }
 
         /* Form 및 입력 */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 16px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 15px; color: #334155; }
         input[type="text"], textarea, select {
-            width: 100%; padding: 12px; border: 1px solid #DDD;
-            border-radius: 6px; box-sizing: border-box; font-size: 16px;
+            width: 100%; padding: 12px 14px; border: 1px solid #CBD5E1;
+            border-radius: 8px; box-sizing: border-box; font-size: 16px; background-color: #FAFAFA;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none; border-color: var(--primary-color); background-color: #FFF;
         }
         button.submit-btn {
             width: 100%; padding: 14px; background-color: var(--primary-color);
-            color: white; border: none; border-radius: 6px; font-size: 18px;
+            color: white; border: none; border-radius: 8px; font-size: 17px;
             cursor: pointer; font-weight: bold;
+            transition: background-color 0.2s;
         }
+        button.submit-btn:hover { background-color: #357ABD; }
 
         /* 단어장 폴더 목록 스타일 */
-        .folder-list { display: flex; flex-direction: column; gap: 10px; }
+        .folder-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
         .folder-item {
-            padding: 18px; background: #F8FAFC; border: 1px solid #E2E8F0;
-            border-radius: 8px; display: flex; justify-content: space-between;
+            padding: 18px 20px; background: #F8FAFC; border: 1px solid #E2E8F0;
+            border-radius: 10px; display: flex; justify-content: space-between;
             align-items: center; cursor: pointer; font-weight: bold; font-size: 18px;
+            transition: background 0.15s, border-color 0.15s;
         }
-        .folder-item:hover { background: #EDF2F7; }
+        .folder-item:hover { background: #EDF2F7; border-color: #CBD5E1; }
 
         /* 단어 목록 깔끔한 리스트 스타일 */
-        .clean-word-list { display: flex; flex-direction: column; }
+        .clean-word-list { display: flex; flex-direction: column; margin-top: 10px; }
         .clean-word-item {
-            padding: 16px 8px; border-bottom: 1px solid #E2E8F0;
-            display: flex; align-items: center; gap: 12px; cursor: pointer;
+            padding: 16px 10px; border-bottom: 1px solid #E2E8F0;
+            display: flex; align-items: center; gap: 14px; cursor: pointer;
             transition: background 0.15s;
         }
         .clean-word-item:hover { background-color: #F8FAFC; }
@@ -141,31 +150,21 @@
             line-height: 1;
         }
         .star-btn.active { color: var(--star-color); }
-        .word-text-title { font-size: 22px; font-weight: 600; color: #1E293B; }
+        .word-text-title { font-size: 20px; font-weight: 600; color: #1E293B; }
 
-        /* 개별 단어 상세 팝업 모달 카드 */
-        .detail-card-box {
-            background: #FFFFFF; border-radius: 16px; padding: 25px 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #E2E8F0;
-        }
-        .detail-word { font-size: 32px; font-weight: 800; color: #1E293B; margin-bottom: 12px; }
-        .detail-meaning { font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 20px; }
-        .detail-example { font-size: 18px; color: #334155; font-style: italic; margin-bottom: 6px; line-height: 1.4; }
-        .detail-exmeaning { font-size: 16px; color: #64748B; line-height: 1.4; }
-
-        /* 단어 보기 플래시카드 (글씨 크기 3배 확대 반영) */
+        /* 단어 보기 플래시카드 스타일 */
         .flashcard-box {
             background: #1E293B; color: white; border-radius: 16px;
             padding: 40px 20px; text-align: center; min-height: 320px;
             display: flex; flex-direction: column; justify-content: center;
             align-items: center; cursor: pointer; position: relative; margin-top: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
-        /* 기존 대비 3배 크기 적용 */
-        .card-word-title { font-size: 84px; font-weight: bold; margin-bottom: 20px; word-break: break-all; line-height: 1.1; }
-        .card-meaning-text { font-size: 60px; color: #60A5FA; font-weight: bold; margin-bottom: 20px; line-height: 1.2; }
-        .card-ex-text { font-size: 38px; color: #CBD5E1; margin-top: 12px; font-style: italic; line-height: 1.3; }
-        .card-exmeaning-text { font-size: 32px; color: #94A3B8; margin-top: 8px; line-height: 1.3; }
-        .card-star { position: absolute; top: 15px; right: 20px; font-size: 32px; }
+        .card-word-title { font-size: 72px; font-weight: bold; margin-bottom: 20px; word-break: break-all; line-height: 1.1; }
+        .card-meaning-text { font-size: 50px; color: #60A5FA; font-weight: bold; margin-bottom: 20px; line-height: 1.2; }
+        .card-ex-text { font-size: 32px; color: #CBD5E1; margin-top: 12px; font-style: italic; line-height: 1.3; }
+        .card-exmeaning-text { font-size: 28px; color: #94A3B8; margin-top: 8px; line-height: 1.3; }
+        .card-star { position: absolute; top: 20px; right: 24px; font-size: 32px; }
 
         /* 매칭 게임 스타일 */
         .matching-grid {
@@ -184,21 +183,28 @@
         .modal {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-            align-items: center; z-index: 1000;
+            align-items: center; z-index: 1000; padding: 20px;
+            box-sizing: border-box;
         }
         .modal-content {
-            background: white; padding: 24px; border-radius: 12px;
-            width: 90%; max-width: 480px; box-sizing: border-box; position: relative;
+            background: white; padding: 28px 24px; border-radius: 16px;
+            width: 100%; max-width: 440px; box-sizing: border-box; position: relative;
             max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         .close-x {
-            position: absolute; top: 15px; right: 15px; font-size: 24px;
-            font-weight: bold; color: #888; border: none; background: none; width: auto; cursor: pointer;
+            position: absolute; top: 18px; right: 18px; font-size: 22px;
+            font-weight: bold; color: #888; border: none; background: none; cursor: pointer;
         }
-        .backup-btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        .btn-green { background-color: #34C759; color: white; }
-        .btn-orange { background-color: #FF9500; color: white; }
-        .btn-gray { background-color: #8E8E93; color: white; }
+        .close-x:hover { color: #333; }
+        
+        .backup-btn-group { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        .btn-green { background-color: #34C759; }
+        .btn-green:hover { background-color: #2da84e; }
+        .btn-orange { background-color: #FF9500; }
+        .btn-orange:hover { background-color: #e08500; }
+        .btn-gray { background-color: #8E8E93; }
+        .btn-gray:hover { background-color: #7a7a7e; }
     </style>
 </head>
 <body>
@@ -221,15 +227,15 @@
     <!-- 1. 단어 등록 화면 -->
     <div id="input-view" class="hidden">
         <button class="nav-back-btn" onclick="goHome()">← 뒤로가기</button>
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 5px;">
             <label>새 단어장(Day) 추가하기</label>
             <div style="display: flex; gap: 8px;">
                 <input type="text" id="new-day-input" placeholder="예: Day 1, 중요단어">
-                <button type="button" onclick="addNewDay()" style="width: 90px; background-color: #34C759; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 15px;">추가</button>
+                <button type="button" onclick="addNewDay()" style="width: 90px; background-color: #34C759; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;">추가</button>
             </div>
         </div>
 
-        <form id="voca-form">
+        <form id="voca-form" style="margin-top: 15px;">
             <div class="form-group">
                 <label for="day-select">단어장 선택</label>
                 <select id="day-select" required></select>
@@ -250,14 +256,14 @@
                 <label for="exmeaning">예문 뜻 (선택)</label>
                 <input type="text" id="exmeaning" placeholder="예: 이 물품은 현재 품절 상태입니다.">
             </div>
-            <button type="submit" class="submit-btn">단어 저장하기</button>
+            <button type="submit" class="submit-btn" style="margin-top: 10px;">단어 저장하기</button>
         </form>
     </div>
 
     <!-- 2-1. 단어장 목록 (카테고리 선택) 화면 -->
     <div id="category-view" class="hidden">
         <button class="nav-back-btn" onclick="goHome()">← 뒤로가기</button>
-        <h3 style="font-size: 20px; margin-bottom: 15px;">단어장 선택</h3>
+        <h3 style="font-size: 20px; margin: 0 0 15px 0; color: #1E293B;">단어장 선택</h3>
         <div id="folder-list-container" class="folder-list"></div>
     </div>
 
@@ -265,11 +271,8 @@
     <div id="word-list-view" class="hidden">
         <button class="nav-back-btn" onclick="showView('category-view')">← 뒤로가기</button>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 id="selected-folder-title" style="margin: 0; font-size: 22px;">단어 목록</h3>
-            <div style="display: flex; gap: 8px;">
-                <button class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px; background-color: #64748B;" onclick="openEditModal()">✏️ 편집</button>
-                <button class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardView()">🎴 단어 보기 카드</button>
-            </div>
+            <h3 id="selected-folder-title" style="margin: 0; font-size: 22px; color: #1E293B;">단어 목록</h3>
+            <button class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardViewFromList()">🎴 단어 보기 카드</button>
         </div>
         <div id="words-container" class="clean-word-list"></div>
     </div>
@@ -311,7 +314,7 @@
                 <option value="matching">카드 매칭 게임</option>
             </select>
         </div>
-        <button class="submit-btn" onclick="startQuiz()">시작하기</button>
+        <button class="submit-btn" onclick="startQuiz()" style="margin-top: 10px;">시작하기</button>
     </div>
 
     <!-- 3-1. 퀴즈/게임 실행 화면 -->
@@ -320,7 +323,7 @@
         
         <!-- 일반 퀴즈 영역 -->
         <div id="standard-quiz-area" style="text-align: center; padding: 20px 0;">
-            <div id="quiz-question" style="font-size: 26px; font-weight: bold; margin-bottom: 20px;"></div>
+            <div id="quiz-question" style="font-size: 26px; font-weight: bold; margin-bottom: 20px; color: #1E293B;"></div>
             <div id="quiz-options" style="display: grid; gap: 10px;"></div>
             <div id="quiz-input-area" class="hidden" style="margin-top: 15px;">
                 <input type="text" id="quiz-answer-input" placeholder="정답을 입력하세요">
@@ -332,32 +335,18 @@
 
         <!-- 매칭 게임 영역 -->
         <div id="matching-quiz-area" class="hidden">
-            <div style="text-align: center; font-weight: bold; margin-bottom: 10px; color: var(--primary-color); font-size: 18px;">알맞은 짝을 맞춰보세요!</div>
+            <div style="text-align: center; font-weight: bold; margin-bottom: 15px; color: var(--primary-color); font-size: 18px;">알맞은 짝을 맞춰보세요!</div>
             <div id="matching-grid" class="matching-grid"></div>
         </div>
     </div>
 </div>
 
-<!-- 단어 클릭 시 나오는 상세 정보 모달 팝업 -->
+<!-- 개별 단어 상세 및 수정/삭제 팝업 모달 -->
 <div id="word-detail-modal" class="modal hidden" onclick="closeWordDetailModalBg(event)">
     <div class="modal-content">
         <button class="close-x" onclick="closeWordDetailModal()">✕</button>
-        <div class="detail-card-box">
-            <div id="detail-word" class="detail-word">Word</div>
-            <div id="detail-meaning" class="detail-meaning">뜻</div>
-            <div id="detail-example" class="detail-example"></div>
-            <div id="detail-exmeaning" class="detail-exmeaning"></div>
-        </div>
-    </div>
-</div>
-
-<!-- 단어 편집/수정 모달 팝업 (단어장/Day 이동 기능 포함) -->
-<div id="edit-modal" class="modal hidden" onclick="closeEditModalBg(event)">
-    <div class="modal-content">
-        <button class="close-x" onclick="closeEditModal()">✕</button>
-        <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px;">✏️ 단어 목록 편집 및 이동</h3>
-        <p style="font-size:14px; color:#666;">단어 내용을 수정하거나 속한 단어장(Day)을 변경할 수 있습니다.</p>
-        <div id="edit-list-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;"></div>
+        <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px; margin-bottom: 15px;">✏️ 단어 상세 및 수정</h3>
+        <div id="modal-edit-form-container"></div>
     </div>
 </div>
 
@@ -378,7 +367,7 @@
 
 <script>
     let vocaData = [];
-    let dayList = ["Day 1"];
+    let dayList = []; // 기본값 제거
     let currentSelectedCategory = "all";
     let currentFilteredWords = [];
     let currentCardIdx = 0;
@@ -388,7 +377,7 @@
 
     window.onload = function() {
         vocaData = JSON.parse(localStorage.getItem('myVocaData_guest')) || [];
-        dayList = JSON.parse(localStorage.getItem('myVocaDays_guest')) || ["Day 1"];
+        dayList = JSON.parse(localStorage.getItem('myVocaDays_guest')) || [];
         vocaData.forEach(item => { if(item.starred === undefined) item.starred = false; });
         updateDaySelects();
     };
@@ -409,11 +398,16 @@
 
         if (viewId === 'category-view') renderCategories();
         if (viewId === 'quiz-select-view') updateQuizFilterSelect();
+        if (viewId === 'input-view') updateDaySelects();
     }
 
     function updateDaySelects() {
         const daySelect = document.getElementById('day-select');
-        daySelect.innerHTML = dayList.map(d => `<option value="${d}">${d}</option>`).join('');
+        if (dayList.length === 0) {
+            daySelect.innerHTML = `<option value="" disabled selected>추가된 단어장이 없습니다</option>`;
+        } else {
+            daySelect.innerHTML = dayList.map(d => `<option value="${d}">${d}</option>`).join('');
+        }
     }
 
     function addNewDay() {
@@ -433,6 +427,8 @@
     document.getElementById('voca-form').addEventListener('submit', function(e) {
         e.preventDefault();
         const day = document.getElementById('day-select').value;
+        if (!day) return alert('단어장을 먼저 추가하고 선택해 주세요.');
+        
         const word = document.getElementById('word').value.trim();
         const meaning = document.getElementById('meaning').value.trim();
         const example = document.getElementById('example').value.trim();
@@ -442,6 +438,7 @@
         saveData();
         alert('단어가 저장되었습니다!');
         this.reset();
+        updateDaySelects();
     });
 
     /* 단어장 목록(카테고리) rendering */
@@ -450,20 +447,25 @@
         let html = `
             <div class="folder-item" onclick="selectCategory('all')">
                 <span>📁 전체 보기</span>
-                <span style="color:#888;">(${vocaData.length})</span>
+                <span style="color:#888; font-size: 16px;">(${vocaData.length})</span>
             </div>
             <div class="folder-item" onclick="selectCategory('starred')">
                 <span>⭐ 즐겨찾기</span>
-                <span style="color:#888;">(${vocaData.filter(w => w.starred).length})</span>
+                <span style="color:#888; font-size: 16px;">(${vocaData.filter(w => w.starred).length})</span>
             </div>
         `;
+
+        if (dayList.length === 0) {
+            container.innerHTML = html + `<p style="color:#888; text-align:center; padding: 20px 0; font-size:15px;">등록된 단어장이 없습니다. 단어를 등록하기 전 새 단어장을 추가해 주세요.</p>`;
+            return;
+        }
 
         dayList.forEach(day => {
             const count = vocaData.filter(w => w.day === day).length;
             html += `
                 <div class="folder-item" onclick="selectCategory('${day}')">
                     <span>📖 ${day}</span>
-                    <span style="color:#888;">(${count})</span>
+                    <span style="color:#888; font-size: 16px;">(${count})</span>
                 </div>
             `;
         });
@@ -476,7 +478,7 @@
         renderWordList();
     }
 
-    /* 영단어만 목록으로 노출하는 뷰 (두 번째 이미지 형태) */
+    /* 영단어만 목록으로 노출하는 뷰 */
     function renderWordList() {
         const container = document.getElementById('words-container');
         const titleEl = document.getElementById('selected-folder-title');
@@ -492,10 +494,11 @@
             return;
         }
 
-        container.innerHTML = currentFilteredWords.map(item => `
+        container.innerHTML = currentFilteredWords.map((item, index) => `
             <div class="clean-word-item">
                 <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
-                <div class="word-text-title" style="flex:1;" onclick="openWordDetail(${item.id})">${item.word}</div>
+                <div class="word-text-title" style="flex:1;" onclick="openCardViewAtIndex(${index})">${item.word}</div>
+                <button style="background:none; border:none; color:#4A90E2; font-size:14px; font-weight:bold; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️ 수정</button>
             </div>
         `).join('');
     }
@@ -520,17 +523,83 @@
         }
     }
 
-    /* 영단어 클릭 시 상세보기 팝업 카드 */
-    function openWordDetail(id) {
+    /* 단어 클릭 시 바로 해당 단어의 플래시카드로 이동 */
+    function openCardViewAtIndex(index) {
+        getFilteredWords();
+        if (currentFilteredWords.length === 0) return;
+        currentCardIdx = index;
+        showView('card-view');
+        renderCard();
+    }
+
+    function openCardViewFromList() {
+        getFilteredWords();
+        if (currentFilteredWords.length === 0) return alert('보여줄 단어가 없습니다.');
+        currentCardIdx = 0;
+        showView('card-view');
+        renderCard();
+    }
+
+    /* 개별 단어 수정 모달 오픈 */
+    function openWordDetailModal(e, id) {
+        e.stopPropagation();
         const item = vocaData.find(w => w.id === id);
         if (!item) return;
 
-        document.getElementById('detail-word').innerText = item.word;
-        document.getElementById('detail-meaning').innerText = item.meaning;
-        document.getElementById('detail-example').innerText = item.example || '';
-        document.getElementById('detail-exmeaning').innerText = item.exmeaning || '';
+        const dayOptionsHtml = dayList.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d}</option>`).join('');
+
+        const container = document.getElementById('modal-edit-form-container');
+        container.innerHTML = `
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:13px; color:#666;">단어장(Day) 이동</label>
+                <select id="modal-edit-day-${item.id}">${dayOptionsHtml}</select>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:13px; color:#666;">영어 단어</label>
+                <input type="text" id="modal-edit-word-${item.id}" value="${item.word}">
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:13px; color:#666;">뜻</label>
+                <input type="text" id="modal-edit-meaning-${item.id}" value="${item.meaning}">
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:13px; color:#666;">예문 (선택)</label>
+                <input type="text" id="modal-edit-ex-${item.id}" value="${item.example || ''}">
+            </div>
+            <div class="form-group" style="margin-bottom:15px;">
+                <label style="font-size:13px; color:#666;">예문 뜻 (선택)</label>
+                <input type="text" id="modal-edit-exm-${item.id}" value="${item.exmeaning || ''}">
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="submit-btn" style="background:#34C759;" onclick="saveModalWord(${item.id})">수정 저장</button>
+                <button class="submit-btn" style="background:#FF3B30;" onclick="deleteModalWord(${item.id})">삭제</button>
+            </div>
+        `;
 
         document.getElementById('word-detail-modal').classList.remove('hidden');
+    }
+
+    function saveModalWord(id) {
+        const item = vocaData.find(w => w.id === id);
+        if (item) {
+            item.day = document.getElementById(`modal-edit-day-${id}`).value;
+            item.word = document.getElementById(`modal-edit-word-${id}`).value.trim();
+            item.meaning = document.getElementById(`modal-edit-meaning-${id}`).value.trim();
+            item.example = document.getElementById(`modal-edit-ex-${id}`).value.trim();
+            item.exmeaning = document.getElementById(`modal-edit-exm-${id}`).value.trim();
+            saveData();
+            alert('단어 정보가 수정되었습니다.');
+            closeWordDetailModal();
+            renderWordList();
+        }
+    }
+
+    function deleteModalWord(id) {
+        if (!confirm('이 단어를 삭제하시겠습니까?')) return;
+        vocaData = vocaData.filter(w => w.id !== id);
+        saveData();
+        closeWordDetailModal();
+        renderWordList();
     }
 
     function closeWordDetailModal() {
@@ -540,79 +609,7 @@
         if (e.target.id === 'word-detail-modal') closeWordDetailModal();
     }
 
-    /* 편집 버튼 클릭시 모달 오픈 & 단어장 항목(Day) 이동 가능 수정 폼 */
-    function openEditModal() {
-        getFilteredWords();
-        if (currentFilteredWords.length === 0) return alert('편집할 단어가 없습니다.');
-
-        const container = document.getElementById('edit-list-container');
-        
-        container.innerHTML = currentFilteredWords.map(item => {
-            const dayOptionsHtml = dayList.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d}</option>`).join('');
-
-            return `
-                <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:15px; border-radius:8px;">
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <label style="font-size:13px; color:#666;">단어장(Day) 이동</label>
-                        <select id="edit-day-${item.id}">${dayOptionsHtml}</select>
-                    </div>
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <input type="text" id="edit-word-${item.id}" value="${item.word}" placeholder="영단어">
-                    </div>
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <input type="text" id="edit-meaning-${item.id}" value="${item.meaning}" placeholder="뜻">
-                    </div>
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <input type="text" id="edit-ex-${item.id}" value="${item.example || ''}" placeholder="예문 (선택)">
-                    </div>
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <input type="text" id="edit-exm-${item.id}" value="${item.exmeaning || ''}" placeholder="예문 뜻 (선택)">
-                    </div>
-                    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
-                        <button class="submit-btn" style="width:auto; padding:6px 12px; font-size:13px; background:#34C759;" onclick="saveEditWord(${item.id})">수정 저장</button>
-                        <button class="submit-btn" style="width:auto; padding:6px 12px; font-size:13px; background:#FF3B30;" onclick="deleteEditWord(${item.id})">삭제</button>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        document.getElementById('edit-modal').classList.remove('hidden');
-    }
-
-    function saveEditWord(id) {
-        const item = vocaData.find(w => w.id === id);
-        if (item) {
-            item.day = document.getElementById(`edit-day-${id}`).value;
-            item.word = document.getElementById(`edit-word-${id}`).value.trim();
-            item.meaning = document.getElementById(`edit-meaning-${id}`).value.trim();
-            item.example = document.getElementById(`edit-ex-${id}`).value.trim();
-            item.exmeaning = document.getElementById(`edit-exm-${id}`).value.trim();
-            saveData();
-            alert('단어 정보가 수정되었습니다.');
-            renderWordList();
-        }
-    }
-
-    function deleteEditWord(id) {
-        if (!confirm('이 단어를 삭제하시겠습니까?')) return;
-        vocaData = vocaData.filter(w => w.id !== id);
-        saveData();
-        openEditModal();
-        renderWordList();
-    }
-
-    function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
-    function closeEditModalBg(e) { if (e.target.id === 'edit-modal') closeEditModal(); }
-
-    /* 플래시카드 (단어 보기 카드) 기능 */
-    function openCardView() {
-        getFilteredWords();
-        if (currentFilteredWords.length === 0) return alert('보여줄 단어가 없습니다.');
-        currentCardIdx = 0;
-        showView('card-view');
-        renderCard();
-    }
-
+    /* 플래시카드 기능 */
     function renderCard() {
         const item = currentFilteredWords[currentCardIdx];
         document.getElementById('card-front').classList.remove('hidden');
@@ -750,10 +747,10 @@
         const resultEl = document.getElementById('quiz-result');
         if (isCorrect) {
             resultEl.innerText = "⭕ 정답입니다!";
-            resultEl.style.color = "green";
+            resultEl.style.color = "#34C759";
         } else {
             resultEl.innerText = `❌ 오답입니다. (정답: ${answerText})`;
-            resultEl.style.color = "red";
+            resultEl.style.color = "#FF3B30";
         }
         document.getElementById('next-quiz-btn').classList.remove('hidden');
     }
@@ -847,7 +844,7 @@
                     vocaData = importedObj;
                 } else if (importedObj.vocaData) {
                     vocaData = importedObj.vocaData || [];
-                    dayList = importedObj.dayList || ["Day 1"];
+                    dayList = importedObj.dayList || [];
                 }
                 vocaData.forEach(item => { if(item.starred === undefined) item.starred = false; });
                 saveData();
@@ -865,5 +862,3 @@
 
 </body>
 </html>
-
-```
