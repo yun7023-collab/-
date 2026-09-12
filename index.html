@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>나만의 영단어장</title>
     <style>
         :root {
@@ -17,6 +17,8 @@
             --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             --border-color: #E2E8F0;
             --top-btn-bg: #E2E8F0;
+            --word-card-bg: #1E293B;
+            --word-card-text: #FFFFFF;
         }
 
         body {
@@ -32,10 +34,11 @@
             box-sizing: border-box;
             position: relative;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* 테마별 배경 이모지 오버레이 */
-        .theme-emoji-bg {
+        /* 핀터레스트 감성 배경 데코레이션 스타일 */
+        .theme-deco-bg {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none;
@@ -43,16 +46,59 @@
             overflow: hidden;
             display: none;
         }
-        .theme-emoji-bg span {
+
+        /* 큐트 테마 데코 (몽환적이고 러블리한 블러 오브 & 감성 스티커 느낌) */
+        body.theme-cute {
+            background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E1 50%, #FFF5EE 100%);
+        }
+        body.theme-cute .theme-deco-bg {
+            display: block;
+        }
+        .cute-blob {
             position: absolute;
-            font-size: 28px;
-            opacity: 0.35;
-            animation: floatEmoji 6s ease-in-out infinite alternate;
+            border-radius: 50%;
+            filter: blur(50px);
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
         }
-        @keyframes floatEmoji {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-15px) rotate(10deg); }
+        .cute-blob-1 { width: 250px; height: 250px; background: #FFB6C1; top: -50px; left: -50px; animation: floatBlob 8s ease-in-out infinite alternate; }
+        .cute-blob-2 { width: 300px; height: 300px; background: #FFC0CB; bottom: -80px; right: -80px; animation: floatBlob 10s ease-in-out infinite alternate-reverse; }
+        
+        .cute-sticker {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.85;
+            animation: floatSticker 6s ease-in-out infinite alternate;
+            filter: drop-shadow(0 4px 6px rgba(212, 131, 158, 0.15));
         }
+
+        @keyframes floatBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 40px); }
+        }
+        @keyframes floatSticker {
+            0% { transform: translateY(0px) rotate(-5deg); }
+            100% { transform: translateY(-12px) rotate(8deg); }
+        }
+
+        /* 힙 테마 데코 (무드 있는 미니멀 다크/인디고 그라데이션 & 빈티지 엘리먼트) */
+        body.theme-hip {
+            background: linear-gradient(145deg, #141416 0%, #1E1E24 100%);
+        }
+        body.theme-hip .theme-deco-bg {
+            display: block;
+        }
+        .hip-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.25;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .hip-glow-1 { width: 320px; height: 320px; background: #6366F1; top: -100px; right: -50px; }
+        .hip-glow-2 { width: 280px; height: 280px; background: #EC4899; bottom: -50px; left: -50px; }
 
         .container {
             width: 100%;
@@ -65,6 +111,7 @@
             box-sizing: border-box;
             border: 1px solid var(--border-color);
             z-index: 1;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .header-bar {
@@ -96,7 +143,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, background-color 0.2s;
         }
         .backup-icon-btn:hover { opacity: 0.8; }
 
@@ -106,7 +153,8 @@
         .nav-back-btn {
             background: none;
             border: none;
-            color: #475569;
+            color: var(--text-color);
+            opacity: 0.7;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
@@ -117,7 +165,7 @@
             gap: 6px;
             width: auto;
         }
-        .nav-back-btn:hover { color: var(--primary-color); }
+        .nav-back-btn:hover { opacity: 1; color: var(--primary-color); }
 
         /* 홈 화면 내부 콘텐츠 위치를 아래로 내리기 위한 여백 조정 */
         #home-view {
@@ -149,36 +197,39 @@
         .home-btn:hover {
             border-color: var(--primary-color);
             color: var(--primary-color);
-            background-color: #F0F7FF;
+            opacity: 0.95;
         }
 
         /* Form 및 입력 */
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 15px; color: #334155; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 15px; color: var(--text-color); opacity: 0.9; }
         input[type="text"], textarea, select {
-            width: 100%; padding: 12px 14px; border: 1px solid #CBD5E1;
-            border-radius: var(--btn-radius); box-sizing: border-box; font-size: 16px; background-color: #FAFAFA;
+            width: 100%; padding: 12px 14px; border: 1px solid var(--border-color);
+            border-radius: var(--btn-radius); box-sizing: border-box; font-size: 16px; 
+            background-color: var(--card-bg); color: var(--text-color);
+            transition: border-color 0.2s;
         }
         input[type="text"]:focus, textarea:focus, select:focus {
-            outline: none; border-color: var(--primary-color); background-color: #FFF;
+            outline: none; border-color: var(--primary-color);
         }
         button.submit-btn {
             width: 100%; padding: 14px; background-color: var(--primary-color);
             color: white; border: none; border-radius: var(--btn-radius); font-size: 17px;
             cursor: pointer; font-weight: bold;
-            transition: background-color 0.2s;
+            transition: opacity 0.2s;
         }
         button.submit-btn:hover { opacity: 0.9; }
 
         /* 단어장 폴더 목록 스타일 */
         .folder-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
         .folder-item {
-            padding: 18px 20px; background: #F8FAFC; border: 1px solid var(--border-color);
+            padding: 18px 20px; background: var(--card-bg); border: 1px solid var(--border-color);
             border-radius: var(--btn-radius); display: flex; justify-content: space-between;
-            align-items: center; cursor: pointer; font-weight: bold; font-size: 18px;
-            transition: background 0.15s, border-color 0.15s;
+            align-items: center; cursor: pointer; font-weight: bold; font-size: 18px; color: var(--text-color);
+            transition: transform 0.15s, border-color 0.15s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        .folder-item:hover { background: #EDF2F7; border-color: #CBD5E1; }
+        .folder-item:hover { border-color: var(--primary-color); transform: translateY(-1px); }
 
         /* 단어 목록 깔끔한 리스트 스타일 */
         .clean-word-list { display: flex; flex-direction: column; margin-top: 10px; }
@@ -187,7 +238,7 @@
             display: flex; align-items: center; gap: 14px; cursor: pointer;
             transition: background 0.15s;
         }
-        .clean-word-item:hover { background-color: #F8FAFC; }
+        .clean-word-item:hover { opacity: 0.8; }
         .star-btn {
             font-size: 26px; cursor: pointer; color: #CBD5E1; user-select: none;
             line-height: 1;
@@ -195,18 +246,21 @@
         .star-btn.active { color: var(--star-color); }
         .word-text-title { font-size: 20px; font-weight: 600; color: var(--text-color); }
 
-        /* 단어 보기 플래시카드 스타일 */
+        /* 단어 보기 플래시카드 스타일 (개별 지정 색상 적용) */
         .flashcard-box {
-            background: #1E293B; color: white; border-radius: var(--border-radius);
+            background: var(--word-card-bg); 
+            color: var(--word-card-text); 
+            border-radius: var(--border-radius);
             padding: 40px 20px; text-align: center; min-height: 320px;
             display: flex; flex-direction: column; justify-content: center;
             align-items: center; cursor: pointer; position: relative; margin-top: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .card-word-title { font-size: 72px; font-weight: bold; margin-bottom: 20px; word-break: break-all; line-height: 1.1; }
-        .card-meaning-text { font-size: 50px; color: #FFFFFF; font-weight: bold; margin-bottom: 20px; line-height: 1.2; }
-        .card-ex-text { font-size: 32px; color: #CBD5E1; margin-top: 12px; font-style: italic; line-height: 1.3; }
-        .card-exmeaning-text { font-size: 28px; color: #94A3B8; margin-top: 8px; line-height: 1.3; }
+        .card-word-title { font-size: 72px; font-weight: bold; margin-bottom: 20px; word-break: break-all; line-height: 1.1; color: var(--word-card-text); }
+        .card-meaning-text { font-size: 50px; font-weight: bold; margin-bottom: 20px; line-height: 1.2; color: var(--word-card-text); }
+        .card-ex-text { font-size: 32px; opacity: 0.85; margin-top: 12px; font-style: italic; line-height: 1.3; color: var(--word-card-text); }
+        .card-exmeaning-text { font-size: 28px; opacity: 0.7; margin-top: 8px; line-height: 1.3; color: var(--word-card-text); }
         .card-star { position: absolute; top: 20px; right: 24px; font-size: 32px; }
 
         /* 매칭 게임 스타일 */
@@ -214,47 +268,49 @@
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;
         }
         .match-card {
-            background: #1E293B; color: white; border: 2px solid #334155;
+            background: var(--card-bg); color: var(--text-color); border: 2px solid var(--border-color);
             border-radius: var(--btn-radius); padding: 15px 10px; font-size: 16px; font-weight: bold;
             display: flex; justify-content: center; align-items: center;
             min-height: 75px; text-align: center; cursor: pointer; word-break: break-word;
         }
-        .match-card.selected { border-color: #60A5FA; background: #334155; }
+        .match-card.selected { border-color: var(--primary-color); background: var(--top-btn-bg); }
         .match-card.matched { visibility: hidden; }
 
         /* 모달 스타일 (키보드 대응 및 스크롤 최적화) */
         .modal {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.4); display: flex; justify-content: center;
+            background: rgba(0,0,0,0.5); display: flex; justify-content: center;
             align-items: center; z-index: 1000; padding: 20px;
             box-sizing: border-box; overflow-y: auto;
+            backdrop-filter: blur(4px);
         }
         .modal-content {
-            background: white; padding: 28px 24px; border-radius: 16px;
+            background: var(--card-bg); color: var(--text-color); padding: 28px 24px; border-radius: 16px;
             width: 100%; max-width: 440px; box-sizing: border-box; position: relative;
             max-height: calc(100vh - 40px); overflow-y: auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             margin: auto;
+            border: 1px solid var(--border-color);
         }
         .close-x {
             position: absolute; top: 18px; right: 18px; font-size: 22px;
-            font-weight: bold; color: #888; border: none; background: none; cursor: pointer;
+            font-weight: bold; color: var(--text-color); opacity: 0.6; border: none; background: none; cursor: pointer;
         }
-        .close-x:hover { color: #333; }
+        .close-x:hover { opacity: 1; }
         
         .backup-btn-group { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-        .btn-green { background-color: #34C759; }
+        .btn-green { background-color: #34C759; color: white; }
         .btn-green:hover { background-color: #2da84e; }
-        .btn-orange { background-color: #FF9500; }
+        .btn-orange { background-color: #FF9500; color: white; }
         .btn-orange:hover { background-color: #e08500; }
-        .btn-gray { background-color: #8E8E93; }
+        .btn-gray { background-color: #8E8E93; color: white; }
         .btn-gray:hover { background-color: #7a7a7e; }
     </style>
 </head>
 <body>
 
-<!-- 테마별 배경 이모지 컨테이너 -->
-<div id="theme-emoji-bg" class="theme-emoji-bg"></div>
+<!-- 핀터레스트 감성 배경 테코 컨테이너 -->
+<div id="theme-deco-bg" class="theme-deco-bg"></div>
 
 <div class="container">
     <div class="header-bar">
@@ -326,11 +382,11 @@
         <!-- 단어장 전체선택 영역 -->
         <div id="category-select-all-area" class="hidden" style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px; padding-left: 4px;">
             <input type="checkbox" id="category-select-all-checkbox" style="width: 20px; height: 20px; cursor: pointer;" onclick="toggleSelectAllCategories(this)">
-            <label for="category-select-all-checkbox" style="margin: 0; font-size: 15px; cursor: pointer; color: #475569;">전체선택</label>
+            <label for="category-select-all-checkbox" style="margin: 0; font-size: 15px; cursor: pointer; opacity: 0.8;">전체선택</label>
         </div>
         <div id="folder-list-container" class="folder-list"></div>
         <div id="category-delete-action-area" class="hidden" style="margin-top: 15px;">
-            <button class="submit-btn" style="background-color: #FF3B30;" onclick="deleteSelectedCategories()">선택한 단어장 삭제</button>
+            <button class="submit-btn" style="background-color: #FF3B30; color: white;" onclick="deleteSelectedCategories()">선택한 단어장 삭제</button>
         </div>
     </div>
 
@@ -347,11 +403,11 @@
         <!-- 단어 전체선택 영역 -->
         <div id="word-select-all-area" class="hidden" style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px; padding-left: 4px;">
             <input type="checkbox" id="word-select-all-checkbox" style="width: 20px; height: 20px; cursor: pointer;" onclick="toggleSelectAllWords(this)">
-            <label for="word-select-all-checkbox" style="margin: 0; font-size: 15px; cursor: pointer; color: #475569;">전체선택</label>
+            <label for="word-select-all-checkbox" style="margin: 0; font-size: 15px; cursor: pointer; opacity: 0.8;">전체선택</label>
         </div>
         <div id="words-container" class="clean-word-list"></div>
         <div id="word-delete-action-area" class="hidden" style="margin-top: 15px;">
-            <button class="submit-btn" style="background-color: #FF3B30;" onclick="deleteSelectedWords()">선택한 단어 삭제</button>
+            <button class="submit-btn" style="background-color: #FF3B30; color: white;" onclick="deleteSelectedWords()">선택한 단어 삭제</button>
         </div>
     </div>
 
@@ -370,9 +426,9 @@
             </div>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-            <button class="submit-btn" style="width: 45%; background: #64748B; padding: 12px; font-size: 16px;" onclick="prevCard()">이전</button>
-            <span id="card-index-indicator" style="font-weight: bold; color: #64748B; font-size: 18px;">0 / 0</span>
-            <button class="submit-btn" style="width: 45%; background: #64748B; padding: 12px; font-size: 16px;" onclick="nextCard()">다음</button>
+            <button class="submit-btn" style="width: 45%; background: #64748B; color: white; padding: 12px; font-size: 16px;" onclick="prevCard()">이전</button>
+            <span id="card-index-indicator" style="font-weight: bold; opacity: 0.7; font-size: 18px;">0 / 0</span>
+            <button class="submit-btn" style="width: 45%; background: #64748B; color: white; padding: 12px; font-size: 16px;" onclick="nextCard()">다음</button>
         </div>
     </div>
 
@@ -408,7 +464,7 @@
                 <button class="submit-btn" style="margin-top: 10px;" onclick="checkSubjectiveAnswer()">정답 제출</button>
             </div>
             <div id="quiz-result" style="margin-top: 15px; font-weight: bold; font-size: 20px;"></div>
-            <button id="next-quiz-btn" class="submit-btn hidden" style="margin-top: 15px; background-color: #8E8E93;" onclick="nextStandardQuestion()">다음 문제</button>
+            <button id="next-quiz-btn" class="submit-btn hidden" style="margin-top: 15px; background-color: #8E8E93; color: white;" onclick="nextStandardQuestion()">다음 문제</button>
         </div>
 
         <!-- 매칭 게임 영역 -->
@@ -445,7 +501,7 @@
     </div>
 </div>
 
-<!-- 디자인 테마 프리셋 및 세부 커스텀 모달 -->
+<!-- 디자인 테마 프리셋 및 세부 커스텀 모달 (단어카드 색상/글자색 포함) -->
 <div id="design-modal" class="modal hidden" onclick="closeDesignModalBg(event)">
     <div class="modal-content">
         <button class="close-x" onclick="closeDesignModal()">✕</button>
@@ -454,21 +510,21 @@
         <div class="form-group" style="margin-bottom: 15px;">
             <label>테마 프리셋 선택</label>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #4A90E2;" onclick="applyPreset('simple')">심플</button>
-                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #FF80AB;" onclick="applyPreset('cute')">큐트</button>
-                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #4A4556;" onclick="applyPreset('hip')">힙</button>
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #4A90E2; color: white;" onclick="applyPreset('simple')">심플</button>
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #E085A5; color: white;" onclick="applyPreset('cute')">큐트</button>
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #262626; color: white;" onclick="applyPreset('hip')">힙</button>
             </div>
         </div>
 
-        <hr style="border:0; border-top:1px solid #E2E8F0; margin: 15px 0;">
+        <hr style="border:0; border-top:1px solid var(--border-color); margin: 15px 0;">
 
-        <div style="font-weight: bold; margin-bottom: 12px; color: #334155; font-size: 15px;">🛠️ 세부 커스텀 설정</div>
+        <div style="font-weight: bold; margin-bottom: 12px; font-size: 15px;">🛠️ 세부 커스텀 설정</div>
         
         <div class="form-group" style="margin-bottom:10px;">
             <label style="font-size: 13px;">메인 포인트 컬러</label>
             <div style="display: flex; gap: 10px;">
                 <input type="color" id="custom-primary" style="width: 45px; height: 36px; border: none; background: none; cursor: pointer;">
-                <span id="custom-primary-text" style="align-self: center; font-size: 14px; color: #555;"></span>
+                <span id="custom-primary-text" style="align-self: center; font-size: 14px; opacity: 0.8;"></span>
             </div>
         </div>
 
@@ -476,15 +532,31 @@
             <label style="font-size: 13px;">배경 컬러</label>
             <div style="display: flex; gap: 10px;">
                 <input type="color" id="custom-bg" style="width: 45px; height: 36px; border: none; background: none; cursor: pointer;">
-                <span id="custom-bg-text" style="align-self: center; font-size: 14px; color: #555;"></span>
+                <span id="custom-bg-text" style="align-self: center; font-size: 14px; opacity: 0.8;"></span>
             </div>
         </div>
 
         <div class="form-group" style="margin-bottom:10px;">
-            <label style="font-size: 13px;">카드/박스 배경 컬러</label>
+            <label style="font-size: 13px;">메인 박스 배경 컬러</label>
             <div style="display: flex; gap: 10px;">
                 <input type="color" id="custom-card-bg" style="width: 45px; height: 36px; border: none; background: none; cursor: pointer;">
-                <span id="custom-card-bg-text" style="align-self: center; font-size: 14px; color: #555;"></span>
+                <span id="custom-card-bg-text" style="align-self: center; font-size: 14px; opacity: 0.8;"></span>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+            <label style="font-size: 13px;">단어 카드 배경 컬러</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="color" id="custom-word-card-bg" style="width: 45px; height: 36px; border: none; background: none; cursor: pointer;">
+                <span id="custom-word-card-bg-text" style="align-self: center; font-size: 14px; opacity: 0.8;"></span>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+            <label style="font-size: 13px;">단어 카드 글자 컬러</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="color" id="custom-word-card-text" style="width: 45px; height: 36px; border: none; background: none; cursor: pointer;">
+                <span id="custom-word-card-text-text" style="align-self: center; font-size: 14px; opacity: 0.8;"></span>
             </div>
         </div>
 
@@ -526,7 +598,7 @@
     <div class="modal-content">
         <button class="close-x" onclick="closeBackupModal()">✕</button>
         <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px;">📱 백업 및 복구</h3>
-        <p style="font-size:14px; color:#666; line-height:1.4;">단어 데이터를 백업 파일로 저장하거나 불러올 수 있습니다.</p>
+        <p style="font-size:14px; opacity:0.8; line-height:1.4;">단어 데이터를 백업 파일로 저장하거나 불러올 수 있습니다.</p>
         <div class="backup-btn-group">
             <button class="submit-btn btn-green" onclick="exportData()">📁 파일로 백업하기</button>
             <button class="submit-btn btn-orange" onclick="document.getElementById('import-file').click()">📂 파일로 복구하기</button>
@@ -551,6 +623,8 @@
         bgColor: "#F5F7FA",
         cardBg: "#FFFFFF",
         textColor: "#333333",
+        wordCardBg: "#1E293B",
+        wordCardText: "#FFFFFF",
         fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         borderRadius: "16px",
         btnRadius: "8px",
@@ -585,6 +659,8 @@
         root.style.setProperty('--bg-color', appConfig.bgColor);
         root.style.setProperty('--card-bg', appConfig.cardBg);
         root.style.setProperty('--text-color', appConfig.textColor);
+        root.style.setProperty('--word-card-bg', appConfig.wordCardBg || '#1E293B');
+        root.style.setProperty('--word-card-text', appConfig.wordCardText || '#FFFFFF');
         root.style.setProperty('--font-family', appConfig.fontFamily);
         root.style.setProperty('--border-radius', appConfig.borderRadius);
         root.style.setProperty('--btn-radius', appConfig.btnRadius);
@@ -594,38 +670,37 @@
         document.getElementById('main-title-text').innerText = appConfig.title;
         document.title = appConfig.title;
 
-        renderThemeBackground();
+        document.body.classList.remove('theme-cute', 'theme-hip');
+        if (appConfig.currentPreset === 'cute') {
+            document.body.classList.add('theme-cute');
+        } else if (appConfig.currentPreset === 'hip') {
+            document.body.classList.add('theme-hip');
+        }
+        renderThemeDecorations();
     }
 
-    function renderThemeBackground() {
-        const bgContainer = document.getElementById('theme-emoji-bg');
+    function renderThemeDecorations() {
+        const bgContainer = document.getElementById('theme-deco-bg');
         bgContainer.innerHTML = '';
-        bgContainer.style.display = 'none';
 
         if (appConfig.currentPreset === 'cute') {
-            bgContainer.style.display = 'block';
-            const cuteEmojis = ['🍒', '🎀', '🤍', '✨', '🩰', '🧸', '🍓'];
-            for (let i = 0; i < 12; i++) {
-                const span = document.createElement('span');
-                span.innerText = cuteEmojis[Math.floor(Math.random() * cuteEmojis.length)];
-                span.style.top = `${Math.random() * 100}%`;
-                span.style.left = `${Math.random() * 100}%`;
-                span.style.animationDelay = `${Math.random() * 5}s`;
-                span.style.fontSize = `${20 + Math.random() * 14}px`;
-                bgContainer.appendChild(span);
-            }
+            bgContainer.innerHTML = `
+                <div class="cute-blob cute-blob-1"></div>
+                <div class="cute-blob cute-blob-2"></div>
+                <div class="cute-sticker" style="top: 12%; left: 8%;">🎀</div>
+                <div class="cute-sticker" style="top: 25%; right: 10%; animation-delay: 1.5s;">🤍</div>
+                <div class="cute-sticker" style="bottom: 18%; left: 12%; animation-delay: 3s;">✨</div>
+                <div class="cute-sticker" style="bottom: 30%; right: 15%; animation-delay: 2s;">🍒</div>
+            `;
         } else if (appConfig.currentPreset === 'hip') {
-            bgContainer.style.display = 'block';
-            const hipEmojis = ['💿', '⭐', '🖤', '🍒', '🎧', '⚡', '🎞️'];
-            for (let i = 0; i < 12; i++) {
-                const span = document.createElement('span');
-                span.innerText = hipEmojis[Math.floor(Math.random() * hipEmojis.length)];
-                span.style.top = `${Math.random() * 100}%`;
-                span.style.left = `${Math.random() * 100}%`;
-                span.style.animationDelay = `${Math.random() * 5}s`;
-                span.style.fontSize = `${20 + Math.random() * 14}px`;
-                bgContainer.appendChild(span);
-            }
+            bgContainer.innerHTML = `
+                <div class="hip-glow hip-glow-1"></div>
+                <div class="hip-glow hip-glow-2"></div>
+                <div class="cute-sticker" style="top: 15%; left: 10%; filter: drop-shadow(0 0 8px rgba(99,102,241,0.4));">💿</div>
+                <div class="cute-sticker" style="top: 35%; right: 8%; animation-delay: 1s;">⭐</div>
+                <div class="cute-sticker" style="bottom: 20%; left: 15%; animation-delay: 2.5s;">🎧</div>
+                <div class="cute-sticker" style="bottom: 25%; right: 12%; animation-delay: 1.8s;">🖤</div>
+            `;
         }
     }
 
@@ -727,6 +802,10 @@
         document.getElementById('custom-bg-text').innerText = appConfig.bgColor;
         document.getElementById('custom-card-bg').value = appConfig.cardBg;
         document.getElementById('custom-card-bg-text').innerText = appConfig.cardBg;
+        document.getElementById('custom-word-card-bg').value = appConfig.wordCardBg || '#1E293B';
+        document.getElementById('custom-word-card-bg-text').innerText = appConfig.wordCardBg || '#1E293B';
+        document.getElementById('custom-word-card-text').value = appConfig.wordCardText || '#FFFFFF';
+        document.getElementById('custom-word-card-text-text').innerText = appConfig.wordCardText || '#FFFFFF';
         document.getElementById('custom-font').value = appConfig.fontFamily;
         document.getElementById('custom-radius').value = appConfig.borderRadius;
 
@@ -748,6 +827,12 @@
     document.getElementById('custom-card-bg').addEventListener('input', e => {
         document.getElementById('custom-card-bg-text').innerText = e.target.value;
     });
+    document.getElementById('custom-word-card-bg').addEventListener('input', e => {
+        document.getElementById('custom-word-card-bg-text').innerText = e.target.value;
+    });
+    document.getElementById('custom-word-card-text').addEventListener('input', e => {
+        document.getElementById('custom-word-card-text-text').innerText = e.target.value;
+    });
 
     function applyPreset(type) {
         appConfig.currentPreset = type;
@@ -756,33 +841,39 @@
             appConfig.bgColor = "#F5F7FA";
             appConfig.cardBg = "#FFFFFF";
             appConfig.textColor = "#333333";
+            appConfig.wordCardBg = "#1E293B";
+            appConfig.wordCardText = "#FFFFFF";
             appConfig.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
             appConfig.borderRadius = "16px";
             appConfig.btnRadius = "8px";
             appConfig.borderDk = "#E2E8F0";
             appConfig.topBtnBg = "#E2E8F0";
         } else if (type === 'cute') {
-            /* 핀터레스트 감성 큐트 테마 (부드러운 파스텔 핑크/크림 톤) */
-            appConfig.primaryColor = "#D4839E";
-            appConfig.bgColor = "#FCF6F7";
+            /* 리얼 프리미엄 핀터레스트 큐트 감성 (소프트 로즈 핑크 & 크림 톤) */
+            appConfig.primaryColor = "#E085A5";
+            appConfig.bgColor = "#FFF5F7";
             appConfig.cardBg = "#FFFFFF";
             appConfig.textColor = "#4A3B40";
+            appConfig.wordCardBg = "#FFF0F3";
+            appConfig.wordCardText = "#B85C7A";
             appConfig.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-            appConfig.borderRadius = "20px";
+            appConfig.borderRadius = "24px";
             appConfig.btnRadius = "12px";
-            appConfig.borderDk = "#F0D6DC";
-            appConfig.topBtnBg = "#F7EBEF";
+            appConfig.borderDk = "#FADCE4";
+            appConfig.topBtnBg = "#FCE8EC";
         } else if (type === 'hip') {
-            /* 핀터레스트 감성 힙 테마 (모던 미니멀 모노크롬 & 무드 있는 다크 그레이) */
-            appConfig.primaryColor = "#262626";
-            appConfig.bgColor = "#F4F4F2";
-            appConfig.cardBg = "#FFFFFF";
-            appConfig.textColor = "#1A1A1A";
+            /* 리얼 프리미엄 핀터레스트 힙 감성 (모던 시크 다크 & 인디고 무드) */
+            appConfig.primaryColor = "#818CF8";
+            appConfig.bgColor = "#121216";
+            appConfig.cardBg = "#1A1A22";
+            appConfig.textColor = "#F3F4F6";
+            appConfig.wordCardBg = "#242430";
+            appConfig.wordCardText = "#A5B4FC";
             appConfig.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-            appConfig.borderRadius = "12px";
+            appConfig.borderRadius = "14px";
             appConfig.btnRadius = "8px";
-            appConfig.borderDk = "#E5E5E0";
-            appConfig.topBtnBg = "#EBEBE6";
+            appConfig.borderDk = "#2E2E3C";
+            appConfig.topBtnBg = "#262633";
         }
         saveData();
         applyAppConfig();
@@ -794,6 +885,8 @@
         appConfig.primaryColor = document.getElementById('custom-primary').value;
         appConfig.bgColor = document.getElementById('custom-bg').value;
         appConfig.cardBg = document.getElementById('custom-card-bg').value;
+        appConfig.wordCardBg = document.getElementById('custom-word-card-bg').value;
+        appConfig.wordCardText = document.getElementById('custom-word-card-text').value;
         appConfig.fontFamily = document.getElementById('custom-font').value;
         const rad = document.getElementById('custom-radius').value;
         appConfig.borderRadius = rad;
@@ -855,16 +948,16 @@
         let html = `
             <div class="folder-item" onclick="selectCategory('all')">
                 <span>📁 전체 보기</span>
-                <span style="color:#888; font-size: 16px;">(${vocaData.length})</span>
+                <span style="opacity:0.6; font-size: 16px;">(${vocaData.length})</span>
             </div>
             <div class="folder-item" onclick="selectCategory('starred')">
                 <span>⭐ 즐겨찾기</span>
-                <span style="color:#888; font-size: 16px;">(${vocaData.filter(w => w.starred).length})</span>
+                <span style="opacity:0.6; font-size: 16px;">(${vocaData.filter(w => w.starred).length})</span>
             </div>
         `;
 
         if (dayList.length === 0) {
-            container.innerHTML = html + `<p style="color:#888; text-align:center; padding: 20px 0; font-size:15px;">등록된 단어장이 없습니다. 단어를 등록하기 전 새 단어장을 추가해 주세요.</p>`;
+            container.innerHTML = html + `<p style="opacity:0.6; text-align:center; padding: 20px 0; font-size:15px;">등록된 단어장이 없습니다. 단어를 등록하기 전 새 단어장을 추가해 주세요.</p>`;
             return;
         }
 
@@ -877,14 +970,14 @@
                             <input type="checkbox" class="category-checkbox" value="${day}" style="width: 20px; height: 20px; cursor: pointer;">
                             <span>📖 ${day}</span>
                         </div>
-                        <span style="color:#888; font-size: 16px;">(${count})</span>
+                        <span style="opacity:0.6; font-size: 16px;">(${count})</span>
                     </div>
                 `;
             } else {
                 html += `
                     <div class="folder-item" onclick="selectCategory('${day}')">
                         <span>📖 ${day}</span>
-                        <span style="color:#888; font-size: 16px;">(${count})</span>
+                        <span style="opacity:0.6; font-size: 16px;">(${count})</span>
                     </div>
                 `;
             }
@@ -966,7 +1059,7 @@
         getFilteredWords();
 
         if (currentFilteredWords.length === 0) {
-            container.innerHTML = `<p style="color:#888; text-align:center; padding: 40px 0; font-size:16px;">등록된 단어가 없습니다.</p>`;
+            container.innerHTML = `<p style="opacity:0.6; text-align:center; padding: 40px 0; font-size:16px;">등록된 단어가 없습니다.</p>`;
             return;
         }
 
@@ -1063,28 +1156,28 @@
         const container = document.getElementById('modal-edit-form-container');
         container.innerHTML = `
             <div class="form-group" style="margin-bottom:12px;">
-                <label style="font-size:13px; color:#666;">단어장(Day) 이동</label>
+                <label style="font-size:13px; opacity:0.8;">단어장(Day) 이동</label>
                 <select id="modal-edit-day-${item.id}">${dayOptionsHtml}</select>
             </div>
             <div class="form-group" style="margin-bottom:12px;">
-                <label style="font-size:13px; color:#666;">영어 단어</label>
+                <label style="font-size:13px; opacity:0.8;">영어 단어</label>
                 <input type="text" id="modal-edit-word-${item.id}" value="${item.word}">
             </div>
             <div class="form-group" style="margin-bottom:12px;">
-                <label style="font-size:13px; color:#666;">뜻</label>
+                <label style="font-size:13px; opacity:0.8;">뜻</label>
                 <input type="text" id="modal-edit-meaning-${item.id}" value="${item.meaning}">
             </div>
             <div class="form-group" style="margin-bottom:12px;">
-                <label style="font-size:13px; color:#666;">예문 (선택)</label>
+                <label style="font-size:13px; opacity:0.8;">예문 (선택)</label>
                 <input type="text" id="modal-edit-ex-${item.id}" value="${item.example || ''}">
             </div>
             <div class="form-group" style="margin-bottom:15px;">
-                <label style="font-size:13px; color:#666;">예문 뜻 (선택)</label>
+                <label style="font-size:13px; opacity:0.8;">예문 뜻 (선택)</label>
                 <input type="text" id="modal-edit-exm-${item.id}" value="${item.exmeaning || ''}">
             </div>
             <div style="display:flex; gap:10px;">
-                <button class="submit-btn" style="background:#34C759;" onclick="saveModalWord(${item.id})">수정 저장</button>
-                <button class="submit-btn" style="background:#FF3B30;" onclick="deleteModalWord(${item.id})">삭제</button>
+                <button class="submit-btn" style="background:#34C759; color: white;" onclick="saveModalWord(${item.id})">수정 저장</button>
+                <button class="submit-btn" style="background:#FF3B30; color: white;" onclick="deleteModalWord(${item.id})">삭제</button>
             </div>
         `;
 
@@ -1133,7 +1226,8 @@
         document.getElementById('card-exmeaning-text').innerText = item.exmeaning || '';
         
         const starIcon = document.getElementById('card-star-icon');
-        starIcon.style.color = item.starred ? '#FFC107' : '#64748B';
+        starIcon.style.color = item.starred ? '#FFC107' : 'var(--word-card-text)';
+        starIcon.style.opacity = item.starred ? '1' : '0.5';
 
         document.getElementById('card-index-indicator').innerText = `${currentCardIdx + 1} / ${currentFilteredWords.length}`;
     }
