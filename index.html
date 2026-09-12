@@ -1,151 +1,218 @@
-디자인 기획안이 확정되었으니, 이를 바탕으로 실제 개발 및 퍼블리싱에 바로 적용할 수 있는 반응형 CSS와 컴포넌트 구조(Tailwind CSS 기준) 코드로 짜줄게.
-어떤 기기에서 보더라도 상단에 쏠리지 않고 정확히 **화면 정중앙(Optical Center)**에 배치되도록 레이아웃을 잡았고, 요청한 5가지 테마(심플 1, 큐트 2종 중 스누피 포함, 키치 2종)의 스타일 속성을 클래스로 분리해 두었어.
-1. 전체 레이아웃 (기기별 중앙 정렬 컨테이너)
-<div class="device-viewport">
-  <!-- 메인 카드 컨테이너: 어떤 기기든 세로/가로 정중앙 위치 -->
-  <main class="main-card-container theme-simple">
-    
-    <!-- 상단 헤더 영역 -->
-    <header class="card-header">
-      <h1 class="app-title">나만의 영단어장</h1>
-      <div class="action-buttons">
-        <button class="icon-btn theme-palette" aria-label="테마 변경"></button>
-        <button class="icon-btn theme-settings" aria-label="설정"></button>
-      </div>
-    </header>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나만의 영단어장 - 테마 적용</title>
+    <style>
+        /* 초기화 및 공통 스타일 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    <!-- 메뉴 버튼 그룹 -->
-    <nav class="menu-group">
-      <button class="menu-btn">단어 등록</button>
-      <button class="menu-btn">단어장 목록</button>
-      <button class="menu-btn">연습하기</button>
-    </nav>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #F8FAFC;
+        }
 
-  </main>
-</div>
+        /* 뷰포트 및 기기별 중앙 정렬 (Optical Center) */
+        .device-viewport {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            padding: env(safe-area-inset-top, 20px) 20px env(safe-area-inset-bottom, 20px) 20px;
+        }
 
-2. 테마별 CSS 스타일 가이드
-/* 공통 뷰포트 및 중앙 정렬 세팅 */
-.device-viewport {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100vw;
-  box-sizing: border-box;
-  padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;
-}
+        /* 메인 카드 공통 레이아웃 */
+        .main-card-container {
+            width: 100%;
+            max-width: 380px;
+            padding: 36px 28px;
+            border-radius: 32px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
 
-/* 메인 카드 공통 디자인 */
-.main-card-container {
-  width: 100%;
-  max-width: 380px;
-  padding: 32px 24px;
-  border-radius: 32px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 36px;
+        }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
-}
+        .app-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
 
-.menu-group {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
 
-.menu-btn {
-  width: 100%;
-  padding: 18px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 16px;
-  text-align: center;
-  cursor: pointer;
-}
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.04);
+        }
 
+        .menu-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-/* --- [1] 심플 테마 --- */
-.theme-simple {
-  background-color: #FFFFFF;
-  border: 1px solid #EAEAEA;
-}
-.theme-simple .menu-btn {
-  background-color: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  color: #1E293B;
-}
+        .menu-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
 
-
-/* --- [2] 큐트 A: 파스텔 크림 무드 --- */
-.theme-cute-cream {
-  background-color: #FFFDF4;
-  border: 2px solid #CDE7BE; /* 그린 포인트 패드 라인 감성 */
-  box-shadow: 6px 6px 0px #CDE7BE;
-}
-.theme-cute-cream .menu-btn {
-  background-color: #FFF9DE;
-  border: 2px solid #F3E5AB;
-  border-radius: 20px;
-  color: #5C5446;
-}
+        .menu-btn:active {
+            transform: scale(0.98);
+        }
 
 
-/* --- [3] 큐트 B: 스누피 아기자기 감성 --- */
-.theme-cute-snoopy {
-  background-color: #FFFFFF;
-  border: 3px solid #1E293B;
-  box-shadow: 5px 5px 0px #1E293B;
-  /* 상단 스누피 일러스트 가상 요소 또는 이미지 영역 추가 가능 */
-}
-.theme-cute-snoopy .menu-btn {
-  background-color: #FFFFFF;
-  border: 2px solid #1E293B;
-  border-radius: 12px;
-  font-family: 'Handwriting', sans-serif;
-  font-weight: 700;
-  color: #1E293B;
-  box-shadow: 3px 3px 0px #1E293B;
-}
+        /* ==================== [테마별 디자인 스타일] ==================== */
 
+        /* 1. 심플 (Simple) */
+        .theme-simple {
+            background-color: #FFFFFF;
+            border: 1px solid #E2E8F0;
+        }
+        .theme-simple .app-title { color: #3B82F6; }
+        .theme-simple .menu-btn {
+            background-color: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            color: #1E293B;
+        }
 
-/* --- [4] 키치 A: 팝앤드림 유니버스 --- */
-.theme-kitsch-pop {
-  background: repeating-linear-gradient(
-    45deg,
-    #E0F2FE,
-    #E0F2FE 10px,
-    #BAE6FD 10px,
-    #BAE6FD 20px
-  );
-  border: 3px solid #FF8FAB;
-  box-shadow: 0 12px 0px rgba(255, 143, 171, 0.4);
-}
-.theme-kitsch-pop .menu-btn {
-  background-color: #FFFFFF;
-  border: 2.5px solid #FF8FAB;
-  border-radius: 24px;
-  color: #FF477E;
-  font-weight: 800;
-}
+        /* 2. 큐트 A: 파스텔 크림 무드 (Cute Type A) */
+        .theme-cute-cream {
+            background-color: #FFFDF4;
+            border: 2px solid #CDE7BE;
+            box-shadow: 6px 6px 0px #CDE7BE;
+        }
+        .theme-cute-cream .app-title { color: #5C5446; }
+        .theme-cute-cream .menu-btn {
+            background-color: #FFF9DE;
+            border: 2px solid #F3E5AB;
+            border-radius: 20px;
+            color: #5C5446;
+        }
 
+        /* 3. 큐트 B: 스누피 아기자기 감성 (Cute Type B - Snoopy) */
+        .theme-cute-snoopy {
+            background-color: #FFFFFF;
+            border: 3px solid #1E293B;
+            box-shadow: 5px 5px 0px #1E293B;
+            position: relative;
+        }
+        /* 상단 스누피 일러스트 대체 영역 스타일링 */
+        .snoopy-badge {
+            font-size: 12px;
+            font-weight: 700;
+            background: #1E293B;
+            color: #FFF;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+        .theme-cute-snoopy .app-title { color: #1E293B; }
+        .theme-cute-snoopy .menu-btn {
+            background-color: #FFFFFF;
+            border: 2px solid #1E293B;
+            border-radius: 12px;
+            font-weight: 700;
+            color: #1E293B;
+            box-shadow: 3px 3px 0px #1E293B;
+        }
 
-/* --- [5] 키치 B: 하이틴 손글씨 스케치 --- */
-.theme-kitsch-sketch {
-  background-color: #FFFBEB; /* 빈티지 노트 톤 */
-  border: 2px dashed #F59E0B;
-}
-.theme-kitsch-sketch .menu-btn {
-  background-color: #FEF3C7;
-  border: 2px solid #D97706;
-  border-radius: 8px;
-  color: #92400E;
-  font-style: italic;
-}
+        /* 4. 키치 A: 팝앤드림 유니버스 (Kitsch Type A) */
+        .theme-kitsch-pop {
+            background: repeating-linear-gradient(
+                45deg,
+                #E0F2FE,
+                #E0F2FE 12px,
+                #BAE6FD 12px,
+                #BAE6FD 24px
+            );
+            border: 3px solid #FF8FAB;
+            box-shadow: 0 12px 0px rgba(255, 143, 171, 0.4);
+        }
+        .theme-kitsch-pop .app-title { color: #FF477E; font-weight: 900; }
+        .theme-kitsch-pop .menu-btn {
+            background-color: #FFFFFF;
+            border: 2.5px solid #FF8FAB;
+            border-radius: 24px;
+            color: #FF477E;
+            font-weight: 800;
+        }
 
-이 구조 그대로 프론트엔드 컴포넌트에 적용하면 기기별 중앙 정렬 이슈도 깔끔하게 해결되고, 각 테마별 핀터레스트 감성(크림 노트, 스누피 드로잉, 스트라이프 팝, 빈티지 스케치)이 시각적으로 확실하게 살아날 거야. 구현하면서 조정이 필요한 수치나 추가할 아이디어가 있으면 편하게 말해줘!
+        /* 5. 키치 B: 하이틴 손글씨 스케치 (Kitsch Type B) */
+        .theme-kitsch-sketch {
+            background-color: #FFFBEB;
+            border: 2px dashed #F59E0B;
+        }
+        .theme-kitsch-sketch .app-title { color: #D97706; font-style: italic; }
+        .theme-kitsch-sketch .menu-btn {
+            background-color: #FEF3C7;
+            border: 2px solid #D97706;
+            border-radius: 8px;
+            color: #92400E;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 
+      ※ 테마 클래스를 아래 div에 변경해 가면서 확인해보세요!
+      - 기본(심플): theme-simple
+      - 큐트 1(크림): theme-cute-cream
+      - 큐트 2(스누피): theme-cute-snoopy
+      - 키치 1(팝 스트라이프): theme-kitsch-pop
+      - 키치 2(하이틴 스케치): theme-kitsch-sketch
+    -->
+    <div class="device-viewport">
+        <main class="main-card-container theme-cute-snoopy">
+            
+            <header class="card-header">
+                <div>
+                    <!-- 스누피 테마일 때 보여줄 수 있는 감성 태그 예시 -->
+                    <!-- <span class="snoopy-badge">🐶 SNOOPY MOOD</span> -->
+                    <h1 class="app-title">나만의 영단어장</h1>
+                </div>
+                <div class="action-buttons">
+                    <button class="icon-btn" aria-label="테마 변경">🎨</button>
+                    <button class="icon-btn" aria-label="설정">⚙️</button>
+                </div>
+            </header>
+
+            <nav class="menu-group">
+                <button class="menu-btn">단어 등록</button>
+                <button class="menu-btn">단어장 목록</button>
+                <button class="menu-btn">연습하기</button>
+            </nav>
+
+        </main>
+    </div>
+
+</body>
+</html>
