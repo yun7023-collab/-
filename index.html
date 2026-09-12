@@ -143,6 +143,7 @@
         .sync-btns {
             display: flex;
             gap: 10px;
+            margin-bottom: 8px;
         }
 
         .sync-btn {
@@ -220,6 +221,26 @@
             font-weight: bold;
             font-size: 18px;
         }
+
+        /* 텍스트 백업 모달 스타일 */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -280,12 +301,13 @@
             <div class="sync-box">
                 <h3>📱 내 계정 데이터 백업 / 복구</h3>
                 <p style="font-size: 12px; color: #555; margin-bottom: 10px;">
-                    현재 로그인된 계정의 단어 데이터를 파일로 백업받거나 타 기기에서 가져옵니다.
+                    아이폰/아이패드 백업 파일 전달 또는 텍스트 복사 방식으로 기기간 단어를 복구할 수 있습니다.
                 </p>
                 <div class="sync-btns">
-                    <button class="sync-btn" onclick="exportData()">데이터 내보내기 (백업)</button>
-                    <button class="sync-btn import" onclick="document.getElementById('import-file').click()">데이터 가져오기 (복구)</button>
+                    <button class="sync-btn" onclick="exportData()">파일로 백업</button>
+                    <button class="sync-btn import" onclick="document.getElementById('import-file').click()">파일로 복구</button>
                 </div>
+                <button onclick="showTextSyncModal()" style="background-color:#8E8E93; font-size:13px; padding:8px;">텍스트 코드 방식 백업/복구 (추천)</button>
                 <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
             </div>
         </div>
@@ -320,13 +342,26 @@
     </div>
 </div>
 
+<!-- 텍스트 백업/복구 모달 -->
+<div id="text-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 style="margin-top:0;">텍스트 코드 백업 / 복구</h3>
+        <p style="font-size:12px; color:#666;">아래 코드를 복사해서 카카오톡으로 보낸 뒤, 다른 기기에서 여기에 붙여넣고 [복구 적용]을 누르면 됩니다.</p>
+        <textarea id="sync-text-area" rows="6" style="font-size:11px;"></textarea>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button onclick="copySyncText()" style="background-color:#34C759; flex:1;">코드 전체 복사</button>
+            <button onclick="applySyncText()" style="background-color:#FF9500; flex:1;">복구 적용</button>
+        </div>
+        <button onclick="closeModal()" style="background-color:#8E8E93; margin-top:10px;">닫기</button>
+    </div>
+</div>
+
 <script>
     let isSignUpMode = false;
     let currentUser = null;
     let vocaData = [];
     let currentCorrectAnswer = "";
 
-    // 앱 초기화
     window.onload = function() {
         const savedUser = sessionStorage.getItem('currentUser');
         if (savedUser) {
@@ -334,9 +369,8 @@
         }
     };
 
-    // 로그인/회원가입 모드 전환
     function toggleAuthMode(e) {
-        e.preventDefault();
+        if(e) e.preventDefault();
         isSignUpMode = !isSignUpMode;
         
         const titleEl = document.getElementById('auth-title');
@@ -357,7 +391,6 @@
         }
     }
 
-    // 인증 처리 (로그인/회원가입)
     function handleAuth() {
         const idInput = document.getElementById('auth-id').value.trim();
         const pwInput = document.getElementById('auth-pw').value.trim();
@@ -370,7 +403,6 @@
         let users = JSON.parse(localStorage.getItem('myVocaUsers')) || {};
 
         if (isSignUpMode) {
-            // 회원가입
             if (users[idInput]) {
                 alert('이미 존재하는 아이디입니다.');
                 return;
@@ -378,9 +410,8 @@
             users[idInput] = pwInput;
             localStorage.setItem('myVocaUsers', JSON.stringify(users));
             alert('회원가입이 완료되었습니다! 로그인해 주세요.');
-            toggleAuthMode({ preventDefault: () => {} });
+            toggleAuthMode();
         } else {
-            // 로그인
             if (!users[idInput] || users[idInput] !== pwInput) {
                 alert('아이디 또는 비밀번호가 일치하지 않습니다.');
                 return;
@@ -390,18 +421,15 @@
         }
     }
 
-    // 로그인 성공 시 UI 전환 및 데이터 로드
     function loginSuccess(userId) {
         currentUser = userId;
         document.getElementById('current-user-display').innerText = currentUser;
         document.getElementById('auth-area').classList.add('hidden');
         document.getElementById('app-area').classList.remove('hidden');
 
-        // 사용자별 데이터 로드
         vocaData = JSON.parse(localStorage.getItem('myVocaData_' + currentUser)) || [];
     }
 
-    // 로그아웃
     function logout() {
         sessionStorage.removeItem('currentUser');
         currentUser = null;
@@ -412,7 +440,6 @@
         document.getElementById('auth-area').classList.remove('hidden');
     }
 
-    // 탭 전환
     function openTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -423,7 +450,6 @@
         if (tabId === 'quiz-tab') startQuiz();
     }
 
-    // 단어 저장
     document.getElementById('voca-form').addEventListener('submit', function(e) {
         e.preventDefault();
         const word = document.getElementById('word').value.trim();
@@ -443,7 +469,6 @@
         }
     }
 
-    // 단어 목록 출력
     function renderList() {
         const listContainer = document.getElementById('voca-list');
         listContainer.innerHTML = '';
@@ -466,14 +491,12 @@
         });
     }
 
-    // 단어 삭제
     function deleteWord(id) {
         vocaData = vocaData.filter(item => item.id !== id);
         saveData();
         renderList();
     }
 
-    // 데이터 백업 (내보내기)
     function exportData() {
         if (vocaData.length === 0) {
             alert('내보낼 단어 데이터가 없습니다.');
@@ -488,7 +511,6 @@
         downloadAnchor.remove();
     }
 
-    // 데이터 복구 (가져오기)
     function importData(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -512,7 +534,43 @@
         reader.readAsText(file);
     }
 
-    // 퀴즈 시작
+    // 텍스트 모달 관련
+    function showTextSyncModal() {
+        document.getElementById('text-modal').classList.remove('hidden');
+        document.getElementById('sync-text-area').value = JSON.stringify(vocaData);
+    }
+
+    function closeModal() {
+        document.getElementById('text-modal').classList.add('hidden');
+    }
+
+    function copySyncText() {
+        const textArea = document.getElementById('sync-text-area');
+        textArea.select();
+        document.execCommand('copy');
+        alert('백업 코드가 복사되었습니다! 카카오톡에 붙여넣어 보내세요.');
+    }
+
+    function applySyncText() {
+        const text = document.getElementById('sync-text-area').value.trim();
+        if(!text) return alert('코드를 입력해주세요.');
+
+        try {
+            const importedData = JSON.parse(text);
+            if (Array.isArray(importedData)) {
+                vocaData = importedData;
+                saveData();
+                alert('단어장이 성공적으로 복구되었습니다!');
+                closeModal();
+                renderList();
+            } else {
+                alert('올바르지 않은 코드 형식입니다.');
+            }
+        } catch(e) {
+            alert('코드를 읽는 중 오류가 발생했습니다.');
+        }
+    }
+
     function startQuiz() {
         if (vocaData.length === 0) {
             document.getElementById('quiz-question').innerText = "단어를 먼저 등록해 주세요.";
