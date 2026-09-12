@@ -29,12 +29,32 @@
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         h1 {
-            text-align: center;
+            margin: 0;
             color: var(--primary-color);
-            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .backup-icon-btn {
+            background-color: #F0F4F8;
+            color: #4A90E2;
+            border: 1px solid #D0E1F9;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            width: auto;
         }
 
         .tabs {
@@ -77,7 +97,7 @@
             font-weight: bold;
         }
 
-        input[type="text"], input[type="password"], textarea, select {
+        input[type="text"], textarea, select {
             width: 100%;
             padding: 10px;
             border: 1px solid #DDD;
@@ -102,62 +122,8 @@
             opacity: 0.8;
         }
 
-        .auth-card {
-            background: #F9F9F9;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #DDD;
-        }
-
-        .user-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #EBF3FF;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .logout-btn {
-            width: auto;
-            padding: 6px 12px;
-            background-color: #8E8E93;
-            font-size: 12px;
-        }
-
-        .sync-box {
-            background-color: #EBF3FF;
-            border: 1px solid #BCE0FD;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        .sync-box h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 16px;
-        }
-
-        .sync-btns {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .sync-btn {
-            flex: 1;
-            background-color: #34C759;
-            font-size: 14px;
-        }
-
-        .sync-btn.import {
-            background-color: #FF9500;
-        }
-
         .voca-list {
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .voca-card {
@@ -222,7 +188,7 @@
             font-size: 18px;
         }
 
-        /* 텍스트 백업 모달 스타일 */
+        /* 모달 팝업 스타일 */
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -238,7 +204,7 @@
             padding: 20px;
             border-radius: 12px;
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
             box-sizing: border-box;
             position: relative;
         }
@@ -250,208 +216,106 @@
             color: #888; cursor: pointer;
             border: none; background: none; width: auto; padding: 0;
         }
+
+        .backup-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-green { background-color: #34C759; }
+        .btn-orange { background-color: #FF9500; }
+        .btn-gray { background-color: #8E8E93; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>나만의 영단어장</h1>
-
-    <!-- 로그인/회원가입 영역 -->
-    <div id="auth-area" class="auth-card">
-        <h3 id="auth-title" style="margin-top:0; text-align:center;">로그인</h3>
-        <div class="form-group">
-            <label for="auth-id">아이디</label>
-            <input type="text" id="auth-id" placeholder="아이디 입력">
-        </div>
-        <div class="form-group">
-            <label for="auth-pw">비밀번호</label>
-            <input type="password" id="auth-pw" placeholder="비밀번호 입력">
-        </div>
-        <button id="auth-submit-btn" onclick="handleAuth()">로그인</button>
-        <p style="text-align:center; font-size:13px; color:#666; margin-top:15px; margin-bottom:0;">
-            <span id="auth-toggle-text">계정이 없으신가요?</span>
-            <a href="#" id="auth-toggle-btn" onclick="toggleAuthMode(event)" style="color:var(--primary-color); font-weight:bold;">회원가입하기</a>
-        </p>
+    <div class="header-bar">
+        <h1>나만의 영단어장</h1>
+        <button class="backup-icon-btn" onclick="openBackupModal()">⚙️ 백업 / 복구</button>
     </div>
 
-    <!-- 메인 서비스 영역 (로그인 후 표시) -->
-    <div id="app-area" class="hidden">
-        <div class="user-info">
-            <span style="font-weight:bold; font-size:14px;"><span id="current-user-display" style="color:var(--primary-color);"></span> 님 로그인 중</span>
-            <button class="logout-btn" onclick="logout()">로그아웃</button>
-        </div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('input-tab', event)">단어 등록</button>
+        <button class="tab-btn" onclick="openTab('list-tab', event)">단어장 목록</button>
+        <button class="tab-btn" onclick="openTab('quiz-tab', event)">연습하기</button>
+    </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('input-tab', event)">단어 등록</button>
-            <button class="tab-btn" onclick="openTab('list-tab', event)">단어장 목록</button>
-            <button class="tab-btn" onclick="openTab('quiz-tab', event)">연습하기</button>
-        </div>
-
-        <!-- 1. 단어 입력 탭 -->
-        <div id="input-tab" class="tab-content active">
-            <form id="voca-form">
-                <div class="form-group">
-                    <label for="word">영어 단어</label>
-                    <input type="text" id="word" placeholder="예: apple" required>
-                </div>
-                <div class="form-group">
-                    <label for="meaning">뜻</label>
-                    <input type="text" id="meaning" placeholder="예: 사과" required>
-                </div>
-                <div class="form-group">
-                    <label for="example">예문 (선택)</label>
-                    <textarea id="example" rows="2" placeholder="예: I eat an apple."></textarea>
-                </div>
-                <button type="submit">단어 저장하기</button>
-            </form>
-
-            <!-- 동기화/백업 박스 -->
-            <div class="sync-box">
-                <h3>📱 내 계정 데이터 백업 / 복구</h3>
-                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">
-                    기기간 단어를 백업하거나 불러올 수 있습니다. (새로 시작하시려면 이용하지 않고 그대로 단어를 등록하세요!)
-                </p>
-                <div class="sync-btns">
-                    <button class="sync-btn" onclick="exportData()">파일로 백업</button>
-                    <button class="sync-btn import" onclick="document.getElementById('import-file').click()">파일로 복구</button>
-                </div>
-                <button onclick="showTextSyncModal()" style="background-color:#8E8E93; font-size:13px; padding:8px; margin-top:5px;">텍스트 코드 방식 백업/복구</button>
-                <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
-            </div>
-        </div>
-
-        <!-- 2. 단어 목록 탭 -->
-        <div id="list-tab" class="tab-content">
-            <div id="voca-list" class="voca-list"></div>
-        </div>
-
-        <!-- 3. 퀴즈 연습 탭 -->
-        <div id="quiz-tab" class="tab-content">
+    <!-- 1. 단어 입력 탭 -->
+    <div id="input-tab" class="tab-content active">
+        <form id="voca-form">
             <div class="form-group">
-                <label for="quiz-mode">학습 모드 선택</label>
-                <select id="quiz-mode" onchange="startQuiz()">
-                    <option value="mc">4지선다 객관식</option>
-                    <option value="subjective">주관식 (뜻 보고 단어 맞히기)</option>
-                    <option value="blank">예문 빈칸 맞히기</option>
-                </select>
+                <label for="word">영어 단어</label>
+                <input type="text" id="word" placeholder="예: apple" required>
             </div>
+            <div class="form-group">
+                <label for="meaning">뜻</label>
+                <input type="text" id="meaning" placeholder="예: 사과" required>
+            </div>
+            <div class="form-group">
+                <label for="example">예문 (선택)</label>
+                <textarea id="example" rows="2" placeholder="예: I eat an apple."></textarea>
+            </div>
+            <button type="submit">단어 저장하기</button>
+        </form>
+    </div>
 
-            <div id="quiz-area" class="quiz-card">
-                <div id="quiz-question" class="quiz-word">단어를 먼저 등록해 주세요.</div>
-                <div id="quiz-options" class="options"></div>
-                <div id="quiz-input-area" class="hidden" style="margin-top: 15px;">
-                    <input type="text" id="quiz-answer-input" placeholder="정답을 입력하세요">
-                    <button onclick="checkSubjectiveAnswer()" style="margin-top: 10px;">정답 제출</button>
-                </div>
-                <div id="quiz-result" class="result-message"></div>
-                <button id="next-btn" class="hidden" onclick="nextQuestion()" style="margin-top: 15px; background-color: #8E8E93;">다음 문제</button>
+    <!-- 2. 단어 목록 탭 -->
+    <div id="list-tab" class="tab-content">
+        <div id="voca-list" class="voca-list"></div>
+    </div>
+
+    <!-- 3. 퀴즈 연습 탭 -->
+    <div id="quiz-tab" class="tab-content">
+        <div class="form-group">
+            <label for="quiz-mode">학습 모드 선택</label>
+            <select id="quiz-mode" onchange="startQuiz()">
+                <option value="mc">4지선다 객관식</option>
+                <option value="subjective">주관식 (뜻 보고 단어 맞히기)</option>
+                <option value="blank">예문 빈칸 맞히기</option>
+            </select>
+        </div>
+
+        <div id="quiz-area" class="quiz-card">
+            <div id="quiz-question" class="quiz-word">단어를 먼저 등록해 주세요.</div>
+            <div id="quiz-options" class="options"></div>
+            <div id="quiz-input-area" class="hidden" style="margin-top: 15px;">
+                <input type="text" id="quiz-answer-input" placeholder="정답을 입력하세요">
+                <button onclick="checkSubjectiveAnswer()" style="margin-top: 10px;">정답 제출</button>
             </div>
+            <div id="quiz-result" class="result-message"></div>
+            <button id="next-btn" class="hidden" onclick="nextQuestion()" style="margin-top: 15px; background-color: #8E8E93;">다음 문제</button>
         </div>
     </div>
 </div>
 
-<!-- 텍스트 백업/복구 모달 -->
-<div id="text-modal" class="modal hidden" onclick="closeModalOnBg(event)">
+<!-- 백업 / 복구 모달 팝업 -->
+<div id="backup-modal" class="modal hidden" onclick="closeModalOnBg(event)">
     <div class="modal-content">
-        <button class="close-x" onclick="closeModal()">✕</button>
-        <h3 style="margin-top:0;">텍스트 코드 백업 / 복구</h3>
-        <p style="font-size:12px; color:#666;">
-            • <b>백업할 때</b>: 아래 창의 글자를 전체 선택해 카톡으로 보내세요.<br>
-            • <b>복구할 때</b>: 카톡으로 받은 글자를 아래 창에 붙여넣고 [복구 적용]을 누르세요.
+        <button class="close-x" onclick="closeBackupModal()">✕</button>
+        <h3 style="margin-top:0; color:var(--primary-color);">📱 백업 및 복구</h3>
+        <p style="font-size:13px; color:#666; line-height:1.4;">
+            단어 데이터를 백업 파일로 저장하거나 불러올 수 있습니다.
         </p>
-        <textarea id="sync-text-area" rows="6" style="font-size:12px; font-family:monospace;"></textarea>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <button onclick="copySyncText()" style="background-color:#34C759; flex:1;">코드 전체 복사</button>
-            <button onclick="applySyncText()" style="background-color:#FF9500; flex:1;">복구 적용</button>
+
+        <div class="backup-btn-group">
+            <button class="btn-green" onclick="exportData()">📁 파일로 백업하기</button>
+            <button class="btn-orange" onclick="document.getElementById('import-file').click()">📂 파일로 복구하기</button>
+            <button class="btn-gray" onclick="closeBackupModal()">닫기</button>
         </div>
-        <button onclick="closeModal()" style="background-color:#8E8E93; margin-top:10px;">창 닫기 (취소)</button>
+        <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
     </div>
 </div>
 
 <script>
-    let isSignUpMode = false;
-    let currentUser = null;
     let vocaData = [];
     let currentCorrectAnswer = "";
 
     window.onload = function() {
-        const savedUser = sessionStorage.getItem('currentUser');
-        if (savedUser) {
-            loginSuccess(savedUser);
-        }
+        vocaData = JSON.parse(localStorage.getItem('myVocaData_guest')) || [];
     };
-
-    function toggleAuthMode(e) {
-        if(e) e.preventDefault();
-        isSignUpMode = !isSignUpMode;
-        
-        const titleEl = document.getElementById('auth-title');
-        const submitBtn = document.getElementById('auth-submit-btn');
-        const toggleText = document.getElementById('auth-toggle-text');
-        const toggleBtn = document.getElementById('auth-toggle-btn');
-
-        if (isSignUpMode) {
-            titleEl.innerText = "회원가입";
-            submitBtn.innerText = "회원가입 완료";
-            toggleText.innerText = "이미 계정이 있으신가요?";
-            toggleBtn.innerText = "로그인하기";
-        } else {
-            titleEl.innerText = "로그인";
-            submitBtn.innerText = "로그인";
-            toggleText.innerText = "계정이 없으신가요?";
-            toggleBtn.innerText = "회원가입하기";
-        }
-    }
-
-    function handleAuth() {
-        const idInput = document.getElementById('auth-id').value.trim();
-        const pwInput = document.getElementById('auth-pw').value.trim();
-
-        if (!idInput || !pwInput) {
-            alert('아이디와 비밀번호를 모두 입력해 주세요.');
-            return;
-        }
-
-        let users = JSON.parse(localStorage.getItem('myVocaUsers')) || {};
-
-        if (isSignUpMode) {
-            if (users[idInput]) {
-                alert('이미 존재하는 아이디입니다.');
-                return;
-            }
-            users[idInput] = pwInput;
-            localStorage.setItem('myVocaUsers', JSON.stringify(users));
-            alert('회원가입이 완료되었습니다! 로그인해 주세요.');
-            toggleAuthMode();
-        } else {
-            if (!users[idInput] || users[idInput] !== pwInput) {
-                alert('아이디 또는 비밀번호가 일치하지 않습니다.');
-                return;
-            }
-            sessionStorage.setItem('currentUser', idInput);
-            loginSuccess(idInput);
-        }
-    }
-
-    function loginSuccess(userId) {
-        currentUser = userId;
-        document.getElementById('current-user-display').innerText = currentUser;
-        document.getElementById('auth-area').classList.add('hidden');
-        document.getElementById('app-area').classList.remove('hidden');
-
-        vocaData = JSON.parse(localStorage.getItem('myVocaData_' + currentUser)) || [];
-    }
-
-    function logout() {
-        sessionStorage.removeItem('currentUser');
-        currentUser = null;
-        vocaData = [];
-        document.getElementById('auth-id').value = '';
-        document.getElementById('auth-pw').value = '';
-        document.getElementById('app-area').classList.add('hidden');
-        document.getElementById('auth-area').classList.remove('hidden');
-    }
 
     function openTab(tabId, e) {
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -477,9 +341,7 @@
     });
 
     function saveData() {
-        if (currentUser) {
-            localStorage.setItem('myVocaData_' + currentUser, JSON.stringify(vocaData));
-        }
+        localStorage.setItem('myVocaData_guest', JSON.stringify(vocaData));
     }
 
     function renderList() {
@@ -510,18 +372,42 @@
         renderList();
     }
 
+    // 모달 제어
+    function openBackupModal() {
+        document.getElementById('backup-modal').classList.remove('hidden');
+    }
+
+    function closeBackupModal() {
+        document.getElementById('backup-modal').classList.add('hidden');
+    }
+
+    function closeModalOnBg(e) {
+        if(e.target.id === 'backup-modal') {
+            closeBackupModal();
+        }
+    }
+
+    // 백업/복구 로직
     function exportData() {
         if (vocaData.length === 0) {
             alert('내보낼 단어 데이터가 없습니다.');
             return;
         }
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vocaData, null, 2));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `${currentUser}_voca_backup.json`);
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
+
+        const dataStr = JSON.stringify(vocaData, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `voca_backup.json`;
+        document.body.appendChild(a);
+        a.click();
+        
+        setTimeout(() => {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 100);
     }
 
     function importData(event) {
@@ -536,6 +422,7 @@
                     vocaData = importedData;
                     saveData();
                     alert('단어장을 성공적으로 불러왔습니다!');
+                    closeBackupModal();
                     renderList();
                 } else {
                     alert('올바르지 않은 백업 파일 형식입니다.');
@@ -547,61 +434,7 @@
         reader.readAsText(file);
     }
 
-    // 텍스트 모달 관련
-    function showTextSyncModal() {
-        document.getElementById('text-modal').classList.remove('hidden');
-        document.getElementById('sync-text-area').value = JSON.stringify(vocaData, null, 2);
-    }
-
-    function closeModal() {
-        document.getElementById('text-modal').classList.add('hidden');
-    }
-
-    function closeModalOnBg(e) {
-        if(e.target.id === 'text-modal') {
-            closeModal();
-        }
-    }
-
-    function copySyncText() {
-        const textArea = document.getElementById('sync-text-area');
-        if(!textArea.value || textArea.value === "[]") {
-            alert('복사할 단어 데이터가 없습니다. 단어를 먼저 등록해 주세요.');
-            return;
-        }
-        textArea.select();
-        textArea.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(textArea.value).then(() => {
-            alert('단어 데이터 코드가 복사되었습니다! 카카오톡에 붙여넣어 전송하세요.');
-        }).catch(() => {
-            document.execCommand('copy');
-            alert('단어 데이터 코드가 복사되었습니다!');
-        });
-    }
-
-    function applySyncText() {
-        const text = document.getElementById('sync-text-area').value.trim();
-        if(!text) {
-            alert('카카오톡으로 받은 코드를 창에 붙여넣어 주세요.');
-            return;
-        }
-
-        try {
-            const importedData = JSON.parse(text);
-            if (Array.isArray(importedData)) {
-                vocaData = importedData;
-                saveData();
-                alert('단어장이 성공적으로 복구되었습니다!');
-                closeModal();
-                renderList();
-            } else {
-                alert('올바르지 않은 백업 코드 형식입니다.');
-            }
-        } catch(e) {
-            alert('코드를 읽는 중 오류가 발생했습니다. 카카오톡으로 전달받은 텍스트 전체를 정확히 붙여넣었는지 확인해 주세요.');
-        }
-    }
-
+    // 퀴즈 로직
     function startQuiz() {
         if (vocaData.length === 0) {
             document.getElementById('quiz-question').innerText = "단어를 먼저 등록해 주세요.";
