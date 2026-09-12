@@ -29,7 +29,7 @@
             padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
             position: relative;
@@ -82,23 +82,37 @@
             100% { transform: translateY(-12px) rotate(8deg); }
         }
 
-        /* 힙 테마 데코 (무드 있는 미니멀 다크/인디고 그라데이션 & 빈티지 엘리먼트) */
-        body.theme-hip {
-            background: linear-gradient(145deg, #141416 0%, #1E1E24 100%);
+        /* 큐트2 테마 데코 (화이트/네이비 톤 다이어리 낙서 감성) */
+        body.theme-cute2 {
+            background: linear-gradient(135deg, #EFF5FF 0%, #F7FAFF 50%, #FFFFFF 100%);
         }
-        body.theme-hip .theme-deco-bg {
+        body.theme-cute2 .theme-deco-bg {
+            display: block;
+        }
+
+        /* 키치 테마 데코 (컬러풀 플래너/스티커 느낌의 화사한 크림톤) */
+        body.theme-kitsch {
+            background: linear-gradient(135deg, #FFF9E8 0%, #FFF1DD 50%, #FFEDF2 100%);
+        }
+        body.theme-kitsch .theme-deco-bg {
             display: block;
         }
         .hip-glow {
             position: absolute;
             border-radius: 50%;
             filter: blur(70px);
-            opacity: 0.25;
+            opacity: 0.3;
             z-index: 0;
             pointer-events: none;
         }
-        .hip-glow-1 { width: 320px; height: 320px; background: #6366F1; top: -100px; right: -50px; }
-        .hip-glow-2 { width: 280px; height: 280px; background: #EC4899; bottom: -50px; left: -50px; }
+
+        /* 키치2 테마 데코 (블랙&화이트 미니멀 다이어리 느낌) */
+        body.theme-kitsch2 {
+            background: linear-gradient(145deg, #FAFAFA 0%, #F0F0F2 100%);
+        }
+        body.theme-kitsch2 .theme-deco-bg {
+            display: block;
+        }
 
         .container {
             width: 100%;
@@ -512,7 +526,9 @@
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
                 <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #4A90E2; color: white;" onclick="applyPreset('simple')">심플</button>
                 <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #E085A5; color: white;" onclick="applyPreset('cute')">큐트</button>
-                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #262626; color: white;" onclick="applyPreset('hip')">힙</button>
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #3B5998; color: white;" onclick="applyPreset('cute2')">큐트 도그</button>
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #FF6B35; color: white;" onclick="applyPreset('kitsch')">키치</button>
+                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #1F2937; color: white;" onclick="applyPreset('kitsch2')">키치 모노</button>
             </div>
         </div>
 
@@ -670,11 +686,15 @@
         document.getElementById('main-title-text').innerText = appConfig.title;
         document.title = appConfig.title;
 
-        document.body.classList.remove('theme-cute', 'theme-hip');
+        document.body.classList.remove('theme-cute', 'theme-cute2', 'theme-kitsch', 'theme-kitsch2');
         if (appConfig.currentPreset === 'cute') {
             document.body.classList.add('theme-cute');
-        } else if (appConfig.currentPreset === 'hip') {
-            document.body.classList.add('theme-hip');
+        } else if (appConfig.currentPreset === 'cute2') {
+            document.body.classList.add('theme-cute2');
+        } else if (appConfig.currentPreset === 'kitsch') {
+            document.body.classList.add('theme-kitsch');
+        } else if (appConfig.currentPreset === 'kitsch2') {
+            document.body.classList.add('theme-kitsch2');
         }
         renderThemeDecorations();
     }
@@ -692,14 +712,35 @@
                 <div class="cute-sticker" style="bottom: 18%; left: 12%; animation-delay: 3s;">✨</div>
                 <div class="cute-sticker" style="bottom: 30%; right: 15%; animation-delay: 2s;">🍒</div>
             `;
-        } else if (appConfig.currentPreset === 'hip') {
+        } else if (appConfig.currentPreset === 'cute2') {
+            /* 화이트&네이비 톤의 손그림 다이어리 느낌 (강아지 낙서 스티커) */
             bgContainer.innerHTML = `
-                <div class="hip-glow hip-glow-1"></div>
-                <div class="hip-glow hip-glow-2"></div>
-                <div class="cute-sticker" style="top: 15%; left: 10%; filter: drop-shadow(0 0 8px rgba(99,102,241,0.4));">💿</div>
-                <div class="cute-sticker" style="top: 35%; right: 8%; animation-delay: 1s;">⭐</div>
-                <div class="cute-sticker" style="bottom: 20%; left: 15%; animation-delay: 2.5s;">🎧</div>
-                <div class="cute-sticker" style="bottom: 25%; right: 12%; animation-delay: 1.8s;">🖤</div>
+                <div class="cute-blob" style="width:230px; height:230px; background:#DCE6FA; top:-50px; right:-50px; animation: floatBlob 9s ease-in-out infinite alternate;"></div>
+                <div class="cute-blob" style="width:270px; height:270px; background:#EAF1FF; bottom:-70px; left:-60px; animation: floatBlob 11s ease-in-out infinite alternate-reverse;"></div>
+                <div class="cute-sticker" style="top: 10%; left: 9%;">🐾</div>
+                <div class="cute-sticker" style="top: 28%; right: 9%; animation-delay: 1.2s;">🦴</div>
+                <div class="cute-sticker" style="bottom: 20%; left: 13%; animation-delay: 2.1s;">✏️</div>
+                <div class="cute-sticker" style="bottom: 30%; right: 13%; animation-delay: 1.6s;">☁️</div>
+            `;
+        } else if (appConfig.currentPreset === 'kitsch') {
+            /* 컬러풀 플래너/스티커 느낌의 키치 무드 */
+            bgContainer.innerHTML = `
+                <div class="hip-glow" style="width:300px; height:300px; background:#FFD166; top:-90px; left:-60px;"></div>
+                <div class="hip-glow" style="width:260px; height:260px; background:#FF7EB3; bottom:-60px; right:-60px;"></div>
+                <div class="cute-sticker" style="top: 12%; left: 10%;">⭐</div>
+                <div class="cute-sticker" style="top: 30%; right: 8%; animation-delay: 1s;">✨</div>
+                <div class="cute-sticker" style="bottom: 18%; left: 14%; animation-delay: 2.2s;">🌟</div>
+                <div class="cute-sticker" style="bottom: 28%; right: 12%; animation-delay: 1.4s;">🧡</div>
+            `;
+        } else if (appConfig.currentPreset === 'kitsch2') {
+            /* 블랙&화이트 미니멀 다이어리 + 블랙 캣 스티커 */
+            bgContainer.innerHTML = `
+                <div class="hip-glow" style="width:240px; height:240px; background:#000000; opacity:0.06; top:-60px; right:-40px;"></div>
+                <div class="hip-glow" style="width:220px; height:220px; background:#000000; opacity:0.05; bottom:-50px; left:-50px;"></div>
+                <div class="cute-sticker" style="top: 10%; left: 8%;">🐈‍⬛</div>
+                <div class="cute-sticker" style="top: 30%; right: 10%; animation-delay: 1.2s;">⭐</div>
+                <div class="cute-sticker" style="bottom: 20%; left: 12%; animation-delay: 2s;">✨</div>
+                <div class="cute-sticker" style="bottom: 30%; right: 14%; animation-delay: 1.5s;">⚫</div>
             `;
         }
     }
@@ -861,19 +902,45 @@
             appConfig.btnRadius = "12px";
             appConfig.borderDk = "#FADCE4";
             appConfig.topBtnBg = "#FCE8EC";
-        } else if (type === 'hip') {
-            /* 리얼 프리미엄 핀터레스트 힙 감성 (모던 시크 다크 & 인디고 무드) */
-            appConfig.primaryColor = "#818CF8";
-            appConfig.bgColor = "#121216";
-            appConfig.cardBg = "#1A1A22";
-            appConfig.textColor = "#F3F4F6";
-            appConfig.wordCardBg = "#242430";
-            appConfig.wordCardText = "#A5B4FC";
+        } else if (type === 'cute2') {
+            /* 화이트 & 네이비 톤의 손그림 다이어리, 강아지 낙서 감성 */
+            appConfig.primaryColor = "#3B5998";
+            appConfig.bgColor = "#F4F8FF";
+            appConfig.cardBg = "#FFFFFF";
+            appConfig.textColor = "#263248";
+            appConfig.wordCardBg = "#FFFFFF";
+            appConfig.wordCardText = "#2C3E66";
+            appConfig.fontFamily = "'Comic Sans MS', cursive, sans-serif";
+            appConfig.borderRadius = "20px";
+            appConfig.btnRadius = "12px";
+            appConfig.borderDk = "#33415C";
+            appConfig.topBtnBg = "#EAF1FF";
+        } else if (type === 'kitsch') {
+            /* 컬러풀 플래너 & 스티커 감성의 밝고 발랄한 키치 무드 */
+            appConfig.primaryColor = "#FF6B35";
+            appConfig.bgColor = "#FFF8E7";
+            appConfig.cardBg = "#FFFFFF";
+            appConfig.textColor = "#4A3728";
+            appConfig.wordCardBg = "#FF6B35";
+            appConfig.wordCardText = "#FFFFFF";
+            appConfig.fontFamily = "'Comic Sans MS', cursive, sans-serif";
+            appConfig.borderRadius = "18px";
+            appConfig.btnRadius = "10px";
+            appConfig.borderDk = "#FFD8A8";
+            appConfig.topBtnBg = "#FFF0DC";
+        } else if (type === 'kitsch2') {
+            /* 블랙&화이트 미니멀 다이어리 무드 (블랙캣 포인트) */
+            appConfig.primaryColor = "#1F2937";
+            appConfig.bgColor = "#FAFAFA";
+            appConfig.cardBg = "#FFFFFF";
+            appConfig.textColor = "#1F2937";
+            appConfig.wordCardBg = "#1F2937";
+            appConfig.wordCardText = "#FFFFFF";
             appConfig.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-            appConfig.borderRadius = "14px";
-            appConfig.btnRadius = "8px";
-            appConfig.borderDk = "#2E2E3C";
-            appConfig.topBtnBg = "#262633";
+            appConfig.borderRadius = "10px";
+            appConfig.btnRadius = "6px";
+            appConfig.borderDk = "#D1D5DB";
+            appConfig.topBtnBg = "#F0F0F0";
         }
         saveData();
         applyAppConfig();
@@ -1470,4 +1537,3 @@
 
 </body>
 </html>
-
