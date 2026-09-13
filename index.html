@@ -676,6 +676,14 @@
     </div>
 </div>
 
+<!-- 커스텀 알림 팝업 (엔터 키로도 확인 가능) -->
+<div id="custom-alert-modal" class="modal hidden" onclick="closeCustomAlertBg(event)">
+    <div class="modal-content" style="max-width: 340px; text-align: center;">
+        <p id="custom-alert-message" style="font-size: 16px; line-height: 1.5; margin: 6px 0 20px; white-space: pre-line;"></p>
+        <button id="custom-alert-ok-btn" class="submit-btn" onclick="closeCustomAlert()">확인</button>
+    </div>
+</div>
+
 <script>
     let vocaData = [];
     let dayList = [];
@@ -687,7 +695,7 @@
 
     /* 단어 등록 폼 - 동적 뜻/예문 상태 */
     let regMeanings = [''];
-    let regExamples = [];
+    let regExamples = [{ ex: '', exm: '' }];
 
     /* 단어 수정 모달 - 동적 뜻/예문 상태 */
     let modalEditId = null;
@@ -1193,6 +1201,7 @@
             } else {
                 syncRegExamples();
                 regExamples.splice(idx, 1);
+                if (regExamples.length === 0) regExamples = [{ ex: '', exm: '' }];
                 renderRegExampleFields();
             }
         } else {
@@ -1204,6 +1213,7 @@
             } else {
                 syncModalExamples();
                 modalExamples.splice(idx, 1);
+                if (modalExamples.length === 0) modalExamples = [{ ex: '', exm: '' }];
                 renderModalExampleFields();
             }
         }
@@ -1230,7 +1240,7 @@
         alert('단어가 저장되었습니다!');
         this.reset();
         regMeanings = [''];
-        regExamples = [];
+        regExamples = [{ ex: '', exm: '' }];
         renderRegMeaningFields();
         renderRegExampleFields();
         updateDaySelects();
@@ -1533,6 +1543,7 @@
         modalEditId = id;
         modalMeanings = item.meanings && item.meanings.length ? [...item.meanings] : [''];
         modalExamples = (item.examples || []).map(ex => ({ ex: ex.ex, exm: ex.exm }));
+        if (modalExamples.length === 0) modalExamples = [{ ex: '', exm: '' }];
 
         const dayOptionsHtml = dayList.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d}</option>`).join('');
 
@@ -1918,6 +1929,41 @@
             if (typeof focusables[nextIdx].select === 'function') focusables[nextIdx].select();
         }
     });
+
+    /* ===== 커스텀 알림 팝업: 마우스로 버튼을 누르지 않아도 엔터 키로 바로 확인 가능 ===== */
+    const nativeAlert = window.alert.bind(window);
+
+    window.alert = function(message) {
+        const modal = document.getElementById('custom-alert-modal');
+        const msgEl = document.getElementById('custom-alert-message');
+        if (!modal || !msgEl) { nativeAlert(message); return; }
+
+        msgEl.innerText = message;
+        modal.classList.remove('hidden');
+
+        // 버튼에 포커스를 줘서 엔터/스페이스로도 바로 확인되게 함
+        const okBtn = document.getElementById('custom-alert-ok-btn');
+        setTimeout(() => { if (okBtn) okBtn.focus(); }, 0);
+    };
+
+    function closeCustomAlert() {
+        document.getElementById('custom-alert-modal').classList.add('hidden');
+    }
+    function closeCustomAlertBg(e) {
+        if (e.target.id === 'custom-alert-modal') closeCustomAlert();
+    }
+
+    /* 알림 팝업이 떠 있는 동안에는 입력 중이던 필드에 포커스가 남아 있어도
+       엔터 키를 누르면 바로 "확인" 처리되도록 최우선으로 가로챈다 */
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter') return;
+        const modal = document.getElementById('custom-alert-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeCustomAlert();
+        }
+    }, true);
 </script>
 
 </body>
