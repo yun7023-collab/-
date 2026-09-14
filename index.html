@@ -1187,7 +1187,7 @@
         values.forEach((v, i) => {
             html += `<div class="meaning-row">
                 <input type="text" class="${prefix}-meaning-input" data-idx="${i}" value="${escAttr(v)}" placeholder="뜻 ${i + 1}${i === 0 ? '' : ' (선택)'}">
-                ${values.length > 1 ? `<button type="button" class="dyn-remove-btn" onclick="removeDynField('${prefix}','meaning',${i})">✕</button>` : ''}
+                ${values.length > 1 ? `<button type="button" class="dyn-remove-btn" tabindex="-1" onclick="removeDynField('${prefix}','meaning',${i})">✕</button>` : ''}
             </div>`;
         });
         html += `<button type="button" class="dyn-add-btn" onclick="addDynField('${prefix}','meaning')">+ 뜻 추가</button>`;
@@ -1198,7 +1198,7 @@
         let html = '';
         values.forEach((v, i) => {
             html += `<div class="example-block">
-                <button type="button" class="dyn-remove-btn" onclick="removeDynField('${prefix}','example',${i})">✕</button>
+                <button type="button" class="dyn-remove-btn" tabindex="-1" onclick="removeDynField('${prefix}','example',${i})">✕</button>
                 <div class="example-block-inner">
                     <input type="text" class="${prefix}-example-input" data-idx="${i}" value="${escAttr(v.ex)}" placeholder="예문 ${i + 1}">
                     <input type="text" class="${prefix}-exmeaning-input" data-idx="${i}" value="${escAttr(v.exm)}" placeholder="예문 뜻 ${i + 1}">
@@ -1319,6 +1319,7 @@
         renderRegExampleFields();
         updateDaySelects();
         document.getElementById('day-select').value = day;
+        document.getElementById('word').focus();
     });
 
     /* 단어장 목록 화면에서 편집 모드 토글 */
