@@ -300,6 +300,22 @@
         }
         .star-btn.active { color: var(--star-color); }
         .word-text-title { font-size: 20px; font-weight: 600; color: var(--text-color); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .speak-btn {
+            background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px;
+            color: var(--primary-color); line-height: 1; flex-shrink: 0;
+        }
+        .speak-btn:active { opacity: 0.5; }
+        .card-speak-icon {
+            position: absolute; top: 20px; left: 24px; font-size: 32px;
+            background: none; border: none; cursor: pointer; color: var(--word-card-text);
+            padding: 0; line-height: 1; opacity: 0.9; z-index: 2;
+        }
+        .card-speak-icon:active { opacity: 0.5; }
+        .home-icon-btn {
+            background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px;
+            color: var(--primary-color); line-height: 1;
+        }
+        .home-icon-btn:active { opacity: 0.5; }
 
         /* 단어 보기 플래시카드 스타일 (개별 지정 색상 적용) */
         .flashcard-box {
@@ -312,9 +328,9 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.12);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .card-word-title { font-size: 72px; font-weight: bold; margin-bottom: 20px; word-break: break-all; line-height: 1.1; color: var(--word-card-text); }
-        .card-meaning-text { font-size: 44px; font-weight: bold; margin-bottom: 20px; line-height: 1.25; color: var(--word-card-text); }
-        .card-ex-text { font-size: 28px; opacity: 0.85; margin-top: 12px; font-style: italic; line-height: 1.3; color: var(--word-card-text); }
+        .card-word-title { font-size: 52px; font-weight: bold; margin-bottom: 20px; word-break: break-all; line-height: 1.1; color: var(--word-card-text); }
+        .card-meaning-text { font-size: 35px; font-weight: bold; margin-bottom: 20px; line-height: 1.25; color: var(--word-card-text); }
+        .card-ex-text { font-size: 28px; opacity: 0.85; font-style: italic; line-height: 1.3; color: var(--word-card-text); }
         .card-exmeaning-text { font-size: 24px; opacity: 0.7; margin-top: 6px; line-height: 1.3; color: var(--word-card-text); }
         .card-star { position: absolute; top: 20px; right: 24px; font-size: 32px; }
 
@@ -401,7 +417,10 @@
 
     <!-- 1. 단어 등록 화면 -->
     <div id="input-view" class="hidden">
-        <button class="nav-back-btn" onclick="goHome()">← 뒤로가기</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="goHome()">← 뒤로가기</button>
+            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
+        </div>
         <div class="form-group" style="margin-top: 5px;">
             <label>새 단어장(Day) 추가하기</label>
             <div style="display: flex; gap: 8px;">
@@ -423,11 +442,11 @@
                 <input type="text" id="word" placeholder="예: item" required>
             </div>
             <div class="form-group">
-                <label>뜻 (최대 3개)</label>
+                <label>뜻</label>
                 <div id="reg-meanings-container"></div>
             </div>
             <div class="form-group">
-                <label>예문 (최대 3개, 선택)</label>
+                <label>예문 (선택)</label>
                 <div id="reg-examples-container"></div>
             </div>
             <button type="submit" class="submit-btn" style="margin-top: 10px;">단어 저장하기</button>
@@ -436,12 +455,15 @@
 
     <!-- 2-1. 단어장 목록 (카테고리 선택) 화면 -->
     <div id="category-view" class="hidden">
-        <button class="nav-back-btn" onclick="goHome()">← 뒤로가기</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="goHome()">← 뒤로가기</button>
+            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
+        </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="font-size: 20px; margin: 0; color: var(--text-color);">단어장 선택</h3>
             <div style="display: flex; gap: 8px; align-items: center;">
                 <button class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: var(--primary-color);" onclick="openQuickAddCategoryModal()">+ 단어장 추가</button>
-                <button id="category-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleCategoryEditMode()">편집</button>
+                <button id="category-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleCategoryEditMode()">✏️</button>
             </div>
         </div>
         <p id="category-edit-hint" class="hidden" style="font-size: 13px; opacity: 0.7; margin: 0 0 10px 4px;">▲▼ 버튼으로 순서를 바꾸거나, 체크 후 삭제할 수 있어요.</p>
@@ -458,12 +480,15 @@
 
     <!-- 2-2. 단어장 내부: 깔끔한 영단어 리스트 화면 -->
     <div id="word-list-view" class="hidden">
-        <button class="nav-back-btn" onclick="showView('category-view')">← 뒤로가기</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="showView('category-view')">← 뒤로가기</button>
+            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
+        </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 id="selected-folder-title" style="margin: 0; font-size: 22px; color: var(--text-color);">단어 목록</h3>
             <div style="display: flex; gap: 8px; align-items: center;">
-                <button id="word-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleWordEditMode()">편집</button>
-                <button id="card-view-btn" class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardViewFromList()">📖 단어 보기 카드</button>
+                <button id="word-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleWordEditMode()">✏️</button>
+                <button id="card-view-btn" class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardViewFromList()">📖 단어카드</button>
             </div>
         </div>
         <p id="word-edit-hint" class="hidden" style="font-size: 13px; opacity: 0.7; margin: -6px 0 10px 4px;">▲▼ 버튼으로 순서를 바꾸거나, 체크 후 삭제할 수 있어요.</p>
@@ -480,9 +505,16 @@
 
     <!-- 2-3. 터치 카드형 단어 보기 화면 -->
     <div id="card-view" class="hidden">
-        <button class="nav-back-btn" onclick="showView('word-list-view')">← 뒤로가기</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="showView('word-list-view')">← 뒤로가기</button>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button type="button" onclick="shuffleCardOrder()" title="순서 섞기" style="background:none; border:none; font-size:24px; cursor:pointer; padding:4px; color: var(--primary-color);">🔀</button>
+                <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
+            </div>
+        </div>
         <div class="flashcard-box" onclick="toggleCardFlip()">
             <span id="card-star-icon" class="card-star" onclick="toggleStarCurrentCard(event)">★</span>
+            <button type="button" id="card-speak-icon" class="card-speak-icon" onclick="speakCurrentCardWord(event)">🔊</button>
             <div id="card-front">
                 <div class="card-word-title" id="card-word-text">Word</div>
             </div>
@@ -491,16 +523,19 @@
                 <div id="card-ex-container"></div>
             </div>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-            <button class="submit-btn" style="width: 45%; background: #64748B; color: white; padding: 12px; font-size: 16px;" onclick="prevCard()">이전</button>
-            <span id="card-index-indicator" style="font-weight: bold; opacity: 0.7; font-size: 18px;">0 / 0</span>
-            <button class="submit-btn" style="width: 45%; background: #64748B; color: white; padding: 12px; font-size: 16px;" onclick="nextCard()">다음</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 20px;">
+            <button class="submit-btn" style="width: 48%; background: #64748B; color: white; padding: 12px; font-size: 16px;" onclick="prevCard()">이전</button>
+            <button class="submit-btn" style="width: 48%; background: #64748B; color: white; padding: 12px; font-size: 16px;" onclick="nextCard()">다음</button>
         </div>
+        <div id="card-index-indicator" style="text-align: center; font-weight: bold; opacity: 0.6; font-size: 13px; margin-top: 8px;">0 / 0</div>
     </div>
 
     <!-- 3. 연습하기 선택 화면 -->
     <div id="quiz-select-view" class="hidden">
-        <button class="nav-back-btn" onclick="goHome()">← 뒤로가기</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="goHome()">← 뒤로가기</button>
+            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
+        </div>
         <div class="form-group">
             <label for="quiz-filter">시험 범위 선택</label>
             <select id="quiz-filter"></select>
@@ -519,12 +554,18 @@
 
     <!-- 3-1. 퀴즈/게임 실행 화면 -->
     <div id="quiz-play-view" class="hidden">
-        <button class="nav-back-btn" onclick="showView('quiz-select-view')">← 뒤로가기</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="showView('quiz-select-view')">← 뒤로가기</button>
+            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
+        </div>
         
         <!-- 일반 퀴즈 영역 -->
         <div id="standard-quiz-area" style="text-align: center; padding: 20px 0;">
-            <div id="quiz-question" style="font-size: 26px; font-weight: bold; margin-bottom: 20px; color: var(--text-color);"></div>
-            <div id="quiz-options" style="display: grid; gap: 10px;"></div>
+            <div id="quiz-question-wrap" style="display: inline-block; text-align: left; max-width: 100%;">
+                <div id="quiz-question" style="font-size: 26px; font-weight: bold; color: var(--text-color);"></div>
+                <div id="quiz-subtext" style="font-size: 14px; font-weight: normal; color: var(--text-color); opacity: 0.5; margin-top: 14px;"></div>
+            </div>
+            <div id="quiz-options" style="display: grid; gap: 10px; margin-top: 20px;"></div>
             <div id="quiz-input-area" class="hidden" style="margin-top: 15px;">
                 <input type="text" id="quiz-answer-input" placeholder="정답을 입력하세요">
                 <button class="submit-btn" style="margin-top: 10px;" onclick="checkSubjectiveAnswer()">정답 제출</button>
@@ -676,14 +717,6 @@
     </div>
 </div>
 
-<!-- 커스텀 알림 팝업 (엔터 키로도 확인 가능) -->
-<div id="custom-alert-modal" class="modal hidden" onclick="closeCustomAlertBg(event)">
-    <div class="modal-content" style="max-width: 340px; text-align: center;">
-        <p id="custom-alert-message" style="font-size: 16px; line-height: 1.5; margin: 6px 0 20px; white-space: pre-line;"></p>
-        <button id="custom-alert-ok-btn" class="submit-btn" onclick="closeCustomAlert()">확인</button>
-    </div>
-</div>
-
 <script>
     let vocaData = [];
     let dayList = [];
@@ -741,28 +774,29 @@
         milk: `<svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#7B93C4" stroke-width="1.1" stroke-linejoin="round"><path d="M6 4H18L20 9V27H4V9L6 4Z" fill="#FFFFFF"/><path d="M6 4L4 9H20L18 4" fill="#EAF1FF"/><path d="M9 15C9 15 8 17 8 18.5C8 19.9 9 20.5 9.5 20.5C10 20.5 11 19.9 11 18.5C11 17 10 15 10 15" fill="#FF8FAB" stroke="#E8628A" stroke-width="0.8"/></svg>`,
         catsit: `<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"><g fill="#111214" stroke="#111214" stroke-width="0.6"><path d="M11 6L8 1L13.5 4.5Z"/><path d="M23 6L26 1L20.5 4.5Z"/><path d="M17 4C10 4 6 10 6 16C6 16 3 19 4 22C5 24 8 22 8 22C8 27 12 30 17 30C22 30 26 27 26 22C26 22 29 24 30 22C31 19 28 16 28 16C28 10 24 4 17 4Z"/><path d="M24 27C27 25 29 21 27 18C29 21 30 26 26 29C22 32 15 32 11 29C13 30 16 30 18 29.5C20.5 29 22.5 28.3 24 27Z"/></g><circle cx="13" cy="15" r="1.6" fill="#FFFFFF"/><circle cx="21" cy="15" r="1.6" fill="#FFFFFF"/></svg>`,
         qmark: `<svg width="18" height="24" viewBox="0 0 18 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#EDEDED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6C4 3 6.5 1.5 9 1.5C11.5 1.5 14 3 14 6C14 9.5 9.5 9.5 9.5 14" fill="none"/><circle cx="9.5" cy="20" r="0.4" fill="#EDEDED" stroke="#EDEDED" stroke-width="1.8"/></svg>`,
-        bone: `<svg width="32" height="16" viewBox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="6" width="18" height="4" rx="2" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="5" cy="5.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="5" cy="10.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="27" cy="5.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="27" cy="10.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/></svg>`,
-        /* ===== 심플&귀여운 한 줄 손그림 라인 아이콘 (currentColor 사용, 테마마다 색만 다르게 재사용) ===== */
-        lineStar: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M11 2L13.6 8.6L20.5 9.3L15.2 13.7L16.9 20.5L11 16.8L5.1 20.5L6.8 13.7L1.5 9.3L8.4 8.6L11 2Z" fill="none"/></svg>`,
-        lineSparkle: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M9 1C9.4 6 10.5 8 16 9C10.5 9.5 9.4 12 9 17C8.6 12 7.5 9.5 2 9C7.5 8 8.6 6 9 1Z" fill="none"/></svg>`,
-        lineHeart: `<svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M11 18C11 18 1.5 12.2 1.5 6.4C1.5 3.4 3.8 1.5 6.4 1.5C8.5 1.5 10.2 2.8 11 4.5C11.8 2.8 13.5 1.5 15.6 1.5C18.2 1.5 20.5 3.4 20.5 6.4C20.5 12.2 11 18 11 18Z" fill="none"/></svg>`,
-        lineDot: `<svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="4"/></svg>`,
-        lineMoon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M14.5 2.5C9.5 2.5 5.5 6.7 5.5 11.8C5.5 14.4 6.6 16.7 8.3 18.3C4.6 17.5 1.8 14 1.8 9.9C1.8 5.1 5.6 1.2 10.4 1.2C11.9 1.2 13.3 1.6 14.5 2.5Z" fill="none"/></svg>`,
-        lineCloud: `<svg width="44" height="26" viewBox="0 0 44 26" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M11 21C6.6 21 3 17.9 3 14.1C3 10.6 6 7.8 9.7 7.5C10.9 4 14.3 1.5 18.3 1.5C23.3 1.5 27.4 5.3 27.7 10.1C32.4 10.2 36 13.3 36 17C36 19.2 33.9 21 31.3 21H11Z" fill="none"/></svg>`,
-        lineCatSit: `<svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M8 6L6 1.5L10.5 4.5" fill="none"/><path d="M22 6L24 1.5L19.5 4.5" fill="none"/><path d="M15 4C9.5 4 6 8.5 6 13.5C6 13.5 3.5 15.5 4 18C4.5 20 7 18.5 7 18.5C7 22.5 10 26 15 26C20 26 23 22.5 23 18.5C23 18.5 25.5 20 26 18C26.5 15.5 24 13.5 24 13.5C24 8.5 20.5 4 15 4Z" fill="none"/><circle cx="12" cy="13.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="18" cy="13.5" r="0.9" fill="currentColor" stroke="none"/></svg>`,
-        lineQmark: `<svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5C3 2.5 5 1 7 1C9 1 11 2.5 11 5C11 8 7 8 7 11.5" fill="none"/><circle cx="7" cy="16" r="0.3" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></svg>`,
-        lineFlower: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><circle cx="12" cy="6.5" r="4" fill="none"/><circle cx="12" cy="17.5" r="4" fill="none"/><circle cx="6.5" cy="12" r="4" fill="none"/><circle cx="17.5" cy="12" r="4" fill="none"/><circle cx="12" cy="12" r="2.4" fill="none"/></svg>`
+        bone: `<svg width="32" height="16" viewBox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="6" width="18" height="4" rx="2" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="5" cy="5.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="5" cy="10.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="27" cy="5.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="27" cy="10.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/></svg>`
     };
 
-    function stickerEl(name, styleStr, color) {
-        const colorStyle = color ? `color:${color};` : '';
-        return `<div class="cute-sticker" style="${colorStyle}${styleStr}">${VOCA_ICONS[name]}</div>`;
+    function stickerEl(name, styleStr) {
+        return `<div class="cute-sticker" style="${styleStr}">${VOCA_ICONS[name]}</div>`;
     }
 
     /* ===== 유틸리티: HTML 속성/텍스트 이스케이프 ===== */
     function escAttr(str) {
         return (str === undefined || str === null ? '' : String(str))
             .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    /* ===== 영어/한글 시작 검증 & 단어 소문자 변환 유틸 ===== */
+    function isEnglishStart(str) {
+        return /^[A-Za-z]/.test((str || '').trim());
+    }
+    function isKoreanStart(str) {
+        return /^[가-힣ㄱ-ㅎㅏ-ㅣ]/.test((str || '').trim());
+    }
+    function lowerFirstLetter(str) {
+        if (!str) return str;
+        return str.charAt(0).toLowerCase() + str.slice(1);
     }
 
     /* ===== 데이터 마이그레이션: 예전 단일 뜻/예문 구조 -> 다중 배열 구조 ===== */
@@ -784,6 +818,38 @@
         if (item.starred === undefined) item.starred = false;
         return item;
     }
+
+    /* ===== 키보드 이동: 화살표(↑↓)로 입력칸/버튼 사이를 이동할 수 있도록 지원 ===== */
+    function getFocusableInView() {
+        const selector = 'input, select, textarea, button';
+        return Array.from(document.querySelectorAll(selector)).filter(el => {
+            if (el.disabled) return false;
+            if (el.tabIndex === -1) return false;
+            if (el.offsetParent === null) return false; // 화면에 보이는 요소만
+            return true;
+        });
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+        const tag = document.activeElement.tagName;
+        if (!['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(tag)) return;
+
+        e.preventDefault();
+        const items = getFocusableInView();
+        const idx = items.indexOf(document.activeElement);
+        if (idx === -1) return;
+
+        let nextIdx = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
+        if (nextIdx < 0) nextIdx = 0;
+        if (nextIdx >= items.length) nextIdx = items.length - 1;
+
+        const target = items[nextIdx];
+        target.focus();
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+            try { target.select(); } catch (_) {}
+        }
+    });
 
     window.onload = function() {
         vocaData = JSON.parse(localStorage.getItem('myVocaData_guest')) || [];
@@ -840,25 +906,32 @@
         bgContainer.innerHTML = '';
 
         if (appConfig.currentPreset === 'cute') {
-            /* 심플하지만 귀여운 로즈 톤 한 줄 손그림 무드 (별/하트/반짝임 라인 아이콘만 옅게, 과하지 않게 고정) */
+            /* 알록달록 카와이 손그림 스티커 (사진 참고 스타일: 컵케이크/하우스/우유팩 등, 전부 고정) */
             bgContainer.innerHTML = `
-                <div class="cute-blob" style="width:200px; height:200px; background:#FFE1EC; top:-60px; left:-60px; opacity:0.35;"></div>
-                <div class="cute-blob" style="width:220px; height:220px; background:#FFE1EC; bottom:-70px; right:-70px; opacity:0.3;"></div>
-                ${stickerEl('lineHeart', 'top:7%; left:8%; transform: rotate(-6deg);', '#E8A0B8')}
-                ${stickerEl('lineStar', 'top:10%; right:9%;', '#E8A0B8')}
-                ${stickerEl('lineSparkle', 'top:26%; right:22%;', '#E8A0B8')}
-                ${stickerEl('lineSparkle', 'bottom:30%; left:9%;', '#E8A0B8')}
-                ${stickerEl('lineStar', 'bottom:14%; right:12%; transform: rotate(10deg) scale(0.8);', '#E8A0B8')}
-                ${stickerEl('lineHeart', 'bottom:8%; left:16%; transform: scale(0.85);', '#E8A0B8')}
+                <div class="cute-blob cute-blob-1"></div>
+                <div class="cute-blob cute-blob-2"></div>
+                <div class="cute-blob" style="width:150px; height:150px; background:#FFE1EC; top:38%; left:-60px;"></div>
+                ${stickerEl('cupcake', 'top:8%; left:9%; transform: rotate(-8deg);')}
+                ${stickerEl('house', 'top:14%; right:7%; transform: rotate(6deg);')}
+                ${stickerEl('milk', 'top:34%; left:5%; transform: rotate(-6deg);')}
+                ${stickerEl('heart', 'top:5%; right:28%; transform: rotate(10deg);')}
+                ${stickerEl('flower', 'bottom:34%; right:6%; transform: rotate(-6deg);')}
+                ${stickerEl('sparkle', 'top:24%; right:22%;')}
+                ${stickerEl('sparkle', 'bottom:12%; left:24%;')}
+                ${stickerEl('cherry', 'bottom:8%; left:8%; transform: rotate(-10deg);')}
+                ${stickerEl('ribbon', 'bottom:20%; right:24%; transform: rotate(-10deg);')}
+                ${stickerEl('star', 'bottom:40%; left:14%; transform: rotate(12deg);')}
+                ${stickerEl('flower', 'bottom:5%; right:34%; transform: rotate(14deg);')}
             `;
         } else if (appConfig.currentPreset === 'cute2') {
-            /* 화이트 & 네이비 톤의 심플한 한 줄 구름 손그림 무드 (옅게, 개수 최소화) */
+            /* 연한 하늘색 배경 + 손그림 느낌의 구름만 떠 있는 심플한 무드 (고정) */
             bgContainer.innerHTML = `
-                ${stickerEl('lineCloud', 'top:6%; left:4%; opacity:0.55;', '#5B7FBE')}
-                ${stickerEl('lineCloud', 'top:16%; right:6%; opacity:0.45; transform: scale(0.75);', '#5B7FBE')}
-                ${stickerEl('lineSparkle', 'top:38%; right:18%; opacity:0.5;', '#5B7FBE')}
-                ${stickerEl('lineCloud', 'bottom:8%; right:-2%; opacity:0.5; transform: scale(0.7);', '#5B7FBE')}
-                ${stickerEl('lineCloud', 'bottom:14%; left:6%; opacity:0.4; transform: scale(0.55);', '#5B7FBE')}
+                ${stickerEl('cloud2', 'top:6%; left:4%; opacity:0.9;')}
+                ${stickerEl('cloud3', 'top:14%; right:8%; opacity:0.85; transform: scale(0.9);')}
+                ${stickerEl('cloud3', 'top:42%; left:-2%; opacity:0.7; transform: scale(0.75);')}
+                ${stickerEl('cloud2', 'bottom:10%; right:-4%; opacity:0.85; transform: scale(0.8);')}
+                ${stickerEl('cloud3', 'bottom:6%; left:10%; opacity:0.75; transform: scale(0.6);')}
+                ${stickerEl('cloud2', 'top:60%; right:20%; opacity:0.55; transform: scale(0.5);')}
             `;
         } else if (appConfig.currentPreset === 'kitsch') {
             /* 컬러풀 플래너/스티커 느낌의 밝고 발랄한 키치 무드 (고정) */
@@ -872,13 +945,16 @@
                 ${stickerEl('star', 'bottom:8%; left:30%; transform: rotate(14deg) scale(0.8);')}
             `;
         } else if (appConfig.currentPreset === 'kitsch2') {
-            /* 블랙 테마 + 사진 참고 스타일의 심플한 한 줄 손그림(물음표 곁들인 고양이, 반짝임), 옅고 절제된 톤 */
+            /* 블랙 테마 + 심플한 손그림(사진 참고: 물음표 곁들인 블랙캣), 고정 */
             bgContainer.innerHTML = `
-                ${stickerEl('lineCatSit', 'bottom:5%; left:6%; opacity:0.5;', '#EDEDED')}
-                ${stickerEl('lineQmark', 'bottom:24%; left:16%; transform: rotate(6deg); opacity:0.4;', '#EDEDED')}
-                ${stickerEl('lineSparkle', 'top:9%; right:10%; opacity:0.45;', '#EDEDED')}
-                ${stickerEl('lineMoon', 'top:18%; right:22%; opacity:0.4; transform: scale(0.8);', '#EDEDED')}
-                ${stickerEl('lineSparkle', 'bottom:20%; right:8%; opacity:0.35; transform: scale(0.7);', '#EDEDED')}
+                <div class="hip-glow" style="width:240px; height:240px; background:#000000; opacity:0.05; top:-60px; right:-40px;"></div>
+                <div class="hip-glow" style="width:220px; height:220px; background:#000000; opacity:0.04; bottom:-50px; left:-50px;"></div>
+                ${stickerEl('catsit', 'bottom:6%; left:6%; opacity:0.92;')}
+                ${stickerEl('qmark', 'bottom:26%; left:15%; transform: rotate(8deg); opacity:0.8;')}
+                ${stickerEl('sparkle', 'bottom:22%; left:2%; opacity:0.6; transform: scale(0.7);')}
+                ${stickerEl('moon', 'top:10%; right:9%; opacity:0.85;')}
+                ${stickerEl('star', 'top:28%; right:20%; transform: scale(0.7); opacity:0.7;')}
+                ${stickerEl('sparkle', 'top:6%; right:24%; opacity:0.6; transform: scale(0.6);')}
             `;
         }
     }
@@ -894,7 +970,7 @@
 
         if (viewId === 'category-view') {
             isCategoryEditMode = false;
-            document.getElementById('category-edit-toggle-btn').innerText = "편집";
+            document.getElementById('category-edit-toggle-btn').innerText = "✏️";
             document.getElementById('category-select-all-area').classList.add('hidden');
             document.getElementById('category-delete-action-area').classList.add('hidden');
             document.getElementById('category-edit-hint').classList.add('hidden');
@@ -1042,14 +1118,14 @@
             appConfig.borderDk = "#FADCE4";
             appConfig.topBtnBg = "#FCE8EC";
         } else if (type === 'cute2') {
-            /* 화이트 & 네이비 톤의 심플한 손그림 다이어리 감성 */
+            /* 화이트 & 네이비 톤의 손그림 다이어리, 토끼 낙서 감성 */
             appConfig.primaryColor = "#3B5998";
             appConfig.bgColor = "#F4F8FF";
             appConfig.cardBg = "#FFFFFF";
             appConfig.textColor = "#263248";
             appConfig.wordCardBg = "#FFFFFF";
             appConfig.wordCardText = "#2C3E66";
-            appConfig.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+            appConfig.fontFamily = "'Comic Sans MS', cursive, sans-serif";
             appConfig.borderRadius = "20px";
             appConfig.btnRadius = "12px";
             appConfig.borderDk = "#33415C";
@@ -1105,7 +1181,7 @@
         alert('디자인 테마가 커스텀 적용되었습니다.');
     }
 
-    /* ===== 동적 뜻/예문 입력 필드 렌더링 (등록 폼 & 수정 모달 공용) ===== */
+    /* ===== 동적 뜻/예문 입력 필드 렌더링 (등록 폼 & 수정 모달 공용) - 개수 제한 없음 ===== */
     function meaningFieldsHtml(prefix, values) {
         let html = '';
         values.forEach((v, i) => {
@@ -1114,9 +1190,7 @@
                 ${values.length > 1 ? `<button type="button" class="dyn-remove-btn" onclick="removeDynField('${prefix}','meaning',${i})">✕</button>` : ''}
             </div>`;
         });
-        if (values.length < 3) {
-            html += `<button type="button" class="dyn-add-btn" onclick="addDynField('${prefix}','meaning')">+ 뜻 추가 (${values.length}/3)</button>`;
-        }
+        html += `<button type="button" class="dyn-add-btn" onclick="addDynField('${prefix}','meaning')">+ 뜻 추가</button>`;
         return html;
     }
 
@@ -1131,9 +1205,7 @@
                 </div>
             </div>`;
         });
-        if (values.length < 3) {
-            html += `<button type="button" class="dyn-add-btn" onclick="addDynField('${prefix}','example')">+ 예문 추가 (${values.length}/3)</button>`;
-        }
+        html += `<button type="button" class="dyn-add-btn" onclick="addDynField('${prefix}','example')">+ 예문 추가</button>`;
         return html;
     }
 
@@ -1171,21 +1243,21 @@
         if (target === 'reg') {
             if (type === 'meaning') {
                 syncRegMeanings();
-                if (regMeanings.length < 3) regMeanings.push('');
+                regMeanings.push('');
                 renderRegMeaningFields();
             } else {
                 syncRegExamples();
-                if (regExamples.length < 3) regExamples.push({ ex: '', exm: '' });
+                regExamples.push({ ex: '', exm: '' });
                 renderRegExampleFields();
             }
         } else {
             if (type === 'meaning') {
                 syncModalMeanings();
-                if (modalMeanings.length < 3) modalMeanings.push('');
+                modalMeanings.push('');
                 renderModalMeaningFields();
             } else {
                 syncModalExamples();
-                if (modalExamples.length < 3) modalExamples.push({ ex: '', exm: '' });
+                modalExamples.push({ ex: '', exm: '' });
                 renderModalExampleFields();
             }
         }
@@ -1201,7 +1273,6 @@
             } else {
                 syncRegExamples();
                 regExamples.splice(idx, 1);
-                if (regExamples.length === 0) regExamples = [{ ex: '', exm: '' }];
                 renderRegExampleFields();
             }
         } else {
@@ -1213,7 +1284,6 @@
             } else {
                 syncModalExamples();
                 modalExamples.splice(idx, 1);
-                if (modalExamples.length === 0) modalExamples = [{ ex: '', exm: '' }];
                 renderModalExampleFields();
             }
         }
@@ -1225,8 +1295,10 @@
         const day = document.getElementById('day-select').value;
         if (!day) return alert('단어장을 먼저 추가하고 선택해 주세요.');
 
-        const word = document.getElementById('word').value.trim();
+        let word = document.getElementById('word').value.trim();
         if (!word) return alert('영어 단어를 입력해 주세요.');
+        if (!isEnglishStart(word)) return alert('영어 단어 칸에는 알파벳으로 시작하는 영어 단어를 입력해 주세요.');
+        word = lowerFirstLetter(word);
 
         syncRegMeanings();
         syncRegExamples();
@@ -1234,6 +1306,8 @@
         const examples = regExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim() })).filter(ex => ex.ex);
 
         if (meanings.length === 0) return alert('뜻을 최소 1개 입력해 주세요.');
+        const badMeaning = meanings.find(m => !isKoreanStart(m));
+        if (badMeaning) return alert(`뜻은 한글로 시작해 주세요. ("${badMeaning}")`);
 
         vocaData.push({ id: Date.now(), day, word, meanings, examples, starred: false });
         saveData();
@@ -1244,6 +1318,7 @@
         renderRegMeaningFields();
         renderRegExampleFields();
         updateDaySelects();
+        document.getElementById('day-select').value = day;
     });
 
     /* 단어장 목록 화면에서 편집 모드 토글 */
@@ -1260,7 +1335,7 @@
             actionArea.classList.remove('hidden');
             hint.classList.remove('hidden');
         } else {
-            btn.innerText = "편집";
+            btn.innerText = "✏️";
             selectAllArea.classList.add('hidden');
             actionArea.classList.add('hidden');
             hint.classList.add('hidden');
@@ -1336,7 +1411,7 @@
 
         saveData();
         isCategoryEditMode = false;
-        document.getElementById('category-edit-toggle-btn').innerText = "편집";
+        document.getElementById('category-edit-toggle-btn').innerText = "✏️";
         document.getElementById('category-select-all-area').classList.add('hidden');
         document.getElementById('category-delete-action-area').classList.add('hidden');
         document.getElementById('category-edit-hint').classList.add('hidden');
@@ -1367,7 +1442,7 @@
         currentSelectedCategory = cat;
         isWordEditMode = false;
         showView('word-list-view');
-        document.getElementById('word-edit-toggle-btn').innerText = "편집";
+        document.getElementById('word-edit-toggle-btn').innerText = "✏️";
         document.getElementById('word-select-all-area').classList.add('hidden');
         document.getElementById('word-delete-action-area').classList.add('hidden');
         document.getElementById('word-edit-hint').classList.add('hidden');
@@ -1392,7 +1467,7 @@
             hint.classList.remove('hidden');
             cardBtn.classList.add('hidden');
         } else {
-            btn.innerText = "편집";
+            btn.innerText = "✏️";
             selectAllArea.classList.add('hidden');
             actionArea.classList.add('hidden');
             hint.classList.add('hidden');
@@ -1412,7 +1487,7 @@
         const container = document.getElementById('words-container');
         const titleEl = document.getElementById('selected-folder-title');
 
-        if (currentSelectedCategory === 'all') titleEl.innerText = '전체 단어 목록';
+        if (currentSelectedCategory === 'all') titleEl.innerText = '전체 단어';
         else if (currentSelectedCategory === 'starred') titleEl.innerText = '⭐ 즐겨찾기';
         else titleEl.innerText = `📖 ${currentSelectedCategory}`;
 
@@ -1429,6 +1504,7 @@
                     <div class="clean-word-item" style="cursor: default;">
                         <input type="checkbox" class="word-checkbox" value="${item.id}" style="width: 20px; height: 20px; cursor: pointer;">
                         <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
+                        <button type="button" class="speak-btn" data-word="${escAttr(item.word)}" onclick="speakText(event, this.dataset.word)">🔊</button>
                         <div class="word-text-title" style="flex:1;">${item.word}</div>
                         <div class="reorder-btn-group">
                             <button type="button" class="reorder-btn" onclick="moveWordUp(${item.id})" ${index === 0 ? 'disabled' : ''}>▲</button>
@@ -1441,6 +1517,7 @@
                 return `
                     <div class="clean-word-item">
                         <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
+                        <button type="button" class="speak-btn" data-word="${escAttr(item.word)}" onclick="speakText(event, this.dataset.word)">🔊</button>
                         <div class="word-text-title" style="flex:1;" onclick="openCardViewAtIndex(${index})">${item.word}</div>
                         <button style="background:none; border:none; color:var(--primary-color); font-size:18px; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️</button>
                     </div>
@@ -1461,7 +1538,7 @@
         saveData();
 
         isWordEditMode = false;
-        document.getElementById('word-edit-toggle-btn').innerText = "편집";
+        document.getElementById('word-edit-toggle-btn').innerText = "✏️";
         document.getElementById('word-select-all-area').classList.add('hidden');
         document.getElementById('word-delete-action-area').classList.add('hidden');
         document.getElementById('word-edit-hint').classList.add('hidden');
@@ -1543,7 +1620,6 @@
         modalEditId = id;
         modalMeanings = item.meanings && item.meanings.length ? [...item.meanings] : [''];
         modalExamples = (item.examples || []).map(ex => ({ ex: ex.ex, exm: ex.exm }));
-        if (modalExamples.length === 0) modalExamples = [{ ex: '', exm: '' }];
 
         const dayOptionsHtml = dayList.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d}</option>`).join('');
 
@@ -1558,11 +1634,11 @@
                 <input type="text" id="modal-edit-word" value="${escAttr(item.word)}">
             </div>
             <div class="form-group" style="margin-bottom:12px;">
-                <label style="font-size:13px; opacity:0.8;">뜻 (최대 3개)</label>
+                <label style="font-size:13px; opacity:0.8;">뜻</label>
                 <div id="modal-meanings-container"></div>
             </div>
             <div class="form-group" style="margin-bottom:15px;">
-                <label style="font-size:13px; opacity:0.8;">예문 (최대 3개, 선택)</label>
+                <label style="font-size:13px; opacity:0.8;">예문 (선택)</label>
                 <div id="modal-examples-container"></div>
             </div>
             <div style="display:flex; gap:10px;">
@@ -1580,8 +1656,10 @@
         const item = vocaData.find(w => w.id === modalEditId);
         if (!item) return;
 
-        const word = document.getElementById('modal-edit-word').value.trim();
+        let word = document.getElementById('modal-edit-word').value.trim();
         if (!word) return alert('영어 단어를 입력해 주세요.');
+        if (!isEnglishStart(word)) return alert('영어 단어 칸에는 알파벳으로 시작하는 영어 단어를 입력해 주세요.');
+        word = lowerFirstLetter(word);
 
         syncModalMeanings();
         syncModalExamples();
@@ -1589,6 +1667,8 @@
         const examples = modalExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim() })).filter(ex => ex.ex);
 
         if (meanings.length === 0) return alert('뜻을 최소 1개 입력해 주세요.');
+        const badMeaning = meanings.find(m => !isKoreanStart(m));
+        if (badMeaning) return alert(`뜻은 한글로 시작해 주세요. ("${badMeaning}")`);
 
         item.day = document.getElementById('modal-edit-day').value;
         item.word = word;
@@ -1616,6 +1696,27 @@
         if (e.target.id === 'word-detail-modal') closeWordDetailModal();
     }
 
+    /* 발음 재생 (Web Speech API 사용, 아이패드/아이폰 사파리 등 대부분 브라우저 지원) */
+    function speakText(e, text) {
+        if (e) e.stopPropagation();
+        if (!text) return;
+        if (!('speechSynthesis' in window)) {
+            alert('이 기기/브라우저에서는 음성 재생을 지원하지 않습니다.');
+            return;
+        }
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'en-US';
+        utter.rate = 0.9;
+        window.speechSynthesis.speak(utter);
+    }
+
+    function speakCurrentCardWord(e) {
+        if (e) e.stopPropagation();
+        const item = currentFilteredWords[currentCardIdx];
+        if (item) speakText(null, item.word);
+    }
+
     /* 플래시카드 기능 - 등록된 뜻/예문을 모두 보여줌 (학습용 카드 보기이므로 전체 노출) */
     function renderCard() {
         const item = currentFilteredWords[currentCardIdx];
@@ -1628,9 +1729,9 @@
         const exContainer = document.getElementById('card-ex-container');
         if (item.examples && item.examples.length > 0) {
             exContainer.innerHTML = item.examples.map(ex => `
-                <div style="margin-top:10px;">
+                <div style="margin-top:16px; text-align:center;">
                     <div class="card-ex-text">${escAttr(ex.ex)}</div>
-                    ${ex.exm ? `<div class="card-exmeaning-text">${escAttr(ex.exm)}</div>` : ''}
+                    ${ex.exm ? `<div class="card-exmeaning-text" style="margin-top:8px;">${escAttr(ex.exm)}</div>` : ''}
                 </div>
             `).join('');
         } else {
@@ -1664,6 +1765,25 @@
 
     function nextCard() {
         currentCardIdx = (currentCardIdx + 1) % currentFilteredWords.length;
+        renderCard();
+    }
+
+    /* 단어 카드 순서 섞기: 현재 카드 목록을 무작위로 재배열 */
+    /* 단어 카드 순서 섞기: 항상 현재 보고 있던 단어와 다른 단어가 먼저 나오도록 보정 */
+    function shuffleCardOrder() {
+        if (currentFilteredWords.length === 0) return;
+        if (currentFilteredWords.length === 1) { renderCard(); return; }
+
+        const currentWord = currentFilteredWords[currentCardIdx];
+        let shuffled;
+        let tries = 0;
+        do {
+            shuffled = [...currentFilteredWords].sort(() => Math.random() - 0.5);
+            tries++;
+        } while (shuffled[0].id === currentWord.id && tries < 20);
+
+        currentFilteredWords = shuffled;
+        currentCardIdx = 0;
         renderCard();
     }
 
@@ -1719,9 +1839,11 @@
         const questionEl = document.getElementById('quiz-question');
         const optionsEl = document.getElementById('quiz-options');
         const inputAreaEl = document.getElementById('quiz-input-area');
+        const subtextEl = document.getElementById('quiz-subtext');
 
         optionsEl.innerHTML = "";
         inputAreaEl.classList.add('hidden');
+        subtextEl.innerText = "";
 
         if (mode === 'mc') {
             questionEl.innerText = currentQuizItem.word;
@@ -1768,6 +1890,7 @@
             const chosenEx = validExamples[Math.floor(Math.random() * validExamples.length)];
             const regex = new RegExp(currentQuizItem.word, 'gi');
             questionEl.innerText = chosenEx.ex.replace(regex, '_____');
+            subtextEl.innerText = chosenEx.exm || '';
             inputAreaEl.classList.add('hidden');
         }
     }
@@ -1898,72 +2021,6 @@
         };
         reader.readAsText(file);
     }
-
-    /* ===== 키보드 위/아래 화살표로 입력 칸 이동 (Tab 이동과 별개로 추가 지원) ===== */
-    function getVisibleNavInputs(scope) {
-        return Array.from(scope.querySelectorAll('input[type="text"], textarea'))
-            .filter(el => el.offsetParent !== null && !el.disabled);
-    }
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
-
-        const active = document.activeElement;
-        if (!active) return;
-        const tag = active.tagName;
-        if (tag !== 'INPUT' && tag !== 'TEXTAREA') return;
-        if (tag === 'INPUT' && active.type !== 'text') return;
-
-        // 모달이 열려있으면 모달 안에서만, 아니면 현재 보이는 화면(container) 안에서 이동
-        const openModal = Array.from(document.querySelectorAll('.modal')).find(m => !m.classList.contains('hidden'));
-        const scope = openModal ? openModal : (active.closest('.container') || document.body);
-
-        const focusables = getVisibleNavInputs(scope);
-        const idx = focusables.indexOf(active);
-        if (idx === -1) return;
-
-        e.preventDefault();
-        const nextIdx = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
-        if (nextIdx >= 0 && nextIdx < focusables.length) {
-            focusables[nextIdx].focus();
-            if (typeof focusables[nextIdx].select === 'function') focusables[nextIdx].select();
-        }
-    });
-
-    /* ===== 커스텀 알림 팝업: 마우스로 버튼을 누르지 않아도 엔터 키로 바로 확인 가능 ===== */
-    const nativeAlert = window.alert.bind(window);
-
-    window.alert = function(message) {
-        const modal = document.getElementById('custom-alert-modal');
-        const msgEl = document.getElementById('custom-alert-message');
-        if (!modal || !msgEl) { nativeAlert(message); return; }
-
-        msgEl.innerText = message;
-        modal.classList.remove('hidden');
-
-        // 버튼에 포커스를 줘서 엔터/스페이스로도 바로 확인되게 함
-        const okBtn = document.getElementById('custom-alert-ok-btn');
-        setTimeout(() => { if (okBtn) okBtn.focus(); }, 0);
-    };
-
-    function closeCustomAlert() {
-        document.getElementById('custom-alert-modal').classList.add('hidden');
-    }
-    function closeCustomAlertBg(e) {
-        if (e.target.id === 'custom-alert-modal') closeCustomAlert();
-    }
-
-    /* 알림 팝업이 떠 있는 동안에는 입력 중이던 필드에 포커스가 남아 있어도
-       엔터 키를 누르면 바로 "확인" 처리되도록 최우선으로 가로챈다 */
-    document.addEventListener('keydown', function(e) {
-        if (e.key !== 'Enter') return;
-        const modal = document.getElementById('custom-alert-modal');
-        if (modal && !modal.classList.contains('hidden')) {
-            e.preventDefault();
-            e.stopPropagation();
-            closeCustomAlert();
-        }
-    }, true);
 </script>
 
 </body>
