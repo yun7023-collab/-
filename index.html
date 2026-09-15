@@ -728,7 +728,7 @@
         <button class="close-x" onclick="closePhotoImportModal()">✕</button>
         <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px; margin-bottom: 10px;">📷 사진으로 단어 추가</h3>
         <p style="font-size:13px; opacity:0.75; line-height:1.5; margin-bottom:14px;">
-            단어장 사진을 올리면 글자를 자동으로 읽어와요. 인식이 완벽하지 않을 수 있으니 추가 전에 꼭 확인해 주세요.
+            단어장 사진을 올리면 글자를 자동으로 읽어와요. 인식이 완벽하지 않을 수 있으니 추가 전에 꼭 확인해 주세요. 뜻과 예문은 단어마다 원하는 만큼 추가하거나 지울 수 있어요.
         </p>
         <div class="form-group" style="margin-bottom:12px;">
             <label style="font-size:13px; opacity:0.8;">추가할 단어장</label>
@@ -784,8 +784,8 @@
     let modalMeanings = [''];
     let modalExamples = [];
 
-    /* 사진으로 단어 추가 - 인식 결과를 단어 등록 폼처럼 편집 가능한 카드 목록으로 관리 */
-    let ocrItems = [];
+    /* 사진으로 단어 추가 - 뜻/예문 다중 입력 지원 (등록 폼과 동일한 방식) */
+    let ocrItems = []; // { word, meanings: [''], examples: [{ex:'', exm:''}] }
     
     let appConfig = {
         title: "나만의 영단어장",
@@ -2098,7 +2098,7 @@
         if (e.target.id === 'photo-import-modal') closePhotoImportModal();
     }
 
-    /* 인식된 단어 목록을 단어 등록 폼과 같은 카드형 입력 필드로 렌더링 */
+    /* 인식된 단어 목록을 단어 등록 폼과 같은 카드형 입력 필드로 렌더링 (뜻/예문 다중 입력 지원) */
     function renderOcrItems() {
         const container = document.getElementById('ocr-items-container');
         if (ocrItems.length === 0) {
@@ -2111,32 +2111,71 @@
                     <span class="ocr-item-label">단어 ${idx + 1}</span>
                     <button type="button" class="ocr-remove-btn" onclick="removeOcrItemRow(${idx})">✕</button>
                 </div>
-                <input type="text" class="ocr-word-input" data-idx="${idx}" value="${escAttr(item.word)}" placeholder="영어 단어" autocapitalize="none" autocorrect="on" spellcheck="true">
-                <input type="text" class="ocr-meaning-input" data-idx="${idx}" value="${escAttr(item.meaning)}" placeholder="뜻">
-                <input type="text" class="ocr-example-input" data-idx="${idx}" value="${escAttr(item.example)}" placeholder="예문 (선택)">
+                <input type="text" class="ocr-word-input" data-idx="${idx}" value="${escAttr(item.word)}" placeholder="영어 단어" autocapitalize="none" autocorrect="on" spellcheck="true" style="margin-bottom:10px;">
+                <label style="font-size:12px; opacity:0.7; display:block; margin-bottom:4px;">뜻</label>
+                <div id="ocr-meanings-${idx}" style="margin-bottom:10px;">${ocrMeaningFieldsHtml(idx, item.meanings)}</div>
+                <label style="font-size:12px; opacity:0.7; display:block; margin-bottom:4px;">예문 (선택)</label>
+                <div id="ocr-examples-${idx}">${ocrExampleFieldsHtml(idx, item.examples)}</div>
             </div>
         `).join('');
     }
 
+    /* 단어별 뜻 입력 필드 (원하는 만큼 추가/삭제 가능) */
+    function ocrMeaningFieldsHtml(itemIdx, values) {
+        const vals = values && values.length ? values : [''];
+        let html = '';
+        vals.forEach((v, i) => {
+            html += `<div class="meaning-row">
+                <input type="text" class="ocr-meaning-input" data-item="${itemIdx}" data-idx="${i}" value="${escAttr(v)}" placeholder="뜻 ${i + 1}${i === 0 ? '' : ' (선택)'}">
+                ${vals.length > 1 ? `<button type="button" class="dyn-remove-btn" tabindex="-1" onclick="removeOcrMeaning(${itemIdx},${i})">✕</button>` : ''}
+            </div>`;
+        });
+        html += `<button type="button" class="dyn-add-btn" onclick="addOcrMeaning(${itemIdx})">+ 뜻 추가</button>`;
+        return html;
+    }
+
+    /* 단어별 예문 입력 필드 (원하는 만큼 추가/삭제 가능) */
+    function ocrExampleFieldsHtml(itemIdx, values) {
+        const vals = values || [];
+        let html = '';
+        vals.forEach((v, i) => {
+            html += `<div class="example-block">
+                <button type="button" class="dyn-remove-btn" tabindex="-1" onclick="removeOcrExample(${itemIdx},${i})">✕</button>
+                <div class="example-block-inner">
+                    <input type="text" class="ocr-example-input" data-item="${itemIdx}" data-idx="${i}" value="${escAttr(v.ex)}" placeholder="예문 ${i + 1}">
+                    <input type="text" class="ocr-exmeaning-input" data-item="${itemIdx}" data-idx="${i}" value="${escAttr(v.exm)}" placeholder="예문 뜻 ${i + 1}">
+                </div>
+            </div>`;
+        });
+        html += `<button type="button" class="dyn-add-btn" onclick="addOcrExample(${itemIdx})">+ 예문 추가</button>`;
+        return html;
+    }
+
+    /* 화면에 표시된 입력값들을 ocrItems 상태로 반영 (재렌더링 전에 항상 호출) */
     function syncOcrItemsFromInputs() {
-        const words = Array.from(document.querySelectorAll('.ocr-word-input'));
-        words.forEach(inp => {
+        Array.from(document.querySelectorAll('.ocr-word-input')).forEach(inp => {
             const idx = Number(inp.dataset.idx);
             if (ocrItems[idx]) ocrItems[idx].word = inp.value;
         });
-        Array.from(document.querySelectorAll('.ocr-meaning-input')).forEach(inp => {
-            const idx = Number(inp.dataset.idx);
-            if (ocrItems[idx]) ocrItems[idx].meaning = inp.value;
-        });
-        Array.from(document.querySelectorAll('.ocr-example-input')).forEach(inp => {
-            const idx = Number(inp.dataset.idx);
-            if (ocrItems[idx]) ocrItems[idx].example = inp.value;
+        ocrItems.forEach((item, idx) => {
+            const meaningInputs = Array.from(document.querySelectorAll(`.ocr-meaning-input[data-item="${idx}"]`))
+                .sort((a, b) => Number(a.dataset.idx) - Number(b.dataset.idx));
+            if (meaningInputs.length > 0) {
+                item.meanings = meaningInputs.map(inp => inp.value);
+            }
+            const exInputs = Array.from(document.querySelectorAll(`.ocr-example-input[data-item="${idx}"]`))
+                .sort((a, b) => Number(a.dataset.idx) - Number(b.dataset.idx));
+            const exmInputs = Array.from(document.querySelectorAll(`.ocr-exmeaning-input[data-item="${idx}"]`))
+                .sort((a, b) => Number(a.dataset.idx) - Number(b.dataset.idx));
+            if (exInputs.length > 0) {
+                item.examples = exInputs.map((inp, i) => ({ ex: inp.value, exm: exmInputs[i] ? exmInputs[i].value : '' }));
+            }
         });
     }
 
     function addOcrItemRow() {
         syncOcrItemsFromInputs();
-        ocrItems.push({ word: '', meaning: '', example: '' });
+        ocrItems.push({ word: '', meanings: [''], examples: [] });
         renderOcrItems();
     }
 
@@ -2146,15 +2185,60 @@
         renderOcrItems();
     }
 
+    function addOcrMeaning(itemIdx) {
+        syncOcrItemsFromInputs();
+        ocrItems[itemIdx].meanings.push('');
+        renderOcrItems();
+    }
+
+    function removeOcrMeaning(itemIdx, mIdx) {
+        syncOcrItemsFromInputs();
+        ocrItems[itemIdx].meanings.splice(mIdx, 1);
+        if (ocrItems[itemIdx].meanings.length === 0) ocrItems[itemIdx].meanings = [''];
+        renderOcrItems();
+    }
+
+    function addOcrExample(itemIdx) {
+        syncOcrItemsFromInputs();
+        ocrItems[itemIdx].examples.push({ ex: '', exm: '' });
+        renderOcrItems();
+    }
+
+    function removeOcrExample(itemIdx, eIdx) {
+        syncOcrItemsFromInputs();
+        ocrItems[itemIdx].examples.splice(eIdx, 1);
+        renderOcrItems();
+    }
+
+    /* OCR 원문 텍스트 정제: 발음기호([...])와 품사 표시(원문자 명/동/형 등)를 제거하고,
+       영어/한글/허용된 기호(괄호, 세미콜론, 쉼표, 물결, 가운뎃점, 마침표, 어퍼스트로피)만 남긴다 */
+    function cleanOcrText(rawText) {
+        let text = rawText || '';
+        // 1) 대괄호로 감싸인 발음기호 구간 제거 (예: [fɔ:rin], [prətékt])
+        text = text.replace(/\[[^\]]*\]/g, ' ');
+        // 2) 슬래시로 감싸인 발음기호 구간 제거 (예: /fɔ:rin/)
+        text = text.replace(/\/[^\/\n]*\/(?=\s|$)/g, ' ');
+        // 3) 단독으로 등장하는 품사 표시 글자 제거 (원문자 안의 명/동/형/부/대/전/접/감 등)
+        text = text.replace(/(^|[\s])(명사?|동사?|형용사?|부사|대명사|전치사|접속사|감탄사)(?=[\s]|$)/g, '$1');
+        // 4) 허용되지 않는 문자 제거: 영어, 한글, 숫자, 공백/줄바꿈, ( ) ; , ~ • . ' - 만 남김
+        //    (IPA 발음기호 특수문자, 원문자 숫자/기호 등은 모두 제거됨)
+        text = text.replace(/[^A-Za-z0-9가-힣ㄱ-ㅎㅏ-ㅣ\s()~;,•.'\-]/g, '');
+        return text;
+    }
+
     /* OCR로 인식된 원문 텍스트를 줄 단위로 파싱해서 단어/뜻/예문 카드 배열로 변환 */
     function parseOcrTextToItems(rawText) {
-        const lines = rawText.split('\n').map(l => l.trim()).filter(l => l);
+        const cleaned = cleanOcrText(rawText);
+        const lines = cleaned.split('\n').map(l => l.trim()).filter(l => l);
         return lines.map(line => {
             const parts = line.split(/\t|,/).map(p => p.trim()).filter(p => p !== '');
+            const word = parts[0] || '';
+            const meaning = parts[1] || '';
+            const example = parts.slice(2).join(', ').trim();
             return {
-                word: parts[0] || '',
-                meaning: parts[1] || '',
-                example: parts.slice(2).join(', ').trim()
+                word,
+                meanings: [meaning],
+                examples: example ? [{ ex: example, exm: '' }] : []
             };
         }).filter(item => item.word);
     }
@@ -2185,7 +2269,7 @@
             } else {
                 ocrItems = parsedItems;
                 renderOcrItems();
-                statusEl.innerText = '인식 완료! 아래 내용을 확인하고 필요하면 직접 고친 뒤 "일괄 추가하기"를 눌러주세요.';
+                statusEl.innerText = '인식 완료! 아래 내용을 확인하고, 뜻이나 예문이 더 있다면 "+ 추가" 버튼으로 채운 뒤 "일괄 추가하기"를 눌러주세요.';
             }
         } catch (err) {
             console.error(err);
@@ -2206,17 +2290,19 @@
 
         ocrItems.forEach(item => {
             const word = (item.word || '').trim();
-            const meaning = (item.meaning || '').trim();
-            const example = (item.example || '').trim();
+            const meanings = (item.meanings || []).map(m => m.trim()).filter(m => m);
+            const examples = (item.examples || [])
+                .map(ex => ({ ex: (ex.ex || '').trim(), exm: (ex.exm || '').trim() }))
+                .filter(ex => ex.ex);
 
-            if (!word || !meaning) { skipped++; return; }
+            if (!word || meanings.length === 0) { skipped++; return; }
 
             vocaData.push({
                 id: Date.now() + Math.floor(Math.random() * 100000),
                 day,
                 word: lowerFirstLetter(word),
-                meanings: [meaning],
-                examples: example ? [{ ex: example, exm: '' }] : [],
+                meanings,
+                examples,
                 starred: false
             });
             addedCount++;
