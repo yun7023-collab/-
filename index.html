@@ -390,6 +390,25 @@
         .btn-orange:hover { background-color: #e08500; }
         .btn-gray { background-color: #8E8E93; color: white; }
         .btn-gray:hover { background-color: #7a7a7e; }
+
+        /* 사진 인식 결과 - 단어 등록 폼처럼 카드형으로 보여주는 스타일 */
+        .ocr-item-card {
+            border: 1px solid var(--border-color); border-radius: 12px; padding: 14px;
+            margin-bottom: 10px; background: var(--top-btn-bg); position: relative;
+        }
+        .ocr-item-card .ocr-item-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+        }
+        .ocr-item-card .ocr-item-label {
+            font-size: 13px; font-weight: bold; opacity: 0.7;
+        }
+        .ocr-item-card input { margin-bottom: 8px; }
+        .ocr-item-card input:last-of-type { margin-bottom: 0; }
+        .ocr-remove-btn {
+            width: 26px; height: 26px; border: 1px solid var(--border-color); border-radius: 8px;
+            background: none; color: #FF3B30; cursor: pointer; font-size: 13px;
+            display: flex; align-items: center; justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -709,8 +728,7 @@
         <button class="close-x" onclick="closePhotoImportModal()">✕</button>
         <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px; margin-bottom: 10px;">📷 사진으로 단어 추가</h3>
         <p style="font-size:13px; opacity:0.75; line-height:1.5; margin-bottom:14px;">
-            단어장 사진을 올리면 글자를 자동으로 읽어와요. 인식이 완벽하지 않을 수 있으니 추가 전에 꼭 확인해 주세요.<br>
-            한 줄에 <b>단어, 뜻, 예문</b> 순서로 쉼표(,)로 구분해 입력해 주세요. (예문은 생략 가능)
+            단어장 사진을 올리면 글자를 자동으로 읽어와요. 인식이 완벽하지 않을 수 있으니 추가 전에 꼭 확인해 주세요.
         </p>
         <div class="form-group" style="margin-bottom:12px;">
             <label style="font-size:13px; opacity:0.8;">추가할 단어장</label>
@@ -718,13 +736,16 @@
         </div>
         <div class="form-group" style="margin-bottom:12px;">
             <label style="font-size:13px; opacity:0.8;">단어장 사진</label>
-            <input type="file" id="photo-import-file" accept="image/*" capture="environment">
+            <input type="file" id="photo-import-file" accept="image/*">
         </div>
         <button type="button" id="run-ocr-btn" class="submit-btn" style="background-color:#4A90E2; margin-bottom:10px;" onclick="runOcrOnPhoto()">🔍 사진에서 텍스트 읽기</button>
         <div id="photo-import-status" style="font-size:13px; opacity:0.7; margin-bottom:10px; min-height:18px;"></div>
-        <div class="form-group" style="margin-bottom:14px;">
-            <label style="font-size:13px; opacity:0.8;">인식된 내용 (확인 후 자유롭게 수정 가능)</label>
-            <textarea id="photo-import-textarea" rows="8" style="font-family: monospace; font-size:14px;" placeholder="item, 물품, This item is out of stock&#10;protect, 보호하다, protect one's privacy"></textarea>
+        <div class="form-group" style="margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <label style="font-size:13px; opacity:0.8; margin-bottom:0;">인식된 단어 (확인 후 자유롭게 수정 가능)</label>
+                <button type="button" onclick="addOcrItemRow()" style="background:none; border:none; color:var(--primary-color); font-weight:bold; font-size:13px; cursor:pointer; padding:0;">+ 단어 추가</button>
+            </div>
+            <div id="ocr-items-container"></div>
         </div>
         <button type="button" class="submit-btn" style="background-color:#34C759;" onclick="bulkAddFromPhotoImport()">✅ 일괄 추가하기</button>
     </div>
@@ -762,6 +783,9 @@
     let modalEditId = null;
     let modalMeanings = [''];
     let modalExamples = [];
+
+    /* 사진으로 단어 추가 - 인식 결과를 단어 등록 폼처럼 편집 가능한 카드 목록으로 관리 */
+    let ocrItems = [];
     
     let appConfig = {
         title: "나만의 영단어장",
@@ -2062,8 +2086,9 @@
         const sel = document.getElementById('photo-import-day-select');
         sel.innerHTML = dayList.map(d => `<option value="${escAttr(d)}" ${d === currentSelectedCategory ? 'selected' : ''}>${escAttr(d)}</option>`).join('');
         document.getElementById('photo-import-file').value = '';
-        document.getElementById('photo-import-textarea').value = '';
         document.getElementById('photo-import-status').innerText = '';
+        ocrItems = [];
+        renderOcrItems();
         document.getElementById('photo-import-modal').classList.remove('hidden');
     }
     function closePhotoImportModal() {
@@ -2071,6 +2096,67 @@
     }
     function closePhotoImportModalBg(e) {
         if (e.target.id === 'photo-import-modal') closePhotoImportModal();
+    }
+
+    /* 인식된 단어 목록을 단어 등록 폼과 같은 카드형 입력 필드로 렌더링 */
+    function renderOcrItems() {
+        const container = document.getElementById('ocr-items-container');
+        if (ocrItems.length === 0) {
+            container.innerHTML = `<p style="opacity:0.6; font-size:13px; text-align:center; padding:14px 0;">사진에서 텍스트를 읽거나, '+ 단어 추가'를 눌러 직접 입력해 주세요.</p>`;
+            return;
+        }
+        container.innerHTML = ocrItems.map((item, idx) => `
+            <div class="ocr-item-card">
+                <div class="ocr-item-header">
+                    <span class="ocr-item-label">단어 ${idx + 1}</span>
+                    <button type="button" class="ocr-remove-btn" onclick="removeOcrItemRow(${idx})">✕</button>
+                </div>
+                <input type="text" class="ocr-word-input" data-idx="${idx}" value="${escAttr(item.word)}" placeholder="영어 단어" autocapitalize="none" autocorrect="on" spellcheck="true">
+                <input type="text" class="ocr-meaning-input" data-idx="${idx}" value="${escAttr(item.meaning)}" placeholder="뜻">
+                <input type="text" class="ocr-example-input" data-idx="${idx}" value="${escAttr(item.example)}" placeholder="예문 (선택)">
+            </div>
+        `).join('');
+    }
+
+    function syncOcrItemsFromInputs() {
+        const words = Array.from(document.querySelectorAll('.ocr-word-input'));
+        words.forEach(inp => {
+            const idx = Number(inp.dataset.idx);
+            if (ocrItems[idx]) ocrItems[idx].word = inp.value;
+        });
+        Array.from(document.querySelectorAll('.ocr-meaning-input')).forEach(inp => {
+            const idx = Number(inp.dataset.idx);
+            if (ocrItems[idx]) ocrItems[idx].meaning = inp.value;
+        });
+        Array.from(document.querySelectorAll('.ocr-example-input')).forEach(inp => {
+            const idx = Number(inp.dataset.idx);
+            if (ocrItems[idx]) ocrItems[idx].example = inp.value;
+        });
+    }
+
+    function addOcrItemRow() {
+        syncOcrItemsFromInputs();
+        ocrItems.push({ word: '', meaning: '', example: '' });
+        renderOcrItems();
+    }
+
+    function removeOcrItemRow(idx) {
+        syncOcrItemsFromInputs();
+        ocrItems.splice(idx, 1);
+        renderOcrItems();
+    }
+
+    /* OCR로 인식된 원문 텍스트를 줄 단위로 파싱해서 단어/뜻/예문 카드 배열로 변환 */
+    function parseOcrTextToItems(rawText) {
+        const lines = rawText.split('\n').map(l => l.trim()).filter(l => l);
+        return lines.map(line => {
+            const parts = line.split(/\t|,/).map(p => p.trim()).filter(p => p !== '');
+            return {
+                word: parts[0] || '',
+                meaning: parts[1] || '',
+                example: parts.slice(2).join(', ').trim()
+            };
+        }).filter(item => item.word);
     }
 
     async function runOcrOnPhoto() {
@@ -2093,8 +2179,14 @@
                     }
                 }
             });
-            document.getElementById('photo-import-textarea').value = (result.data.text || '').trim();
-            statusEl.innerText = '인식 완료! 아래 내용을 확인하고 필요하면 직접 고친 뒤 "일괄 추가하기"를 눌러주세요.';
+            const parsedItems = parseOcrTextToItems(result.data.text || '');
+            if (parsedItems.length === 0) {
+                statusEl.innerText = '텍스트를 인식하지 못했어요. 사진을 다시 확인하거나 직접 입력해 주세요.';
+            } else {
+                ocrItems = parsedItems;
+                renderOcrItems();
+                statusEl.innerText = '인식 완료! 아래 내용을 확인하고 필요하면 직접 고친 뒤 "일괄 추가하기"를 눌러주세요.';
+            }
         } catch (err) {
             console.error(err);
             statusEl.innerText = '텍스트 인식에 실패했어요. 인터넷 연결을 확인하거나 다시 시도해 주세요.';
@@ -2107,36 +2199,40 @@
         const day = document.getElementById('photo-import-day-select').value;
         if (!day) { alert('단어장을 선택해 주세요.'); return; }
 
-        const raw = document.getElementById('photo-import-textarea').value;
-        const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
-        if (lines.length === 0) { alert('추가할 내용이 없습니다.'); return; }
+        syncOcrItemsFromInputs();
 
         let addedCount = 0;
         let skipped = 0;
 
-        lines.forEach(line => {
-            const parts = line.split(/\t|,/).map(p => p.trim()).filter(p => p !== '');
-            if (parts.length < 2) { skipped++; return; }
+        ocrItems.forEach(item => {
+            const word = (item.word || '').trim();
+            const meaning = (item.meaning || '').trim();
+            const example = (item.example || '').trim();
 
-            let word = parts[0];
-            word = lowerFirstLetter(word);
-            const meaning = parts[1];
-            const exampleRaw = parts.slice(2).join(', ').trim();
-            const examples = exampleRaw ? [{ ex: exampleRaw, exm: '' }] : [];
+            if (!word || !meaning) { skipped++; return; }
 
             vocaData.push({
                 id: Date.now() + Math.floor(Math.random() * 100000),
-                day, word, meanings: [meaning], examples, starred: false
+                day,
+                word: lowerFirstLetter(word),
+                meanings: [meaning],
+                examples: example ? [{ ex: example, exm: '' }] : [],
+                starred: false
             });
             addedCount++;
         });
+
+        if (addedCount === 0) {
+            alert('추가할 단어가 없습니다. 단어와 뜻을 입력해 주세요.');
+            return;
+        }
 
         saveData();
         closePhotoImportModal();
         if (currentSelectedCategory === day || currentSelectedCategory === 'all') {
             renderWordList();
         }
-        alert(`${addedCount}개의 단어가 추가되었습니다.${skipped > 0 ? ` (형식이 맞지 않아 ${skipped}줄은 건너뛰었어요)` : ''}`);
+        alert(`${addedCount}개의 단어가 추가되었습니다.${skipped > 0 ? ` (단어 또는 뜻이 비어 있어 ${skipped}개는 건너뛰었어요)` : ''}`);
     }
 </script>
 
