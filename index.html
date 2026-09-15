@@ -439,7 +439,7 @@
             </div>
             <div class="form-group">
                 <label for="word">영어 단어</label>
-                <input type="text" id="word" placeholder="예: item" required>
+                <input type="text" id="word" placeholder="예: item" autocapitalize="none" autocorrect="on" spellcheck="true" required>
             </div>
             <div class="form-group">
                 <label>뜻</label>
@@ -492,6 +492,7 @@
             </div>
         </div>
         <p id="word-edit-hint" class="hidden" style="font-size: 13px; opacity: 0.7; margin: -6px 0 10px 4px;">▲▼ 버튼으로 순서를 바꾸거나, 체크 후 삭제할 수 있어요.</p>
+        <button type="button" class="submit-btn" style="background-color: #34C759; margin-bottom: 15px;" onclick="openPhotoImportModal()">📷 사진으로 단어 한번에 추가</button>
         <!-- 단어 전체선택 영역 -->
         <div id="word-select-all-area" class="hidden" style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px; padding-left: 4px;">
             <input type="checkbox" id="word-select-all-checkbox" style="width: 20px; height: 20px; cursor: pointer;" onclick="toggleSelectAllWords(this)">
@@ -702,6 +703,33 @@
     </div>
 </div>
 
+<!-- 사진으로 단어 일괄 추가 모달 -->
+<div id="photo-import-modal" class="modal hidden" onclick="closePhotoImportModalBg(event)">
+    <div class="modal-content">
+        <button class="close-x" onclick="closePhotoImportModal()">✕</button>
+        <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px; margin-bottom: 10px;">📷 사진으로 단어 추가</h3>
+        <p style="font-size:13px; opacity:0.75; line-height:1.5; margin-bottom:14px;">
+            단어장 사진을 올리면 글자를 자동으로 읽어와요. 인식이 완벽하지 않을 수 있으니 추가 전에 꼭 확인해 주세요.<br>
+            한 줄에 <b>단어, 뜻, 예문</b> 순서로 쉼표(,)로 구분해 입력해 주세요. (예문은 생략 가능)
+        </p>
+        <div class="form-group" style="margin-bottom:12px;">
+            <label style="font-size:13px; opacity:0.8;">추가할 단어장</label>
+            <select id="photo-import-day-select"></select>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+            <label style="font-size:13px; opacity:0.8;">단어장 사진</label>
+            <input type="file" id="photo-import-file" accept="image/*" capture="environment">
+        </div>
+        <button type="button" id="run-ocr-btn" class="submit-btn" style="background-color:#4A90E2; margin-bottom:10px;" onclick="runOcrOnPhoto()">🔍 사진에서 텍스트 읽기</button>
+        <div id="photo-import-status" style="font-size:13px; opacity:0.7; margin-bottom:10px; min-height:18px;"></div>
+        <div class="form-group" style="margin-bottom:14px;">
+            <label style="font-size:13px; opacity:0.8;">인식된 내용 (확인 후 자유롭게 수정 가능)</label>
+            <textarea id="photo-import-textarea" rows="8" style="font-family: monospace; font-size:14px;" placeholder="item, 물품, This item is out of stock&#10;protect, 보호하다, protect one's privacy"></textarea>
+        </div>
+        <button type="button" class="submit-btn" style="background-color:#34C759;" onclick="bulkAddFromPhotoImport()">✅ 일괄 추가하기</button>
+    </div>
+</div>
+
 <!-- 백업 / 복구 모달 -->
 <div id="backup-modal" class="modal hidden" onclick="closeModalOnBg(event)">
     <div class="modal-content">
@@ -787,13 +815,7 @@
             .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    /* ===== 영어/한글 시작 검증 & 단어 소문자 변환 유틸 ===== */
-    function isEnglishStart(str) {
-        return /^[A-Za-z]/.test((str || '').trim());
-    }
-    function isKoreanStart(str) {
-        return /^[가-힣ㄱ-ㅎㅏ-ㅣ]/.test((str || '').trim());
-    }
+    /* ===== 단어 소문자 변환 유틸 (영어/특수기호/한글 등 어떤 문자로 시작해도 저장 가능) ===== */
     function lowerFirstLetter(str) {
         if (!str) return str;
         return str.charAt(0).toLowerCase() + str.slice(1);
@@ -1305,8 +1327,6 @@
         const examples = regExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim() })).filter(ex => ex.ex);
 
         if (meanings.length === 0) return alert('뜻을 최소 1개 입력해 주세요.');
-        const badMeaning = meanings.find(m => !isKoreanStart(m));
-        if (badMeaning) return alert(`뜻은 한글로 시작해 주세요. ("${badMeaning}")`);
 
         vocaData.push({ id: Date.now(), day, word, meanings, examples, starred: false });
         saveData();
@@ -1631,7 +1651,7 @@
             </div>
             <div class="form-group" style="margin-bottom:12px;">
                 <label style="font-size:13px; opacity:0.8;">영어 단어</label>
-                <input type="text" id="modal-edit-word" value="${escAttr(item.word)}">
+                <input type="text" id="modal-edit-word" value="${escAttr(item.word)}" autocapitalize="none" autocorrect="on" spellcheck="true">
             </div>
             <div class="form-group" style="margin-bottom:12px;">
                 <label style="font-size:13px; opacity:0.8;">뜻</label>
@@ -1666,8 +1686,6 @@
         const examples = modalExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim() })).filter(ex => ex.ex);
 
         if (meanings.length === 0) return alert('뜻을 최소 1개 입력해 주세요.');
-        const badMeaning = meanings.find(m => !isKoreanStart(m));
-        if (badMeaning) return alert(`뜻은 한글로 시작해 주세요. ("${badMeaning}")`);
 
         item.day = document.getElementById('modal-edit-day').value;
         item.word = word;
@@ -2019,6 +2037,106 @@
             }
         };
         reader.readAsText(file);
+    }
+
+    /* ===== 사진으로 단어 일괄 추가 (OCR) ===== */
+    let ocrLibLoadPromise = null;
+    function loadTesseractScript() {
+        if (window.Tesseract) return Promise.resolve();
+        if (ocrLibLoadPromise) return ocrLibLoadPromise;
+        ocrLibLoadPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js';
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error('OCR 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.'));
+            document.head.appendChild(script);
+        });
+        return ocrLibLoadPromise;
+    }
+
+    function openPhotoImportModal() {
+        if (dayList.length === 0) {
+            alert('먼저 단어장을 추가해 주세요.');
+            return;
+        }
+        const sel = document.getElementById('photo-import-day-select');
+        sel.innerHTML = dayList.map(d => `<option value="${escAttr(d)}" ${d === currentSelectedCategory ? 'selected' : ''}>${escAttr(d)}</option>`).join('');
+        document.getElementById('photo-import-file').value = '';
+        document.getElementById('photo-import-textarea').value = '';
+        document.getElementById('photo-import-status').innerText = '';
+        document.getElementById('photo-import-modal').classList.remove('hidden');
+    }
+    function closePhotoImportModal() {
+        document.getElementById('photo-import-modal').classList.add('hidden');
+    }
+    function closePhotoImportModalBg(e) {
+        if (e.target.id === 'photo-import-modal') closePhotoImportModal();
+    }
+
+    async function runOcrOnPhoto() {
+        const fileInput = document.getElementById('photo-import-file');
+        const file = fileInput.files[0];
+        if (!file) { alert('사진을 먼저 선택해 주세요.'); return; }
+
+        const statusEl = document.getElementById('photo-import-status');
+        const btn = document.getElementById('run-ocr-btn');
+        btn.disabled = true;
+        statusEl.innerText = 'OCR 준비 중...';
+
+        try {
+            await loadTesseractScript();
+            statusEl.innerText = '사진에서 텍스트를 읽는 중이에요. 최대 1분 정도 걸릴 수 있어요...';
+            const result = await Tesseract.recognize(file, 'eng+kor', {
+                logger: m => {
+                    if (m.status === 'recognizing text' && typeof m.progress === 'number') {
+                        statusEl.innerText = `텍스트 인식 중... ${Math.round(m.progress * 100)}%`;
+                    }
+                }
+            });
+            document.getElementById('photo-import-textarea').value = (result.data.text || '').trim();
+            statusEl.innerText = '인식 완료! 아래 내용을 확인하고 필요하면 직접 고친 뒤 "일괄 추가하기"를 눌러주세요.';
+        } catch (err) {
+            console.error(err);
+            statusEl.innerText = '텍스트 인식에 실패했어요. 인터넷 연결을 확인하거나 다시 시도해 주세요.';
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    function bulkAddFromPhotoImport() {
+        const day = document.getElementById('photo-import-day-select').value;
+        if (!day) { alert('단어장을 선택해 주세요.'); return; }
+
+        const raw = document.getElementById('photo-import-textarea').value;
+        const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
+        if (lines.length === 0) { alert('추가할 내용이 없습니다.'); return; }
+
+        let addedCount = 0;
+        let skipped = 0;
+
+        lines.forEach(line => {
+            const parts = line.split(/\t|,/).map(p => p.trim()).filter(p => p !== '');
+            if (parts.length < 2) { skipped++; return; }
+
+            let word = parts[0];
+            word = lowerFirstLetter(word);
+            const meaning = parts[1];
+            const exampleRaw = parts.slice(2).join(', ').trim();
+            const examples = exampleRaw ? [{ ex: exampleRaw, exm: '' }] : [];
+
+            vocaData.push({
+                id: Date.now() + Math.floor(Math.random() * 100000),
+                day, word, meanings: [meaning], examples, starred: false
+            });
+            addedCount++;
+        });
+
+        saveData();
+        closePhotoImportModal();
+        if (currentSelectedCategory === day || currentSelectedCategory === 'all') {
+            renderWordList();
+        }
+        alert(`${addedCount}개의 단어가 추가되었습니다.${skipped > 0 ? ` (형식이 맞지 않아 ${skipped}줄은 건너뛰었어요)` : ''}`);
     }
 </script>
 
