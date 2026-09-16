@@ -464,6 +464,7 @@
             </div>
             <div class="form-group">
                 <label>예문 (선택)</label>
+                <p style="font-size:12px; opacity:0.6; margin:-4px 0 8px;">뜻이 여러 개라면 예문마다 "관련 뜻"을 지정해 두세요. "동의어 객관식" 게임에서 그 뜻에 맞는 동의어로 정확히 출제돼요.</p>
                 <div id="reg-examples-container"></div>
             </div>
             <div class="form-group">
@@ -862,6 +863,11 @@
             }
         }
         if (!Array.isArray(item.examples)) item.examples = [];
+        item.examples = item.examples.map(ex => ({
+            ex: (ex && ex.ex) || '',
+            exm: (ex && ex.exm) || '',
+            meaningIndex: (ex && ex.meaningIndex !== undefined && ex.meaningIndex !== null) ? Number(ex.meaningIndex) : null
+        }));
 
         if (!Array.isArray(item.derivatives)) item.derivatives = [];
         item.derivatives = item.derivatives.map(d => ({
@@ -1254,7 +1260,19 @@
         return html;
     }
 
-    function exampleFieldsHtml(prefix, values) {
+    /* 예문이 여러 뜻 중 어떤 뜻(의미)에 해당하는지 선택하는 드롭다운
+       - 지정해두면 "동의어 객관식" 게임에서 그 뜻의 동의어와 정확히 매칭된 예문만 사용함 */
+    function exampleMeaningOptionsHtml(meaningsList, selectedIdx) {
+        const selVal = (selectedIdx === null || selectedIdx === undefined) ? '' : String(selectedIdx);
+        let html = `<option value="" ${selVal === '' ? 'selected' : ''}>관련 뜻 (전체/미지정)</option>`;
+        (meaningsList || []).forEach((m, i) => {
+            const label = m.text && m.text.trim() ? `뜻 ${i + 1}: ${m.text.trim()}` : `뜻 ${i + 1}`;
+            html += `<option value="${i}" ${selVal === String(i) ? 'selected' : ''}>${escAttr(label)}</option>`;
+        });
+        return html;
+    }
+
+    function exampleFieldsHtml(prefix, values, meaningsList) {
         let html = '';
         values.forEach((v, i) => {
             html += `<div class="example-block">
@@ -1262,6 +1280,7 @@
                 <div class="example-block-inner">
                     <input type="text" class="${prefix}-example-input" data-idx="${i}" value="${escAttr(v.ex)}" placeholder="예문 ${i + 1}">
                     <input type="text" class="${prefix}-exmeaning-input" data-idx="${i}" value="${escAttr(v.exm)}" placeholder="예문 뜻 ${i + 1}">
+                    <select class="${prefix}-example-meaningidx-select" data-idx="${i}" style="margin-top:6px; margin-bottom:0; font-size:13px;">${exampleMeaningOptionsHtml(meaningsList, v.meaningIndex)}</select>
                 </div>
             </div>`;
         });
@@ -1307,7 +1326,7 @@
         document.getElementById('reg-meanings-container').innerHTML = meaningFieldsHtml('reg', regMeanings);
     }
     function renderRegExampleFields() {
-        document.getElementById('reg-examples-container').innerHTML = exampleFieldsHtml('reg', regExamples);
+        document.getElementById('reg-examples-container').innerHTML = exampleFieldsHtml('reg', regExamples, regMeanings);
     }
     function renderRegDerivativeFields() {
         document.getElementById('reg-derivatives-container').innerHTML = derivativeFieldsHtml('reg', regDerivatives);
@@ -1319,7 +1338,7 @@
         document.getElementById('modal-meanings-container').innerHTML = meaningFieldsHtml('modal', modalMeanings);
     }
     function renderModalExampleFields() {
-        document.getElementById('modal-examples-container').innerHTML = exampleFieldsHtml('modal', modalExamples);
+        document.getElementById('modal-examples-container').innerHTML = exampleFieldsHtml('modal', modalExamples, modalMeanings);
     }
     function renderModalDerivativeFields() {
         document.getElementById('modal-derivatives-container').innerHTML = derivativeFieldsHtml('modal', modalDerivatives);
@@ -1336,7 +1355,8 @@
     function syncRegExamples() {
         const exs = Array.from(document.querySelectorAll('.reg-example-input')).map(i => i.value);
         const exms = Array.from(document.querySelectorAll('.reg-exmeaning-input')).map(i => i.value);
-        regExamples = exs.map((ex, i) => ({ ex, exm: exms[i] || '' }));
+        const midxs = Array.from(document.querySelectorAll('.reg-example-meaningidx-select')).map(i => i.value);
+        regExamples = exs.map((ex, i) => ({ ex, exm: exms[i] || '', meaningIndex: (midxs[i] !== undefined && midxs[i] !== '') ? Number(midxs[i]) : null }));
     }
     function syncRegDerivatives() {
         const words = Array.from(document.querySelectorAll('.reg-derivative-word-input')).map(i => i.value);
@@ -1358,7 +1378,8 @@
     function syncModalExamples() {
         const exs = Array.from(document.querySelectorAll('.modal-example-input')).map(i => i.value);
         const exms = Array.from(document.querySelectorAll('.modal-exmeaning-input')).map(i => i.value);
-        modalExamples = exs.map((ex, i) => ({ ex, exm: exms[i] || '' }));
+        const midxs = Array.from(document.querySelectorAll('.modal-example-meaningidx-select')).map(i => i.value);
+        modalExamples = exs.map((ex, i) => ({ ex, exm: exms[i] || '', meaningIndex: (midxs[i] !== undefined && midxs[i] !== '') ? Number(midxs[i]) : null }));
     }
     function syncModalDerivatives() {
         const words = Array.from(document.querySelectorAll('.modal-derivative-word-input')).map(i => i.value);
@@ -1388,6 +1409,8 @@
                 regMeanings.push({ text: '', synonyms: '' });
                 renderRegMeaningFields();
                 focusLastInput('.reg-meaning-input');
+                syncRegExamples();
+                renderRegExampleFields();
             } else if (type === 'example') {
                 syncRegExamples();
                 regExamples.push({ ex: '', exm: '' });
@@ -1410,6 +1433,8 @@
                 modalMeanings.push({ text: '', synonyms: '' });
                 renderModalMeaningFields();
                 focusLastInput('.modal-meaning-input');
+                syncModalExamples();
+                renderModalExampleFields();
             } else if (type === 'example') {
                 syncModalExamples();
                 modalExamples.push({ ex: '', exm: '' });
@@ -1436,6 +1461,8 @@
                 regMeanings.splice(idx, 1);
                 if (regMeanings.length === 0) regMeanings = [{ text: '', synonyms: '' }];
                 renderRegMeaningFields();
+                syncRegExamples();
+                renderRegExampleFields();
             } else if (type === 'example') {
                 syncRegExamples();
                 regExamples.splice(idx, 1);
@@ -1455,6 +1482,8 @@
                 modalMeanings.splice(idx, 1);
                 if (modalMeanings.length === 0) modalMeanings = [{ text: '', synonyms: '' }];
                 renderModalMeaningFields();
+                syncModalExamples();
+                renderModalExampleFields();
             } else if (type === 'example') {
                 syncModalExamples();
                 modalExamples.splice(idx, 1);
@@ -1488,7 +1517,7 @@
         const meanings = regMeanings
             .map(m => ({ text: m.text.trim(), synonyms: m.synonyms.trim() }))
             .filter(m => m.text);
-        const examples = regExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim() })).filter(ex => ex.ex);
+        const examples = regExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim(), meaningIndex: ex.meaningIndex !== undefined ? ex.meaningIndex : null })).filter(ex => ex.ex);
         const derivatives = regDerivatives
             .map(d => ({ word: d.word.trim(), pos: d.pos, meaning: d.meaning.trim() }))
             .filter(d => d.word);
@@ -1811,7 +1840,7 @@
         if (!item) return;
         modalEditId = id;
         modalMeanings = item.meanings && item.meanings.length ? item.meanings.map(m => ({ text: m.text, synonyms: m.synonyms })) : [{ text: '', synonyms: '' }];
-        modalExamples = (item.examples || []).map(ex => ({ ex: ex.ex, exm: ex.exm }));
+        modalExamples = (item.examples || []).map(ex => ({ ex: ex.ex, exm: ex.exm, meaningIndex: (ex.meaningIndex !== undefined ? ex.meaningIndex : null) }));
         modalDerivatives = (item.derivatives || []).map(d => ({ word: d.word, pos: d.pos, meaning: d.meaning }));
         modalAntonyms = (item.antonyms || []).map(d => ({ word: d.word, pos: d.pos, meaning: d.meaning }));
 
@@ -1871,7 +1900,7 @@
         const meanings = modalMeanings
             .map(m => ({ text: m.text.trim(), synonyms: m.synonyms.trim() }))
             .filter(m => m.text);
-        const examples = modalExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim() })).filter(ex => ex.ex);
+        const examples = modalExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim(), meaningIndex: ex.meaningIndex !== undefined ? ex.meaningIndex : null })).filter(ex => ex.ex);
         const derivatives = modalDerivatives
             .map(d => ({ word: d.word.trim(), pos: d.pos, meaning: d.meaning.trim() }))
             .filter(d => d.word);
@@ -2061,15 +2090,43 @@
     let synonymBlankCorrect = [];
     let synonymBlankSelected = [];
 
-    /* 동의어가 1개 이상 등록된 뜻(meaning)을 가진 경우에만 이 게임에 출제 가능
-       (정답은 "단어 자신" + "그 단어의 동의어 1개"를 모두 고르는 것이므로 동의어는 1개만 있어도 됨) */
-    function getQualifyingSynonymMeaning(item) {
-        const meanings = item.meanings || [];
-        for (const m of meanings) {
-            const syns = (m.synonyms || '').split(',').map(s => s.trim()).filter(Boolean);
-            if (syns.length >= 1) return { ...m, synonymList: syns };
-        }
-        return null;
+    /* 동의어가 1개 이상 등록된 모든 뜻(meaning)을 인덱스와 함께 반환
+       (정답은 "단어 자신" + "그 뜻의 동의어 1개"를 모두 고르는 것이므로 동의어는 1개만 있어도 됨) */
+    function getMeaningsWithSynonyms(item) {
+        return (item.meanings || [])
+            .map((m, idx) => ({ ...m, idx, synonymList: (m.synonyms || '').split(',').map(s => s.trim()).filter(Boolean) }))
+            .filter(m => m.synonymList.length >= 1);
+    }
+
+    /* 단어의 여러 뜻 중, 실제로 동의어가 성립하는 그 "뜻"에 맞는 예문을 정확히 골라 짝짓는다.
+       - 예문에 "관련 뜻"이 지정되어 있으면 그 뜻의 동의어와만 매칭 (정확도 우선)
+       - 지정된 예문이 하나도 없으면(과거 데이터 등) 단어가 포함된 아무 예문이나 임시로 매칭 (동작 유지용 fallback) */
+    function findSynonymBlankCandidates(item) {
+        const qualMeanings = getMeaningsWithSynonyms(item);
+        if (qualMeanings.length === 0) return [];
+
+        const wordLower = (item.word || '').toLowerCase();
+        const examplesWithWord = (item.examples || []).filter(ex => ex.ex && ex.ex.toLowerCase().includes(wordLower));
+        if (examplesWithWord.length === 0) return [];
+
+        const linkedPairs = [];
+        qualMeanings.forEach(m => {
+            examplesWithWord.forEach(ex => {
+                if (ex.meaningIndex !== null && ex.meaningIndex !== undefined && Number(ex.meaningIndex) === m.idx) {
+                    linkedPairs.push({ meaning: m, example: ex });
+                }
+            });
+        });
+        if (linkedPairs.length > 0) return linkedPairs;
+
+        // 명시적으로 연결된 예문이 없을 때만 사용하는 fallback (뜻-예문 매칭이 부정확할 수 있음)
+        const fallbackPairs = [];
+        qualMeanings.forEach(m => {
+            examplesWithWord.forEach(ex => {
+                fallbackPairs.push({ meaning: m, example: ex });
+            });
+        });
+        return fallbackPairs;
     }
 
     /* 전체 단어장에서 동의어 후보(오답 보기용)를 모아 특정 정답 목록을 제외하고 반환 */
@@ -2189,18 +2246,19 @@
             subtextEl.innerText = chosenEx.exm || '';
             inputAreaEl.classList.add('hidden');
         } else if (mode === 'synonymBlank') {
-            const qualMeaning = getQualifyingSynonymMeaning(currentQuizItem);
-            const validExamples = (currentQuizItem.examples || []).filter(ex => ex.ex && ex.ex.toLowerCase().includes(currentQuizItem.word.toLowerCase()));
-            if (!qualMeaning || validExamples.length === 0) {
+            const candidates = findSynonymBlankCandidates(currentQuizItem);
+            if (candidates.length === 0) {
                 if (attempt > 60) {
-                    alert('동의어가 1개 이상 등록되어 있고, 단어가 포함된 예문도 있어야 이 게임을 진행할 수 있습니다. 단어 등록 시 "동의어"와 "예문"을 채워 주세요.');
+                    alert('동의어가 1개 이상 등록되어 있고, 단어가 포함된 예문도 있어야 이 게임을 진행할 수 있습니다. 단어 등록 시 "동의어"와 "예문"을 채워 주세요. (여러 뜻이 있는 단어라면 예문마다 "관련 뜻"을 지정해 두면 더 정확해져요.)');
                     showView('quiz-select-view');
                     return;
                 }
                 nextStandardQuestion(attempt + 1);
                 return;
             }
-            const chosenEx = validExamples[Math.floor(Math.random() * validExamples.length)];
+            const chosenPair = candidates[Math.floor(Math.random() * candidates.length)];
+            const qualMeaning = chosenPair.meaning;
+            const chosenEx = chosenPair.example;
             const regex = new RegExp(currentQuizItem.word, 'gi');
             questionEl.innerText = chosenEx.ex.replace(regex, '_____');
             subtextEl.innerText = '빈칸에 들어갈 수 있는 단어와 그 동의어를 모두 골라보세요.';
