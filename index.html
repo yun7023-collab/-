@@ -376,6 +376,11 @@
         .card-exmeaning-text { font-size: 24px; opacity: 0.7; margin-top: 6px; line-height: 1.3; color: var(--word-card-text); }
         .card-derivative-text { font-size: 18px; opacity: 0.75; margin-top: 4px; line-height: 1.3; color: var(--word-card-text); }
         .card-star { position: absolute; top: 20px; right: 24px; font-size: 32px; }
+        .card-mini-speak-btn {
+            background: none; border: none; cursor: pointer; padding: 2px 4px;
+            font-size: 17px; color: var(--word-card-text); opacity: 0.85; vertical-align: middle;
+        }
+        .card-mini-speak-btn:active { opacity: 0.5; }
 
         /* 매칭 게임 스타일 */
         .matching-grid {
@@ -572,10 +577,7 @@
                 <div class="card-word-title" id="card-word-text">Word</div>
             </div>
             <div id="card-back" class="hidden">
-                <div id="card-meaning-container"></div>
-                <div id="card-ex-container"></div>
-                <div id="card-derivative-container"></div>
-                <div id="card-antonym-container"></div>
+                <div id="card-back-content"></div>
             </div>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 20px;">
@@ -888,14 +890,16 @@
        비차단(non-blocking) 방식이므로, 호출부는 "모달을 띄운 뒤 실행할 코드"를
        showConfirm의 콜백 안에 넣거나, showAlert를 항상 마지막 문장으로 호출한다. */
     let customAlertPendingAction = null;
+    let customAlertOnClose = null;
 
-    function showAlert(message) {
+    function showAlert(message, onClose) {
         closeAllCombos();
         document.getElementById('custom-alert-message').innerText = message;
         document.getElementById('custom-alert-ok-area').classList.remove('hidden');
         document.getElementById('custom-alert-confirm-area').classList.add('hidden');
         document.getElementById('custom-alert-modal').classList.remove('hidden');
         customAlertPendingAction = null;
+        customAlertOnClose = onClose || null;
         document.getElementById('custom-alert-ok-btn').focus();
     }
 
@@ -906,12 +910,16 @@
         document.getElementById('custom-alert-confirm-area').classList.remove('hidden');
         document.getElementById('custom-alert-modal').classList.remove('hidden');
         customAlertPendingAction = onConfirm;
+        customAlertOnClose = null;
         document.getElementById('custom-alert-yes-btn').focus();
     }
 
     function closeCustomAlert() {
         document.getElementById('custom-alert-modal').classList.add('hidden');
         customAlertPendingAction = null;
+        const cb = customAlertOnClose;
+        customAlertOnClose = null;
+        if (cb) cb();
     }
 
     function confirmCustomAlertYes() {
@@ -1731,8 +1739,9 @@
         renderRegAntonymFields();
         updateDaySelects();
         document.getElementById('day-select').value = day;
-        document.getElementById('word').focus();
-        showAlert('단어가 저장되었습니다!');
+        showAlert('단어가 저장되었습니다!', () => {
+            document.getElementById('word').focus();
+        });
     });
 
     /* 단어장 목록 화면에서 편집 모드 토글 */
@@ -2181,80 +2190,132 @@
         if (item) speakText(null, item.word);
     }
 
-    /* 플래시카드 기능 - 등록된 뜻(+동의어)/예문/파생어를 모두 보여줌 (학습용 카드 보기이므로 전체 노출) */
+    /* 플래시카드 기능 - 3단계로 탭할 때마다 정보가 늘어남
+       0(앞면): 영단어만
+       1(뒷면-1): 영단어 + 뜻 + 예문
+       2(뒷면-2): 영단어 + 동의어(+연결된 예문) + 파생어 + 반의어 (뜻은 제외) */
+    let cardFlipState = 0;
+
     function renderCard() {
         const item = currentFilteredWords[currentCardIdx];
-        document.getElementById('card-front').classList.remove('hidden');
-        document.getElementById('card-back').classList.add('hidden');
-
+        cardFlipState = 0;
         document.getElementById('card-word-text').innerText = item.word;
 
-        const meaningContainer = document.getElementById('card-meaning-container');
-        if (item.meanings && item.meanings.length > 0) {
-            meaningContainer.innerHTML = item.meanings.map(m => `
-                <div style="margin-bottom:14px;">
-                    <div class="card-meaning-text" style="margin-bottom:0;">${escAttr(m.text)}</div>
-                    ${m.synonyms ? `<div style="font-size:16px; opacity:0.6; margin-top:4px; color:var(--word-card-text);">동의어: ${escAttr(m.synonyms)}</div>` : ''}
-                </div>
-            `).join('');
-        } else {
-            meaningContainer.innerHTML = '';
-        }
-
-        const exContainer = document.getElementById('card-ex-container');
-        if (item.examples && item.examples.length > 0) {
-            exContainer.innerHTML = item.examples.map(ex => `
-                <div style="margin-top:16px; text-align:center;">
-                    <div class="card-ex-text">${escAttr(ex.ex)}</div>
-                    ${ex.exm ? `<div class="card-exmeaning-text" style="margin-top:8px;">${escAttr(ex.exm)}</div>` : ''}
-                </div>
-            `).join('');
-        } else {
-            exContainer.innerHTML = '';
-        }
-
-        const derivContainer = document.getElementById('card-derivative-container');
-        if (item.derivatives && item.derivatives.length > 0) {
-            const posLabelMap = {};
-            DERIVATIVE_POS_OPTIONS.forEach(o => { if (o.value) posLabelMap[o.value] = o.value; });
-            derivContainer.innerHTML = `
-                <div style="margin-top:16px; text-align:center;">
-                    ${item.derivatives.map(d => `
-                        <div class="card-derivative-text">
-                            ${escAttr(d.word)}${d.pos ? ` <span style="opacity:0.7;">(${escAttr(d.pos)})</span>` : ''} ${escAttr(d.meaning)}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        } else {
-            derivContainer.innerHTML = '';
-        }
-
-        const antonymContainer = document.getElementById('card-antonym-container');
-        if (item.antonyms && item.antonyms.length > 0) {
-            antonymContainer.innerHTML = `
-                <div style="margin-top:16px; text-align:center;">
-                    ${item.antonyms.map(d => `
-                        <div class="card-derivative-text">
-                            ⊖ ${escAttr(d.word)}${d.pos ? ` <span style="opacity:0.7;">(${escAttr(d.pos)})</span>` : ''} ${escAttr(d.meaning)}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        } else {
-            antonymContainer.innerHTML = '';
-        }
-        
         const starIcon = document.getElementById('card-star-icon');
         starIcon.style.color = item.starred ? '#FFC107' : 'var(--word-card-text)';
         starIcon.style.opacity = item.starred ? '1' : '0.5';
 
         document.getElementById('card-index-indicator').innerText = `${currentCardIdx + 1} / ${currentFilteredWords.length}`;
+
+        showCardFace();
+    }
+
+    /* 예문 뒤에 붙일 작은 스피커 버튼 (해당 문장을 읽어줌) */
+    function miniSpeakBtnHtml(text) {
+        return `<button type="button" class="card-mini-speak-btn" onclick="speakText(event, this.dataset.word)" data-word="${escAttr(text)}">🔊</button>`;
+    }
+
+    /* 뒷면-1: 영단어 + 뜻 + 예문 */
+    function renderCardBack1Html(item) {
+        let html = `<div class="card-word-title" style="font-size:36px; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <span>${escAttr(item.word)}</span>${miniSpeakBtnHtml(item.word)}
+        </div>`;
+
+        if (item.meanings && item.meanings.length > 0) {
+            const meaningTexts = item.meanings.filter(m => m.text);
+            if (meaningTexts.length > 0) {
+                html += meaningTexts.map(m => `<div class="card-meaning-text" style="margin-bottom:10px;">${escAttr(m.text)}</div>`).join('');
+            }
+        }
+
+        if (item.examples && item.examples.length > 0) {
+            html += item.examples.map(ex => `
+                <div style="margin-top:16px; text-align:center;">
+                    <span class="card-ex-text">${escAttr(ex.ex)}</span>${miniSpeakBtnHtml(ex.ex)}
+                    ${ex.exm ? `<div class="card-exmeaning-text" style="margin-top:8px;">${escAttr(ex.exm)}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        return html;
+    }
+
+    /* 뒷면-2: 영단어 + 동의어(+연결된 예문) + 파생어 + 반의어 (뜻은 제외) */
+    function renderCardBack2Html(item) {
+        let html = `<div class="card-word-title" style="font-size:36px; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <span>${escAttr(item.word)}</span>${miniSpeakBtnHtml(item.word)}
+        </div>`;
+
+        const meaningsWithSyn = (item.meanings || [])
+            .map((m, idx) => ({ ...m, idx }))
+            .filter(m => m.synonyms && m.synonyms.trim());
+
+        if (meaningsWithSyn.length > 0) {
+            html += meaningsWithSyn.map(m => {
+                const linkedEx = (item.examples || []).find(ex =>
+                    ex.meaningIndex !== null && ex.meaningIndex !== undefined && Number(ex.meaningIndex) === m.idx
+                );
+                return `
+                    <div style="margin-bottom:16px;">
+                        <div style="font-size:22px; font-weight:bold; color:var(--word-card-text);">동의어: ${escAttr(m.synonyms)}</div>
+                        ${linkedEx ? `
+                            <div style="margin-top:8px;">
+                                <span class="card-ex-text">${escAttr(linkedEx.ex)}</span>${miniSpeakBtnHtml(linkedEx.ex)}
+                            </div>
+                            ${linkedEx.exm ? `<div class="card-exmeaning-text" style="margin-top:4px;">${escAttr(linkedEx.exm)}</div>` : ''}
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        if (item.derivatives && item.derivatives.length > 0) {
+            html += `<div style="margin-top:16px; text-align:center;">
+                ${item.derivatives.map(d => `
+                    <div class="card-derivative-text">
+                        ${escAttr(d.word)}${miniSpeakBtnHtml(d.word)}${d.pos ? ` <span style="opacity:0.7;">(${escAttr(d.pos)})</span>` : ''} ${escAttr(d.meaning)}
+                    </div>
+                `).join('')}
+            </div>`;
+        }
+
+        if (item.antonyms && item.antonyms.length > 0) {
+            html += `<div style="margin-top:16px; text-align:center;">
+                ${item.antonyms.map(d => `
+                    <div class="card-derivative-text">
+                        ⊖ ${escAttr(d.word)}${miniSpeakBtnHtml(d.word)}${d.pos ? ` <span style="opacity:0.7;">(${escAttr(d.pos)})</span>` : ''} ${escAttr(d.meaning)}
+                    </div>
+                `).join('')}
+            </div>`;
+        }
+
+        return html;
+    }
+
+    /* 현재 cardFlipState에 맞춰 앞면/뒷면을 표시하고, 왼쪽 위 스피커는 앞면에서만 보이게 함
+       (뒷면들은 예문/단어마다 개별 스피커가 있으므로 왼쪽 위 스피커는 숨김) */
+    function showCardFace() {
+        const item = currentFilteredWords[currentCardIdx];
+        const frontEl = document.getElementById('card-front');
+        const backEl = document.getElementById('card-back');
+        const topSpeakBtn = document.getElementById('card-speak-icon');
+
+        if (cardFlipState === 0) {
+            frontEl.classList.remove('hidden');
+            backEl.classList.add('hidden');
+            topSpeakBtn.classList.remove('hidden');
+        } else {
+            frontEl.classList.add('hidden');
+            backEl.classList.remove('hidden');
+            topSpeakBtn.classList.add('hidden');
+            document.getElementById('card-back-content').innerHTML =
+                cardFlipState === 1 ? renderCardBack1Html(item) : renderCardBack2Html(item);
+        }
     }
 
     function toggleCardFlip() {
-        document.getElementById('card-front').classList.toggle('hidden');
-        document.getElementById('card-back').classList.toggle('hidden');
+        cardFlipState = (cardFlipState + 1) % 3;
+        showCardFace();
     }
 
     function toggleStarCurrentCard(e) {
