@@ -251,7 +251,7 @@
         }
         button.submit-btn:hover { opacity: 0.9; }
 
-        /* 동적 뜻/예문/파생어 입력 필드 관련 버튼 */
+        /* 동적 뜻/예문 입력 필드 관련 버튼 */
         .dyn-add-btn {
             background: none; border: 1px dashed var(--primary-color); color: var(--primary-color);
             font-weight: bold; font-size: 14px; cursor: pointer; padding: 8px 10px;
@@ -274,48 +274,6 @@
         .example-block-inner { padding-right: 30px; }
         .meaning-row { display: flex; gap: 6px; margin-bottom: 6px; }
         .meaning-row input { flex: 1; }
-
-        /* 파생어/반의어 입력 행: 단어 + 품사 + 뜻 3칸 구성 (두 필드 공용 스타일) */
-        .derivative-row { display: flex; gap: 6px; align-items: flex-start; }
-        .derivative-row .derivative-word-input,
-        .derivative-row .antonym-word-input { flex: 1.1; }
-        .derivative-row .derivative-pos-select,
-        .derivative-row .antonym-pos-select { flex: 0.6; min-width: 68px; padding: 12px 6px; }
-        .derivative-row .derivative-meaning-input,
-        .derivative-row .antonym-meaning-input { flex: 1.3; }
-
-        /* 동의어 객관식(다중 선택) 게임의 선택된 보기 버튼 스타일 */
-        .ms-option.selected {
-            border-color: var(--primary-color);
-            background-color: var(--primary-color);
-            color: #fff;
-        }
-
-        /* 커스텀 콤보박스 (품사, 관련 뜻 선택용) - 네이티브 select 대체
-           포커스만 이동했을 때는 목록이 열리지 않고, 클릭 또는 엔터를 눌러야 열림 */
-        .combo-select {
-            width: 100%; padding: 12px 14px; border: 1px solid var(--border-color);
-            border-radius: var(--btn-radius); box-sizing: border-box; font-size: 15px;
-            background-color: var(--card-bg); color: var(--text-color);
-            cursor: pointer; position: relative; user-select: none;
-        }
-        .combo-select:focus { outline: none; border-color: var(--primary-color); }
-        .combo-select-label { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .combo-select-options {
-            position: absolute; left: 0; top: calc(100% + 4px); min-width: 160px;
-            background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: var(--btn-radius); max-height: 220px; overflow-y: auto;
-            z-index: 300; box-shadow: 0 6px 16px rgba(0,0,0,0.18);
-        }
-        .combo-option { padding: 10px 14px; font-size: 15px; color: var(--text-color); cursor: pointer; }
-        .combo-option.highlighted, .combo-option:hover { background: var(--top-btn-bg); }
-        .combo-option.selected { font-weight: bold; color: var(--primary-color); }
-
-        /* 커스텀 알림/확인 모달 (아이패드 등에서 엔터로 닫을 수 있도록 자체 구현) */
-        #custom-alert-modal .modal-content { text-align: center; }
-        #custom-alert-message { font-size: 16px; line-height: 1.5; margin: 6px 0 22px; white-space: pre-line; }
-        .custom-alert-btn-group { display: flex; gap: 10px; }
-        .custom-alert-btn-group .submit-btn { width: auto; flex: 1; }
 
         /* 단어장 폴더 목록 스타일 */
         .folder-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
@@ -342,22 +300,6 @@
         }
         .star-btn.active { color: var(--star-color); }
         .word-text-title { font-size: 20px; font-weight: 600; color: var(--text-color); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .speak-btn {
-            background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px;
-            color: var(--primary-color); line-height: 1; flex-shrink: 0;
-        }
-        .speak-btn:active { opacity: 0.5; }
-        .card-speak-icon {
-            position: absolute; top: 20px; left: 24px; font-size: 32px;
-            background: none; border: none; cursor: pointer; color: var(--word-card-text);
-            padding: 0; line-height: 1; opacity: 0.9; z-index: 2;
-        }
-        .card-speak-icon:active { opacity: 0.5; }
-        .home-icon-btn {
-            background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px;
-            color: var(--primary-color); line-height: 1;
-        }
-        .home-icon-btn:active { opacity: 0.5; }
 
         /* 단어 보기 플래시카드 스타일 (개별 지정 색상 적용) */
         .flashcard-box {
@@ -370,22 +312,11 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.12);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .card-word-title { font-size: 52px; font-weight: bold; margin-bottom: 20px; word-break: break-all; line-height: 1.1; color: var(--word-card-text); }
-        .card-meaning-text { font-size: 35px; font-weight: bold; margin-bottom: 20px; line-height: 1.25; color: var(--word-card-text); }
-        .card-ex-text { font-size: 28px; opacity: 0.85; font-style: italic; line-height: 1.3; color: var(--word-card-text); }
+        .card-word-title { font-size: 72px; font-weight: bold; margin-bottom: 20px; word-break: break-all; line-height: 1.1; color: var(--word-card-text); }
+        .card-meaning-text { font-size: 44px; font-weight: bold; margin-bottom: 20px; line-height: 1.25; color: var(--word-card-text); }
+        .card-ex-text { font-size: 28px; opacity: 0.85; margin-top: 12px; font-style: italic; line-height: 1.3; color: var(--word-card-text); }
         .card-exmeaning-text { font-size: 24px; opacity: 0.7; margin-top: 6px; line-height: 1.3; color: var(--word-card-text); }
-        .card-derivative-text { font-size: 18px; opacity: 0.75; margin-top: 4px; line-height: 1.3; color: var(--word-card-text); }
         .card-star { position: absolute; top: 20px; right: 24px; font-size: 32px; }
-        .card-mini-speak-btn {
-            background: none; border: none; cursor: pointer; padding: 2px 4px;
-            font-size: 17px; color: var(--word-card-text); opacity: 0.85; vertical-align: middle;
-        }
-        .card-mini-speak-btn:active { opacity: 0.5; }
-
-        /* 패러프레이징 단어 추가 행: 본문 입력 ➡ 정답 입력 */
-        .paraphrase-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-        .paraphrase-row input { flex: 1; margin-bottom: 0; }
-        .paraphrase-arrow { opacity: 0.5; font-weight: bold; flex-shrink: 0; }
 
         /* 매칭 게임 스타일 */
         .matching-grid {
@@ -470,10 +401,7 @@
 
     <!-- 1. 단어 등록 화면 -->
     <div id="input-view" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="goHome()">← 뒤로가기</button>
-            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
-        </div>
+        <button class="nav-back-btn" onclick="goHome()">← 뒤로가기</button>
         <div class="form-group" style="margin-top: 5px;">
             <label>새 단어장(Day) 추가하기</label>
             <div style="display: flex; gap: 8px;">
@@ -492,24 +420,15 @@
             </div>
             <div class="form-group">
                 <label for="word">영어 단어</label>
-                <input type="text" id="word" placeholder="예: item" autocapitalize="none" autocorrect="on" spellcheck="true" required>
+                <input type="text" id="word" placeholder="예: item" required>
             </div>
             <div class="form-group">
-                <label>뜻</label>
+                <label>뜻 (최대 3개)</label>
                 <div id="reg-meanings-container"></div>
             </div>
             <div class="form-group">
-                <label>예문 (선택)</label>
-                <p style="font-size:12px; opacity:0.6; margin:-4px 0 8px;">뜻이 여러 개라면 예문마다 "관련 뜻"을 지정해 두세요. "동의어 객관식" 게임에서 그 뜻에 맞는 동의어로 정확히 출제돼요.</p>
+                <label>예문 (최대 3개, 선택)</label>
                 <div id="reg-examples-container"></div>
-            </div>
-            <div class="form-group">
-                <label>파생어 (선택)</label>
-                <div id="reg-derivatives-container"></div>
-            </div>
-            <div class="form-group">
-                <label>반의어 (선택)</label>
-                <div id="reg-antonyms-container"></div>
             </div>
             <button type="submit" class="submit-btn" style="margin-top: 10px;">단어 저장하기</button>
         </form>
@@ -517,15 +436,12 @@
 
     <!-- 2-1. 단어장 목록 (카테고리 선택) 화면 -->
     <div id="category-view" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="goHome()">← 뒤로가기</button>
-            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
-        </div>
+        <button class="nav-back-btn" onclick="goHome()">← 뒤로가기</button>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="font-size: 20px; margin: 0; color: var(--text-color);">단어장 선택</h3>
             <div style="display: flex; gap: 8px; align-items: center;">
                 <button class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: var(--primary-color);" onclick="openQuickAddCategoryModal()">+ 단어장 추가</button>
-                <button id="category-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleCategoryEditMode()">✏️</button>
+                <button id="category-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleCategoryEditMode()">편집</button>
             </div>
         </div>
         <p id="category-edit-hint" class="hidden" style="font-size: 13px; opacity: 0.7; margin: 0 0 10px 4px;">▲▼ 버튼으로 순서를 바꾸거나, 체크 후 삭제할 수 있어요.</p>
@@ -542,15 +458,12 @@
 
     <!-- 2-2. 단어장 내부: 깔끔한 영단어 리스트 화면 -->
     <div id="word-list-view" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="showView('category-view')">← 뒤로가기</button>
-            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
-        </div>
+        <button class="nav-back-btn" onclick="showView('category-view')">← 뒤로가기</button>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 id="selected-folder-title" style="margin: 0; font-size: 22px; color: var(--text-color);">단어 목록</h3>
             <div style="display: flex; gap: 8px; align-items: center;">
-                <button id="word-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleWordEditMode()">✏️</button>
-                <button id="card-view-btn" class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardViewFromList()">📖 단어카드</button>
+                <button id="word-edit-toggle-btn" class="submit-btn" style="width: auto; padding: 6px 12px; font-size: 14px; background-color: #64748B;" onclick="toggleWordEditMode()">편집</button>
+                <button id="card-view-btn" class="submit-btn" style="width: auto; padding: 8px 14px; font-size: 15px;" onclick="openCardViewFromList()">📖 단어 보기 카드</button>
             </div>
         </div>
         <p id="word-edit-hint" class="hidden" style="font-size: 13px; opacity: 0.7; margin: -6px 0 10px 4px;">▲▼ 버튼으로 순서를 바꾸거나, 체크 후 삭제할 수 있어요.</p>
@@ -560,7 +473,6 @@
             <label for="word-select-all-checkbox" style="margin: 0; font-size: 15px; cursor: pointer; opacity: 0.8;">전체선택</label>
         </div>
         <div id="words-container" class="clean-word-list"></div>
-        <div id="word-pagination-area" style="display:flex; justify-content:center; align-items:center; margin-top:15px; gap:4px;"></div>
         <div id="word-delete-action-area" class="hidden" style="margin-top: 15px;">
             <button class="submit-btn" style="background-color: #FF3B30; color: white;" onclick="deleteSelectedWords()">선택한 단어 삭제</button>
         </div>
@@ -568,36 +480,27 @@
 
     <!-- 2-3. 터치 카드형 단어 보기 화면 -->
     <div id="card-view" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="showView('word-list-view')">← 뒤로가기</button>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <button type="button" onclick="shuffleCardOrder()" title="순서 섞기" style="background:none; border:none; font-size:24px; cursor:pointer; padding:4px; color: var(--primary-color);">🔀</button>
-                <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
-            </div>
-        </div>
+        <button class="nav-back-btn" onclick="showView('word-list-view')">← 뒤로가기</button>
         <div class="flashcard-box" onclick="toggleCardFlip()">
             <span id="card-star-icon" class="card-star" onclick="toggleStarCurrentCard(event)">★</span>
-            <button type="button" id="card-speak-icon" class="card-speak-icon" onclick="speakCurrentCardWord(event)">🔊</button>
             <div id="card-front">
                 <div class="card-word-title" id="card-word-text">Word</div>
             </div>
             <div id="card-back" class="hidden">
-                <div id="card-back-content"></div>
+                <div class="card-meaning-text" id="card-meaning-text">뜻</div>
+                <div id="card-ex-container"></div>
             </div>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 20px;">
-            <button class="submit-btn" style="width: 48%; background: #64748B; color: white; padding: 12px; font-size: 16px;" onclick="prevCard()">이전</button>
-            <button class="submit-btn" style="width: 48%; background: #64748B; color: white; padding: 12px; font-size: 16px;" onclick="nextCard()">다음</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+            <button class="submit-btn" style="width: 45%; background: #64748B; color: white; padding: 12px; font-size: 16px;" onclick="prevCard()">이전</button>
+            <span id="card-index-indicator" style="font-weight: bold; opacity: 0.7; font-size: 18px;">0 / 0</span>
+            <button class="submit-btn" style="width: 45%; background: #64748B; color: white; padding: 12px; font-size: 16px;" onclick="nextCard()">다음</button>
         </div>
-        <div id="card-index-indicator" style="text-align: center; font-weight: bold; opacity: 0.6; font-size: 13px; margin-top: 8px;">0 / 0</div>
     </div>
 
     <!-- 3. 연습하기 선택 화면 -->
     <div id="quiz-select-view" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="goHome()">← 뒤로가기</button>
-            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
-        </div>
+        <button class="nav-back-btn" onclick="goHome()">← 뒤로가기</button>
         <div class="form-group">
             <label for="quiz-filter">시험 범위 선택</label>
             <select id="quiz-filter"></select>
@@ -608,9 +511,7 @@
                 <option value="mc">4지선다 객관식</option>
                 <option value="subjective">주관식 (뜻 보고 단어 맞히기)</option>
                 <option value="blank">예문 빈칸 맞히기</option>
-                <option value="synonymBlank">예문 빈칸 동의어 객관식 (단어+동의어 선택)</option>
                 <option value="matching">카드 매칭 게임</option>
-                <option value="paraphraseMatching">패러프레이징 짝 맞추기 게임</option>
             </select>
         </div>
         <button class="submit-btn" onclick="startQuiz()" style="margin-top: 10px;">시작하기</button>
@@ -618,24 +519,15 @@
 
     <!-- 3-1. 퀴즈/게임 실행 화면 -->
     <div id="quiz-play-view" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="showView('quiz-select-view')">← 뒤로가기</button>
-            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
-        </div>
+        <button class="nav-back-btn" onclick="showView('quiz-select-view')">← 뒤로가기</button>
         
         <!-- 일반 퀴즈 영역 -->
         <div id="standard-quiz-area" style="text-align: center; padding: 20px 0;">
-            <div id="quiz-question-wrap" style="display: inline-block; text-align: left; max-width: 100%;">
-                <div id="quiz-question" style="font-size: 26px; font-weight: bold; color: var(--text-color);"></div>
-                <div id="quiz-subtext" style="font-size: 14px; font-weight: normal; color: var(--text-color); opacity: 0.5; margin-top: 14px;"></div>
-            </div>
-            <div id="quiz-options" style="display: grid; gap: 10px; margin-top: 20px;"></div>
+            <div id="quiz-question" style="font-size: 26px; font-weight: bold; margin-bottom: 20px; color: var(--text-color);"></div>
+            <div id="quiz-options" style="display: grid; gap: 10px;"></div>
             <div id="quiz-input-area" class="hidden" style="margin-top: 15px;">
                 <input type="text" id="quiz-answer-input" placeholder="정답을 입력하세요">
                 <button class="submit-btn" style="margin-top: 10px;" onclick="checkSubjectiveAnswer()">정답 제출</button>
-            </div>
-            <div id="quiz-multi-submit-area" class="hidden" style="margin-top: 15px;">
-                <button class="submit-btn" onclick="checkSynonymBlankAnswer()">정답 제출</button>
             </div>
             <div id="quiz-result" style="margin-top: 15px; font-weight: bold; font-size: 20px;"></div>
             <button id="next-quiz-btn" class="submit-btn hidden" style="margin-top: 15px; background-color: #8E8E93; color: white;" onclick="nextStandardQuestion()">다음 문제</button>
@@ -646,40 +538,6 @@
             <div style="text-align: center; font-weight: bold; margin-bottom: 15px; color: var(--primary-color); font-size: 18px;">알맞은 짝을 맞춰보세요!</div>
             <div id="matching-grid" class="matching-grid"></div>
         </div>
-    </div>
-
-    <!-- 4. 패러프레이징 단어 관리 화면 -->
-    <div id="paraphrase-manage-view" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="showView('quiz-select-view')">← 뒤로가기</button>
-            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
-        </div>
-        <h3 style="margin: 0 0 6px; font-size: 20px; color: var(--text-color);">패러프레이징 단어 관리</h3>
-        <p style="font-size:13px; opacity:0.65; margin:0 0 15px; line-height:1.5;">본문 단어와 그 패러프레이징(정답) 단어를 한 쌍씩 입력해 주세요. (예: celebration (축하 행사) ➡ event (행사))</p>
-
-        <div id="paraphrase-existing-list" class="clean-word-list" style="margin-bottom:15px;"></div>
-
-        <div class="form-group">
-            <label>새 쌍 추가</label>
-            <div id="paraphrase-add-container"></div>
-            <button type="button" class="dyn-add-btn" tabindex="0" onclick="addMoreParaphraseRows()">+ 15개 더 추가</button>
-        </div>
-
-        <button type="button" class="submit-btn" style="background-color:#34C759; margin-top:10px;" onclick="saveParaphraseEntries()">저장하기</button>
-        <button type="button" class="submit-btn" style="margin-top:10px;" onclick="startParaphraseGame()">🎮 패러프레이징 게임 시작</button>
-    </div>
-
-    <!-- 4-1. 패러프레이징 짝 맞추기 게임 화면 -->
-    <div id="paraphrase-game-view" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="showView('paraphrase-manage-view')">← 뒤로가기</button>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <button type="button" onclick="initParaphraseMatchingGame()" title="다시 섞기" style="background:none; border:none; font-size:24px; cursor:pointer; padding:4px; color: var(--primary-color);">🔀</button>
-                <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
-            </div>
-        </div>
-        <div style="text-align: center; font-weight: bold; margin-bottom: 15px; color: var(--primary-color); font-size: 18px;">본문과 패러프레이징 짝을 맞춰보세요!</div>
-        <div id="paraphrase-matching-grid" class="matching-grid"></div>
     </div>
 </div>
 
@@ -818,17 +676,11 @@
     </div>
 </div>
 
-<!-- 커스텀 알림/확인 모달 (네이티브 alert/confirm 대체 - 엔터로 닫기 지원) -->
-<div id="custom-alert-modal" class="modal hidden" style="z-index:2000;">
-    <div class="modal-content">
-        <p id="custom-alert-message"></p>
-        <div id="custom-alert-ok-area" class="custom-alert-btn-group">
-            <button type="button" id="custom-alert-ok-btn" class="submit-btn" onclick="closeCustomAlert()">확인</button>
-        </div>
-        <div id="custom-alert-confirm-area" class="custom-alert-btn-group hidden">
-            <button type="button" id="custom-alert-yes-btn" class="submit-btn" style="background-color:#FF3B30;" onclick="confirmCustomAlertYes()">확인</button>
-            <button type="button" class="submit-btn" style="background-color:#8E8E93;" onclick="closeCustomAlert()">취소</button>
-        </div>
+<!-- 커스텀 알림 팝업 (엔터 키로도 확인 가능) -->
+<div id="custom-alert-modal" class="modal hidden" onclick="closeCustomAlertBg(event)">
+    <div class="modal-content" style="max-width: 340px; text-align: center;">
+        <p id="custom-alert-message" style="font-size: 16px; line-height: 1.5; margin: 6px 0 20px; white-space: pre-line;"></p>
+        <button id="custom-alert-ok-btn" class="submit-btn" onclick="closeCustomAlert()">확인</button>
     </div>
 </div>
 
@@ -838,35 +690,17 @@
     let currentSelectedCategory = "all";
     let currentFilteredWords = [];
     let currentCardIdx = 0;
-    let currentWordPage = 1;
-    const WORDS_PER_PAGE = 15;
     let isCategoryEditMode = false;
     let isWordEditMode = false;
 
-    /* 파생어 품사 옵션 (교재 표기 스타일: 명/동/형/부/전/접/감) */
-    const DERIVATIVE_POS_OPTIONS = [
-        { value: '', label: '품사' },
-        { value: '명', label: '명사' },
-        { value: '동', label: '동사' },
-        { value: '형', label: '형용사' },
-        { value: '부', label: '부사' },
-        { value: '전', label: '전치사' },
-        { value: '접', label: '접속사' },
-        { value: '감', label: '감탄사' }
-    ];
+    /* 단어 등록 폼 - 동적 뜻/예문 상태 */
+    let regMeanings = [''];
+    let regExamples = [{ ex: '', exm: '' }];
 
-    /* 단어 등록 폼 - 동적 뜻/예문/파생어 상태 (기본 2개씩 노출, 자유롭게 추가/삭제 가능) */
-    let regMeanings = [{ text: '', synonyms: '' }, { text: '', synonyms: '' }];
-    let regExamples = [{ ex: '', exm: '' }, { ex: '', exm: '' }];
-    let regDerivatives = [{ word: '', pos: '', meaning: '' }];
-    let regAntonyms = [{ word: '', pos: '', meaning: '' }];
-
-    /* 단어 수정 모달 - 동적 뜻/예문/파생어/반의어 상태 */
+    /* 단어 수정 모달 - 동적 뜻/예문 상태 */
     let modalEditId = null;
-    let modalMeanings = [{ text: '', synonyms: '' }];
+    let modalMeanings = [''];
     let modalExamples = [];
-    let modalDerivatives = [];
-    let modalAntonyms = [];
     
     let appConfig = {
         title: "나만의 영단어장",
@@ -886,11 +720,6 @@
     
     let selectedMatchCards = [];
 
-    /* 패러프레이징 게임 데이터 상태 */
-    let paraphraseData = [];
-    let paraphraseAddRows = [];
-    let selectedParaphraseMatchCards = [];
-
     /* ===== 손그림 느낌 SVG 스티커 라이브러리 (전부 고정, 애니메이션 없음) ===== */
     const VOCA_ICONS = {
         ribbon: `<svg width="34" height="30" viewBox="0 0 34 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 15C13 9 6 6 3 9C0.5 11.3 3 16.5 9.5 16.8C13 17 15.5 15.8 16 15Z" fill="#FF8FAB" stroke="#E8628A" stroke-width="1.2" stroke-linejoin="round"/><path d="M18 15C21 9 28 6 31 9C33.5 11.3 31 16.5 24.5 16.8C21 17 18.5 15.8 18 15Z" fill="#FFB3C6" stroke="#E8628A" stroke-width="1.2" stroke-linejoin="round"/><circle cx="17" cy="15.5" r="2.6" fill="#FF6B9D" stroke="#E8628A" stroke-width="1"/></svg>`,
@@ -904,6 +733,7 @@
         catface: `<svg width="30" height="26" viewBox="0 0 30 26" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#EDEDED" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M6 8L3 2L10 6" fill="none"/><path d="M24 8L27 2L20 6" fill="none"/><ellipse cx="15" cy="14" rx="10" ry="8.5" fill="none"/><circle cx="11" cy="13" r="0.9" fill="#EDEDED"/><circle cx="19" cy="13" r="0.9" fill="#EDEDED"/><path d="M15 15L13.5 16.5M15 15L16.5 16.5" fill="none"/><path d="M11 17.5C12.5 19 17.5 19 19 17.5" fill="none"/></svg>`,
         pencil: `<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2C3E66" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M4 22L5.5 16L17 4.5C18 3.5 19.5 3.5 20.5 4.5C21.5 5.5 21.5 7 20.5 8L9 19.5L4 22Z" fill="#EAF1FF"/><path d="M15 6.5L19 10.5" /></svg>`,
         pawprint: `<svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg"><g fill="#7B93C4" stroke="#3B5998" stroke-width="1.1" stroke-linejoin="round"><ellipse cx="15" cy="19" rx="8" ry="6.6" transform="rotate(-4 15 19)"/><ellipse cx="6" cy="10.5" rx="3.4" ry="4.2" transform="rotate(-18 6 10.5)"/><ellipse cx="13" cy="5.5" rx="3.3" ry="4.4" transform="rotate(-4 13 5.5)"/><ellipse cx="20.5" cy="5.8" rx="3.3" ry="4.4" transform="rotate(8 20.5 5.8)"/><ellipse cx="26" cy="11" rx="3.3" ry="4.1" transform="rotate(20 26 11)"/></g></svg>`,
+        /* 큐트2 테마용 손그림 구름 - 삐뚤빼뚤한 이중 라인의 뭉게구름 (사이즈 다른 2종) */
         cloud2: `<svg width="72" height="44" viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 35C9 35.3 3.5 30.5 4 24.7C4.5 19.5 9.3 15.8 14.2 16.3C15.5 9 22.7 3.5 31 4C39.8 4.5 46.7 11.5 47 19.3C53.8 18 60.3 22.8 60 29C59.7 33.8 55.3 37 50 37L16 35Z" fill="#FFFFFF" stroke="#5B9BD5" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><path d="M15 16.8C16.3 11 21.5 6.5 28 6" stroke="#BFE0FF" stroke-width="1.3" stroke-linecap="round" fill="none"/></svg>`,
         cloud3: `<svg width="46" height="30" viewBox="0 0 46 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 24C6.3 24.2 2.5 20.8 2.8 16.8C3.1 13.3 6.5 10.7 10 11C10.8 6 15.8 2.5 21 3C26.7 3.5 31 8.2 31 13C35.5 12.2 39.5 15.2 39.3 19C39.1 22 36.3 24 32.7 24L11 24Z" fill="#FFFFFF" stroke="#5B9BD5" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
         cupcake: `<svg width="30" height="34" viewBox="0 0 30 34" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#B5651D" stroke-width="1.1" stroke-linejoin="round"><path d="M6 15L8 32H22L24 15" fill="#FFE8D6"/><path d="M4 15C4 10 9 6 15 6C21 6 26 10 26 15C26 17 24 18 22 18H8C6 18 4 17 4 15Z" fill="#FFB3C6"/><circle cx="15" cy="4" r="2.6" fill="#E63950" stroke="#C22436"/><path d="M15 6.5V4" stroke="#6BAA55" stroke-width="1.3"/></svg>`,
@@ -911,11 +741,22 @@
         milk: `<svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#7B93C4" stroke-width="1.1" stroke-linejoin="round"><path d="M6 4H18L20 9V27H4V9L6 4Z" fill="#FFFFFF"/><path d="M6 4L4 9H20L18 4" fill="#EAF1FF"/><path d="M9 15C9 15 8 17 8 18.5C8 19.9 9 20.5 9.5 20.5C10 20.5 11 19.9 11 18.5C11 17 10 15 10 15" fill="#FF8FAB" stroke="#E8628A" stroke-width="0.8"/></svg>`,
         catsit: `<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"><g fill="#111214" stroke="#111214" stroke-width="0.6"><path d="M11 6L8 1L13.5 4.5Z"/><path d="M23 6L26 1L20.5 4.5Z"/><path d="M17 4C10 4 6 10 6 16C6 16 3 19 4 22C5 24 8 22 8 22C8 27 12 30 17 30C22 30 26 27 26 22C26 22 29 24 30 22C31 19 28 16 28 16C28 10 24 4 17 4Z"/><path d="M24 27C27 25 29 21 27 18C29 21 30 26 26 29C22 32 15 32 11 29C13 30 16 30 18 29.5C20.5 29 22.5 28.3 24 27Z"/></g><circle cx="13" cy="15" r="1.6" fill="#FFFFFF"/><circle cx="21" cy="15" r="1.6" fill="#FFFFFF"/></svg>`,
         qmark: `<svg width="18" height="24" viewBox="0 0 18 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#EDEDED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6C4 3 6.5 1.5 9 1.5C11.5 1.5 14 3 14 6C14 9.5 9.5 9.5 9.5 14" fill="none"/><circle cx="9.5" cy="20" r="0.4" fill="#EDEDED" stroke="#EDEDED" stroke-width="1.8"/></svg>`,
-        bone: `<svg width="32" height="16" viewBox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="6" width="18" height="4" rx="2" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="5" cy="5.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="5" cy="10.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="27" cy="5.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="27" cy="10.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/></svg>`
+        bone: `<svg width="32" height="16" viewBox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="6" width="18" height="4" rx="2" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="5" cy="5.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="5" cy="10.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="27" cy="5.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/><circle cx="27" cy="10.5" r="3.4" fill="#B9CDEE" stroke="#3B5998" stroke-width="1.1"/></svg>`,
+        /* ===== 심플&귀여운 한 줄 손그림 라인 아이콘 (currentColor 사용, 테마마다 색만 다르게 재사용) ===== */
+        lineStar: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M11 2L13.6 8.6L20.5 9.3L15.2 13.7L16.9 20.5L11 16.8L5.1 20.5L6.8 13.7L1.5 9.3L8.4 8.6L11 2Z" fill="none"/></svg>`,
+        lineSparkle: `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M9 1C9.4 6 10.5 8 16 9C10.5 9.5 9.4 12 9 17C8.6 12 7.5 9.5 2 9C7.5 8 8.6 6 9 1Z" fill="none"/></svg>`,
+        lineHeart: `<svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M11 18C11 18 1.5 12.2 1.5 6.4C1.5 3.4 3.8 1.5 6.4 1.5C8.5 1.5 10.2 2.8 11 4.5C11.8 2.8 13.5 1.5 15.6 1.5C18.2 1.5 20.5 3.4 20.5 6.4C20.5 12.2 11 18 11 18Z" fill="none"/></svg>`,
+        lineDot: `<svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="4"/></svg>`,
+        lineMoon: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M14.5 2.5C9.5 2.5 5.5 6.7 5.5 11.8C5.5 14.4 6.6 16.7 8.3 18.3C4.6 17.5 1.8 14 1.8 9.9C1.8 5.1 5.6 1.2 10.4 1.2C11.9 1.2 13.3 1.6 14.5 2.5Z" fill="none"/></svg>`,
+        lineCloud: `<svg width="44" height="26" viewBox="0 0 44 26" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M11 21C6.6 21 3 17.9 3 14.1C3 10.6 6 7.8 9.7 7.5C10.9 4 14.3 1.5 18.3 1.5C23.3 1.5 27.4 5.3 27.7 10.1C32.4 10.2 36 13.3 36 17C36 19.2 33.9 21 31.3 21H11Z" fill="none"/></svg>`,
+        lineCatSit: `<svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M8 6L6 1.5L10.5 4.5" fill="none"/><path d="M22 6L24 1.5L19.5 4.5" fill="none"/><path d="M15 4C9.5 4 6 8.5 6 13.5C6 13.5 3.5 15.5 4 18C4.5 20 7 18.5 7 18.5C7 22.5 10 26 15 26C20 26 23 22.5 23 18.5C23 18.5 25.5 20 26 18C26.5 15.5 24 13.5 24 13.5C24 8.5 20.5 4 15 4Z" fill="none"/><circle cx="12" cy="13.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="18" cy="13.5" r="0.9" fill="currentColor" stroke="none"/></svg>`,
+        lineQmark: `<svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5C3 2.5 5 1 7 1C9 1 11 2.5 11 5C11 8 7 8 7 11.5" fill="none"/><circle cx="7" cy="16" r="0.3" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></svg>`,
+        lineFlower: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><circle cx="12" cy="6.5" r="4" fill="none"/><circle cx="12" cy="17.5" r="4" fill="none"/><circle cx="6.5" cy="12" r="4" fill="none"/><circle cx="17.5" cy="12" r="4" fill="none"/><circle cx="12" cy="12" r="2.4" fill="none"/></svg>`
     };
 
-    function stickerEl(name, styleStr) {
-        return `<div class="cute-sticker" style="${styleStr}">${VOCA_ICONS[name]}</div>`;
+    function stickerEl(name, styleStr, color) {
+        const colorStyle = color ? `color:${color};` : '';
+        return `<div class="cute-sticker" style="${colorStyle}${styleStr}">${VOCA_ICONS[name]}</div>`;
     }
 
     /* ===== 유틸리티: HTML 속성/텍스트 이스케이프 ===== */
@@ -924,150 +765,7 @@
             .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    /* ===== 단어 소문자 변환 유틸 (영어/특수기호/한글 등 어떤 문자로 시작해도 저장 가능) ===== */
-    function lowerFirstLetter(str) {
-        if (!str) return str;
-        return str.charAt(0).toLowerCase() + str.slice(1);
-    }
-
-    /* ===== 커스텀 알림/확인 모달 (네이티브 alert/confirm 대체) =====
-       네이티브 alert/confirm은 아이패드 등에서 엔터 키로 닫히지 않아 자체 구현으로 대체.
-       비차단(non-blocking) 방식이므로, 호출부는 "모달을 띄운 뒤 실행할 코드"를
-       showConfirm의 콜백 안에 넣거나, showAlert를 항상 마지막 문장으로 호출한다. */
-    let customAlertPendingAction = null;
-    let customAlertOnClose = null;
-
-    function showAlert(message, onClose) {
-        closeAllCombos();
-        document.getElementById('custom-alert-message').innerText = message;
-        document.getElementById('custom-alert-ok-area').classList.remove('hidden');
-        document.getElementById('custom-alert-confirm-area').classList.add('hidden');
-        document.getElementById('custom-alert-modal').classList.remove('hidden');
-        customAlertPendingAction = null;
-        customAlertOnClose = onClose || null;
-        document.getElementById('custom-alert-ok-btn').focus();
-    }
-
-    function showConfirm(message, onConfirm) {
-        closeAllCombos();
-        document.getElementById('custom-alert-message').innerText = message;
-        document.getElementById('custom-alert-ok-area').classList.add('hidden');
-        document.getElementById('custom-alert-confirm-area').classList.remove('hidden');
-        document.getElementById('custom-alert-modal').classList.remove('hidden');
-        customAlertPendingAction = onConfirm;
-        customAlertOnClose = null;
-        document.getElementById('custom-alert-yes-btn').focus();
-    }
-
-    function closeCustomAlert() {
-        document.getElementById('custom-alert-modal').classList.add('hidden');
-        customAlertPendingAction = null;
-        const cb = customAlertOnClose;
-        customAlertOnClose = null;
-        if (cb) cb();
-    }
-
-    function confirmCustomAlertYes() {
-        const action = customAlertPendingAction;
-        closeCustomAlert();
-        if (action) action();
-    }
-
-    /* 엔터 키로 커스텀 알림/확인 모달을 닫을 수 있도록 지원 (아이패드 등에서 네이티브 alert는 엔터로 안 닫히는 문제 해결) */
-    document.addEventListener('keydown', function(e) {
-        if (e.key !== 'Enter') return;
-        const alertModal = document.getElementById('custom-alert-modal');
-        if (!alertModal || alertModal.classList.contains('hidden')) return;
-        e.preventDefault();
-        const confirmArea = document.getElementById('custom-alert-confirm-area');
-        if (confirmArea && !confirmArea.classList.contains('hidden')) {
-            confirmCustomAlertYes();
-        } else {
-            closeCustomAlert();
-        }
-    });
-
-    /* ===== 커스텀 콤보박스 (품사 / 관련 뜻 선택) =====
-       네이티브 select는 아이패드에서 포커스만 이동해도 목록이 자동으로 열려서,
-       클릭 또는 엔터를 눌러야만 목록이 열리는 자체 콤보박스로 대체. */
-    function closeAllCombos() {
-        document.querySelectorAll('.combo-select.open').forEach(el => {
-            el.classList.remove('open');
-            const opts = el.querySelector('.combo-select-options');
-            if (opts) opts.classList.add('hidden');
-        });
-    }
-
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.combo-select')) closeAllCombos();
-    });
-
-    function toggleCombo(el, e) {
-        if (e) e.stopPropagation();
-        const isOpen = el.classList.contains('open');
-        closeAllCombos();
-        if (isOpen) return;
-        el.classList.add('open');
-        const optionsEl = el.querySelector('.combo-select-options');
-        optionsEl.classList.remove('hidden');
-        const opts = Array.from(el.querySelectorAll('.combo-option'));
-        opts.forEach(o => o.classList.remove('highlighted'));
-        const sel = el.querySelector('.combo-option.selected') || opts[0];
-        if (sel) sel.classList.add('highlighted');
-    }
-
-    function comboKeydown(e, el) {
-        const isOpen = el.classList.contains('open');
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            e.stopPropagation();
-            if (!isOpen) {
-                toggleCombo(el);
-            } else {
-                const hl = el.querySelector('.combo-option.highlighted');
-                if (hl) selectComboOption(el, hl);
-            }
-        } else if (e.key === 'Escape') {
-            if (isOpen) { e.stopPropagation(); closeAllCombos(); }
-        } else if (isOpen && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
-            e.preventDefault();
-            e.stopPropagation();
-            const opts = Array.from(el.querySelectorAll('.combo-option'));
-            let idx = opts.findIndex(o => o.classList.contains('highlighted'));
-            if (idx === -1) idx = 0;
-            idx = e.key === 'ArrowDown' ? Math.min(idx + 1, opts.length - 1) : Math.max(idx - 1, 0);
-            opts.forEach(o => o.classList.remove('highlighted'));
-            opts[idx].classList.add('highlighted');
-            opts[idx].scrollIntoView({ block: 'nearest' });
-        }
-        // 콤보가 닫혀 있을 때의 ArrowUp/ArrowDown은 그대로 버블링시켜 전역 포커스 이동 로직이 처리하게 둠
-    }
-
-    function selectComboOption(el, optEl) {
-        const value = optEl.dataset.value;
-        el.dataset.value = value;
-        const labelEl = el.querySelector('.combo-select-label');
-        if (labelEl) labelEl.innerText = optEl.innerText;
-        el.querySelectorAll('.combo-option').forEach(o => o.classList.remove('selected'));
-        optEl.classList.add('selected');
-        closeAllCombos();
-        el.focus();
-    }
-
-    function comboOptionClick(e, el, optEl) {
-        e.stopPropagation();
-        selectComboOption(el, optEl);
-    }
-
-    function comboOptionsHtml(options, selectedValue) {
-        const selVal = (selectedValue === null || selectedValue === undefined) ? '' : String(selectedValue);
-        return options.map(opt => {
-            const isSel = String(opt.value) === selVal;
-            return `<div class="combo-option ${isSel ? 'selected' : ''}" data-value="${escAttr(opt.value)}" onclick="comboOptionClick(event, this.closest('.combo-select'), this)">${escAttr(opt.label)}</div>`;
-        }).join('');
-    }
-
-    /* ===== 데이터 마이그레이션: 예전 단일/문자열 뜻 구조 -> {text, synonyms} 객체 배열 구조 + 파생어 배열 보강 ===== */
+    /* ===== 데이터 마이그레이션: 예전 단일 뜻/예문 구조 -> 다중 배열 구조 ===== */
     function migrateItem(item) {
         if (!item.meanings) {
             item.meanings = item.meaning ? [item.meaning] : [''];
@@ -1075,13 +773,6 @@
         if (!Array.isArray(item.meanings) || item.meanings.length === 0) {
             item.meanings = [''];
         }
-        // 문자열 배열(이전 버전) -> {text, synonyms} 객체 배열로 변환
-        item.meanings = item.meanings.map(m => {
-            if (typeof m === 'string') return { text: m, synonyms: '' };
-            return { text: (m && m.text) || '', synonyms: (m && m.synonyms) || '' };
-        });
-        if (item.meanings.length === 0) item.meanings = [{ text: '', synonyms: '' }];
-
         if (!item.examples) {
             if (item.example || item.exmeaning) {
                 item.examples = [{ ex: item.example || '', exm: item.exmeaning || '' }];
@@ -1090,77 +781,13 @@
             }
         }
         if (!Array.isArray(item.examples)) item.examples = [];
-        item.examples = item.examples.map(ex => ({
-            ex: (ex && ex.ex) || '',
-            exm: (ex && ex.exm) || '',
-            meaningIndex: (ex && ex.meaningIndex !== undefined && ex.meaningIndex !== null) ? Number(ex.meaningIndex) : null
-        }));
-
-        if (!Array.isArray(item.derivatives)) item.derivatives = [];
-        item.derivatives = item.derivatives.map(d => ({
-            word: (d && d.word) || '',
-            pos: (d && d.pos) || '',
-            meaning: (d && d.meaning) || ''
-        })).filter(d => d.word);
-
-        if (!Array.isArray(item.antonyms)) item.antonyms = [];
-        item.antonyms = item.antonyms.map(d => ({
-            word: (d && d.word) || '',
-            pos: (d && d.pos) || '',
-            meaning: (d && d.meaning) || ''
-        })).filter(d => d.word);
-
         if (item.starred === undefined) item.starred = false;
         return item;
     }
 
-    /* ===== 키보드 이동: 화살표(↑↓) 및 Tab 키로 입력칸/버튼/콤보박스 사이를 이동할 수 있도록 지원
-       (아이패드에서 Tab 키가 버튼을 건너뛰는 문제를 해결하기 위해 Tab도 직접 제어) ===== */
-    function getFocusableInView() {
-        const selector = 'input, select, textarea, button, .combo-select';
-        return Array.from(document.querySelectorAll(selector)).filter(el => {
-            if (el.disabled) return false;
-            if (el.tabIndex === -1) return false;
-            if (el.offsetParent === null) return false; // 화면에 보이는 요소만
-            return true;
-        });
-    }
-
-    document.addEventListener('keydown', function(e) {
-        const isArrow = e.key === 'ArrowDown' || e.key === 'ArrowUp';
-        const isTab = e.key === 'Tab';
-        if (!isArrow && !isTab) return;
-
-        const activeEl = document.activeElement;
-        const tag = activeEl.tagName;
-        const isCombo = activeEl.classList && activeEl.classList.contains('combo-select');
-        if (!['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(tag) && !isCombo) return;
-
-        e.preventDefault();
-        const items = getFocusableInView();
-        const idx = items.indexOf(activeEl);
-        if (idx === -1) return;
-
-        let nextIdx;
-        if (isTab) {
-            nextIdx = e.shiftKey ? idx - 1 : idx + 1;
-        } else {
-            nextIdx = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
-        }
-        if (nextIdx < 0) nextIdx = 0;
-        if (nextIdx >= items.length) nextIdx = items.length - 1;
-
-        const target = items[nextIdx];
-        target.focus();
-        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-            try { target.select(); } catch (_) {}
-        }
-    });
-
     window.onload = function() {
         vocaData = JSON.parse(localStorage.getItem('myVocaData_guest')) || [];
         dayList = JSON.parse(localStorage.getItem('myVocaDays_guest')) || [];
-        paraphraseData = JSON.parse(localStorage.getItem('myParaphraseData_guest')) || [];
         const savedConfig = JSON.parse(localStorage.getItem('myVocaConfig_guest'));
         if (savedConfig) {
             appConfig = { ...appConfig, ...savedConfig };
@@ -1170,18 +797,12 @@
         updateDaySelects();
         renderRegMeaningFields();
         renderRegExampleFields();
-        renderRegDerivativeFields();
-        renderRegAntonymFields();
     };
 
     function saveData() {
         localStorage.setItem('myVocaData_guest', JSON.stringify(vocaData));
         localStorage.setItem('myVocaDays_guest', JSON.stringify(dayList));
         localStorage.setItem('myVocaConfig_guest', JSON.stringify(appConfig));
-    }
-
-    function saveParaphraseData() {
-        localStorage.setItem('myParaphraseData_guest', JSON.stringify(paraphraseData));
     }
 
     function applyAppConfig() {
@@ -1219,32 +840,28 @@
         bgContainer.innerHTML = '';
 
         if (appConfig.currentPreset === 'cute') {
+            /* 심플하지만 귀여운 로즈 톤 한 줄 손그림 무드 (별/하트/반짝임 라인 아이콘만 옅게, 과하지 않게 고정) */
             bgContainer.innerHTML = `
-                <div class="cute-blob cute-blob-1"></div>
-                <div class="cute-blob cute-blob-2"></div>
-                <div class="cute-blob" style="width:150px; height:150px; background:#FFE1EC; top:38%; left:-60px;"></div>
-                ${stickerEl('cupcake', 'top:8%; left:9%; transform: rotate(-8deg);')}
-                ${stickerEl('house', 'top:14%; right:7%; transform: rotate(6deg);')}
-                ${stickerEl('milk', 'top:34%; left:5%; transform: rotate(-6deg);')}
-                ${stickerEl('heart', 'top:5%; right:28%; transform: rotate(10deg);')}
-                ${stickerEl('flower', 'bottom:34%; right:6%; transform: rotate(-6deg);')}
-                ${stickerEl('sparkle', 'top:24%; right:22%;')}
-                ${stickerEl('sparkle', 'bottom:12%; left:24%;')}
-                ${stickerEl('cherry', 'bottom:8%; left:8%; transform: rotate(-10deg);')}
-                ${stickerEl('ribbon', 'bottom:20%; right:24%; transform: rotate(-10deg);')}
-                ${stickerEl('star', 'bottom:40%; left:14%; transform: rotate(12deg);')}
-                ${stickerEl('flower', 'bottom:5%; right:34%; transform: rotate(14deg);')}
+                <div class="cute-blob" style="width:200px; height:200px; background:#FFE1EC; top:-60px; left:-60px; opacity:0.35;"></div>
+                <div class="cute-blob" style="width:220px; height:220px; background:#FFE1EC; bottom:-70px; right:-70px; opacity:0.3;"></div>
+                ${stickerEl('lineHeart', 'top:7%; left:8%; transform: rotate(-6deg);', '#E8A0B8')}
+                ${stickerEl('lineStar', 'top:10%; right:9%;', '#E8A0B8')}
+                ${stickerEl('lineSparkle', 'top:26%; right:22%;', '#E8A0B8')}
+                ${stickerEl('lineSparkle', 'bottom:30%; left:9%;', '#E8A0B8')}
+                ${stickerEl('lineStar', 'bottom:14%; right:12%; transform: rotate(10deg) scale(0.8);', '#E8A0B8')}
+                ${stickerEl('lineHeart', 'bottom:8%; left:16%; transform: scale(0.85);', '#E8A0B8')}
             `;
         } else if (appConfig.currentPreset === 'cute2') {
+            /* 화이트 & 네이비 톤의 심플한 한 줄 구름 손그림 무드 (옅게, 개수 최소화) */
             bgContainer.innerHTML = `
-                ${stickerEl('cloud2', 'top:6%; left:4%; opacity:0.9;')}
-                ${stickerEl('cloud3', 'top:14%; right:8%; opacity:0.85; transform: scale(0.9);')}
-                ${stickerEl('cloud3', 'top:42%; left:-2%; opacity:0.7; transform: scale(0.75);')}
-                ${stickerEl('cloud2', 'bottom:10%; right:-4%; opacity:0.85; transform: scale(0.8);')}
-                ${stickerEl('cloud3', 'bottom:6%; left:10%; opacity:0.75; transform: scale(0.6);')}
-                ${stickerEl('cloud2', 'top:60%; right:20%; opacity:0.55; transform: scale(0.5);')}
+                ${stickerEl('lineCloud', 'top:6%; left:4%; opacity:0.55;', '#5B7FBE')}
+                ${stickerEl('lineCloud', 'top:16%; right:6%; opacity:0.45; transform: scale(0.75);', '#5B7FBE')}
+                ${stickerEl('lineSparkle', 'top:38%; right:18%; opacity:0.5;', '#5B7FBE')}
+                ${stickerEl('lineCloud', 'bottom:8%; right:-2%; opacity:0.5; transform: scale(0.7);', '#5B7FBE')}
+                ${stickerEl('lineCloud', 'bottom:14%; left:6%; opacity:0.4; transform: scale(0.55);', '#5B7FBE')}
             `;
         } else if (appConfig.currentPreset === 'kitsch') {
+            /* 컬러풀 플래너/스티커 느낌의 밝고 발랄한 키치 무드 (고정) */
             bgContainer.innerHTML = `
                 <div class="hip-glow" style="width:300px; height:300px; background:#FFD166; top:-90px; left:-60px;"></div>
                 <div class="hip-glow" style="width:260px; height:260px; background:#FF7EB3; bottom:-60px; right:-60px;"></div>
@@ -1255,15 +872,13 @@
                 ${stickerEl('star', 'bottom:8%; left:30%; transform: rotate(14deg) scale(0.8);')}
             `;
         } else if (appConfig.currentPreset === 'kitsch2') {
+            /* 블랙 테마 + 사진 참고 스타일의 심플한 한 줄 손그림(물음표 곁들인 고양이, 반짝임), 옅고 절제된 톤 */
             bgContainer.innerHTML = `
-                <div class="hip-glow" style="width:240px; height:240px; background:#000000; opacity:0.05; top:-60px; right:-40px;"></div>
-                <div class="hip-glow" style="width:220px; height:220px; background:#000000; opacity:0.04; bottom:-50px; left:-50px;"></div>
-                ${stickerEl('catsit', 'bottom:6%; left:6%; opacity:0.92;')}
-                ${stickerEl('qmark', 'bottom:26%; left:15%; transform: rotate(8deg); opacity:0.8;')}
-                ${stickerEl('sparkle', 'bottom:22%; left:2%; opacity:0.6; transform: scale(0.7);')}
-                ${stickerEl('moon', 'top:10%; right:9%; opacity:0.85;')}
-                ${stickerEl('star', 'top:28%; right:20%; transform: scale(0.7); opacity:0.7;')}
-                ${stickerEl('sparkle', 'top:6%; right:24%; opacity:0.6; transform: scale(0.6);')}
+                ${stickerEl('lineCatSit', 'bottom:5%; left:6%; opacity:0.5;', '#EDEDED')}
+                ${stickerEl('lineQmark', 'bottom:24%; left:16%; transform: rotate(6deg); opacity:0.4;', '#EDEDED')}
+                ${stickerEl('lineSparkle', 'top:9%; right:10%; opacity:0.45;', '#EDEDED')}
+                ${stickerEl('lineMoon', 'top:18%; right:22%; opacity:0.4; transform: scale(0.8);', '#EDEDED')}
+                ${stickerEl('lineSparkle', 'bottom:20%; right:8%; opacity:0.35; transform: scale(0.7);', '#EDEDED')}
             `;
         }
     }
@@ -1273,13 +888,13 @@
     }
 
     function showView(viewId) {
-        const views = ['home-view', 'input-view', 'category-view', 'word-list-view', 'card-view', 'quiz-select-view', 'quiz-play-view', 'paraphrase-manage-view', 'paraphrase-game-view'];
+        const views = ['home-view', 'input-view', 'category-view', 'word-list-view', 'card-view', 'quiz-select-view', 'quiz-play-view'];
         views.forEach(v => document.getElementById(v).classList.add('hidden'));
         document.getElementById(viewId).classList.remove('hidden');
 
         if (viewId === 'category-view') {
             isCategoryEditMode = false;
-            document.getElementById('category-edit-toggle-btn').innerText = "✏️";
+            document.getElementById('category-edit-toggle-btn').innerText = "편집";
             document.getElementById('category-select-all-area').classList.add('hidden');
             document.getElementById('category-delete-action-area').classList.add('hidden');
             document.getElementById('category-edit-hint').classList.add('hidden');
@@ -1287,7 +902,6 @@
         }
         if (viewId === 'quiz-select-view') updateQuizFilterSelect();
         if (viewId === 'input-view') updateDaySelects();
-        if (viewId === 'paraphrase-manage-view') renderParaphraseManageView();
     }
 
     function updateDaySelects() {
@@ -1302,14 +916,14 @@
     function addNewDay() {
         const input = document.getElementById('new-day-input');
         const newDay = input.value.trim();
-        if (!newDay) return showAlert('단어장 이름을 입력해 주세요.');
-        if (dayList.includes(newDay)) return showAlert('이미 존재하는 단어장입니다.');
+        if (!newDay) return alert('단어장 이름을 입력해 주세요.');
+        if (dayList.includes(newDay)) return alert('이미 존재하는 단어장입니다.');
         
         dayList.push(newDay);
         saveData();
         updateDaySelects();
         input.value = '';
-        showAlert(`'${newDay}' 단어장이 추가되었습니다.`);
+        alert(`'${newDay}' 단어장이 추가되었습니다.`);
     }
 
     /* 단어장 목록 화면에서 바로 단어장 추가 모달 관련 함수들 */
@@ -1326,8 +940,8 @@
     function quickAddNewDaySubmit() {
         const input = document.getElementById('quick-new-day-input');
         const newDay = input.value.trim();
-        if (!newDay) return showAlert('단어장 이름을 입력해 주세요.');
-        if (dayList.includes(newDay)) return showAlert('이미 존재하는 단어장입니다.');
+        if (!newDay) return alert('단어장 이름을 입력해 주세요.');
+        if (dayList.includes(newDay)) return alert('이미 존재하는 단어장입니다.');
 
         dayList.push(newDay);
         saveData();
@@ -1336,7 +950,7 @@
         if(!document.getElementById('category-view').classList.contains('hidden')) {
             renderCategories();
         }
-        showAlert(`'${newDay}' 단어장이 추가되었습니다.`);
+        alert(`'${newDay}' 단어장이 추가되었습니다.`);
     }
 
     /* 앱 타이틀(나만의 영단어장) 설정 모달 */
@@ -1352,7 +966,7 @@
     }
     function saveAppSetting() {
         const titleVal = document.getElementById('app-title-input').value.trim();
-        if (!titleVal) return showAlert('단어장 이름을 입력해 주세요.');
+        if (!titleVal) return alert('단어장 이름을 입력해 주세요.');
 
         appConfig.title = titleVal;
         saveData();
@@ -1415,6 +1029,7 @@
             appConfig.borderDk = "#E2E8F0";
             appConfig.topBtnBg = "#E2E8F0";
         } else if (type === 'cute') {
+            /* 리얼 프리미엄 핀터레스트 큐트 감성 (소프트 로즈 핑크 & 크림 톤) */
             appConfig.primaryColor = "#E085A5";
             appConfig.bgColor = "#FFF5F7";
             appConfig.cardBg = "#FFFFFF";
@@ -1427,18 +1042,20 @@
             appConfig.borderDk = "#FADCE4";
             appConfig.topBtnBg = "#FCE8EC";
         } else if (type === 'cute2') {
+            /* 화이트 & 네이비 톤의 심플한 손그림 다이어리 감성 */
             appConfig.primaryColor = "#3B5998";
             appConfig.bgColor = "#F4F8FF";
             appConfig.cardBg = "#FFFFFF";
             appConfig.textColor = "#263248";
             appConfig.wordCardBg = "#FFFFFF";
             appConfig.wordCardText = "#2C3E66";
-            appConfig.fontFamily = "'Comic Sans MS', cursive, sans-serif";
+            appConfig.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
             appConfig.borderRadius = "20px";
             appConfig.btnRadius = "12px";
             appConfig.borderDk = "#33415C";
             appConfig.topBtnBg = "#EAF1FF";
         } else if (type === 'kitsch') {
+            /* 컬러풀 플래너 & 스티커 감성의 밝고 발랄한 키치 무드 */
             appConfig.primaryColor = "#FF6B35";
             appConfig.bgColor = "#FFF8E7";
             appConfig.cardBg = "#FFFFFF";
@@ -1451,6 +1068,7 @@
             appConfig.borderDk = "#FFD8A8";
             appConfig.topBtnBg = "#FFF0DC";
         } else if (type === 'kitsch2') {
+            /* 블랙 테마 + 심플하고 아기자기한 손그림 무드 (블랙캣 포인트) */
             appConfig.primaryColor = "#E8B65A";
             appConfig.bgColor = "#101114";
             appConfig.cardBg = "#1C1E24";
@@ -1484,224 +1102,91 @@
         saveData();
         applyAppConfig();
         closeDesignModal();
-        showAlert('디자인 테마가 커스텀 적용되었습니다.');
+        alert('디자인 테마가 커스텀 적용되었습니다.');
     }
 
-    /* ===== 동적 뜻/예문 입력 필드 렌더링 (등록 폼 & 수정 모달 공용) - 개수 제한 없음
-       뜻은 {text, synonyms} 객체: 뜻 입력칸 + 동의어 입력칸(선택) 한 세트로 표시 ===== */
+    /* ===== 동적 뜻/예문 입력 필드 렌더링 (등록 폼 & 수정 모달 공용) ===== */
     function meaningFieldsHtml(prefix, values) {
         let html = '';
         values.forEach((v, i) => {
-            html += `<div class="example-block">
-                ${values.length > 1 ? `<button type="button" class="dyn-remove-btn" tabindex="-1" onclick="removeDynField('${prefix}','meaning',${i})">✕</button>` : ''}
-                <div class="example-block-inner">
-                    <input type="text" class="${prefix}-meaning-input" data-idx="${i}" value="${escAttr(v.text)}" placeholder="뜻 ${i + 1}${i === 0 ? '' : ' (선택)'}">
-                    <input type="text" class="${prefix}-meaning-syn-input" data-idx="${i}" value="${escAttr(v.synonyms)}" placeholder="동의어 (선택, 쉼표로 구분. 예: eliminate, get rid of)" style="margin-bottom:0; font-size:14px; opacity:0.9;" autocapitalize="none" autocorrect="on" spellcheck="true">
-                </div>
+            html += `<div class="meaning-row">
+                <input type="text" class="${prefix}-meaning-input" data-idx="${i}" value="${escAttr(v)}" placeholder="뜻 ${i + 1}${i === 0 ? '' : ' (선택)'}">
+                ${values.length > 1 ? `<button type="button" class="dyn-remove-btn" onclick="removeDynField('${prefix}','meaning',${i})">✕</button>` : ''}
             </div>`;
         });
-        html += `<button type="button" class="dyn-add-btn" tabindex="0" onclick="addDynField('${prefix}','meaning')">+ 뜻 추가</button>`;
+        if (values.length < 3) {
+            html += `<button type="button" class="dyn-add-btn" onclick="addDynField('${prefix}','meaning')">+ 뜻 추가 (${values.length}/3)</button>`;
+        }
         return html;
     }
 
-    /* 예문이 여러 뜻 중 어떤 뜻(의미)에 해당하는지 선택하는 콤보박스
-       - 지정해두면 "동의어 객관식" 게임에서 그 뜻의 동의어와 정확히 매칭된 예문만 사용함 */
-    function exampleMeaningComboHtml(prefix, idx, meaningsList, selectedIdx) {
-        const selVal = (selectedIdx === null || selectedIdx === undefined) ? '' : String(selectedIdx);
-        const options = [{ value: '', label: '관련 뜻 (전체/미지정)' }].concat(
-            (meaningsList || []).map((m, i) => ({
-                value: String(i),
-                label: (m.text && m.text.trim()) ? `뜻 ${i + 1}: ${m.text.trim()}` : `뜻 ${i + 1}`
-            }))
-        );
-        const selectedOpt = options.find(o => o.value === selVal) || options[0];
-        return `<div class="combo-select ${prefix}-example-meaningidx-select" data-value="${escAttr(selVal)}" data-idx="${idx}" tabindex="0" style="margin-top:6px; margin-bottom:0; font-size:13px;" onclick="toggleCombo(this, event)" onkeydown="comboKeydown(event, this)">
-            <span class="combo-select-label">${escAttr(selectedOpt.label)}</span>
-            <div class="combo-select-options hidden">${comboOptionsHtml(options, selVal)}</div>
-        </div>`;
-    }
-
-    function exampleFieldsHtml(prefix, values, meaningsList) {
+    function exampleFieldsHtml(prefix, values) {
         let html = '';
         values.forEach((v, i) => {
             html += `<div class="example-block">
-                <button type="button" class="dyn-remove-btn" tabindex="-1" onclick="removeDynField('${prefix}','example',${i})">✕</button>
+                <button type="button" class="dyn-remove-btn" onclick="removeDynField('${prefix}','example',${i})">✕</button>
                 <div class="example-block-inner">
-                    <input type="text" class="${prefix}-example-input" data-idx="${i}" value="${escAttr(v.ex)}" placeholder="예문 ${i + 1}" autocapitalize="none" autocorrect="on" spellcheck="true">
+                    <input type="text" class="${prefix}-example-input" data-idx="${i}" value="${escAttr(v.ex)}" placeholder="예문 ${i + 1}">
                     <input type="text" class="${prefix}-exmeaning-input" data-idx="${i}" value="${escAttr(v.exm)}" placeholder="예문 뜻 ${i + 1}">
-                    ${exampleMeaningComboHtml(prefix, i, meaningsList, v.meaningIndex)}
                 </div>
             </div>`;
         });
-        html += `<button type="button" class="dyn-add-btn" tabindex="0" onclick="addDynField('${prefix}','example')">+ 예문 추가</button>`;
+        if (values.length < 3) {
+            html += `<button type="button" class="dyn-add-btn" onclick="addDynField('${prefix}','example')">+ 예문 추가 (${values.length}/3)</button>`;
+        }
         return html;
-    }
-
-    /* 파생어/반의어 품사 콤보박스: 품사(선택) - 한 세트 (예: initially / 부 / 처음에, 초기에) */
-    function posComboHtml(prefix, kind, idx, selected) {
-        const selVal = selected || '';
-        const selectedOpt = DERIVATIVE_POS_OPTIONS.find(o => o.value === selVal) || DERIVATIVE_POS_OPTIONS[0];
-        return `<div class="combo-select ${prefix}-${kind}-pos-select ${kind}-pos-select" data-value="${escAttr(selVal)}" data-idx="${idx}" tabindex="0" onclick="toggleCombo(this, event)" onkeydown="comboKeydown(event, this)">
-            <span class="combo-select-label">${escAttr(selectedOpt.label)}</span>
-            <div class="combo-select-options hidden">${comboOptionsHtml(DERIVATIVE_POS_OPTIONS, selVal)}</div>
-        </div>`;
-    }
-
-    /* 파생어/반의어 공용 렌더 로직: word + pos + meaning 3칸 세트를 kind별로 생성 */
-    function wordPosMeaningFieldsHtml(prefix, kind, values, wordPlaceholder, meaningPlaceholder, addLabel) {
-        let html = '';
-        values.forEach((v, i) => {
-            html += `<div class="example-block">
-                <button type="button" class="dyn-remove-btn" tabindex="-1" onclick="removeDynField('${prefix}','${kind}',${i})">✕</button>
-                <div class="example-block-inner">
-                    <div class="derivative-row">
-                        <input type="text" class="${prefix}-${kind}-word-input ${kind}-word-input" data-idx="${i}" value="${escAttr(v.word)}" placeholder="${wordPlaceholder}" autocapitalize="none" autocorrect="on" spellcheck="true">
-                        ${posComboHtml(prefix, kind, i, v.pos)}
-                    </div>
-                    <input type="text" class="${prefix}-${kind}-meaning-input ${kind}-meaning-input" data-idx="${i}" value="${escAttr(v.meaning)}" placeholder="${meaningPlaceholder}" style="margin-top:6px; margin-bottom:0;">
-                </div>
-            </div>`;
-        });
-        html += `<button type="button" class="dyn-add-btn" tabindex="0" onclick="addDynField('${prefix}','${kind}')">${addLabel}</button>`;
-        return html;
-    }
-
-    function derivativeFieldsHtml(prefix, values) {
-        return wordPosMeaningFieldsHtml(prefix, 'derivative', values, '파생어 (예: initially)', '파생어 뜻 (예: 처음에, 초기에)', '+ 파생어 추가');
-    }
-
-    function antonymFieldsHtml(prefix, values) {
-        return wordPosMeaningFieldsHtml(prefix, 'antonym', values, '반의어 (예: illegal)', '반의어 뜻 (예: 불법의)', '+ 반의어 추가');
     }
 
     function renderRegMeaningFields() {
         document.getElementById('reg-meanings-container').innerHTML = meaningFieldsHtml('reg', regMeanings);
     }
     function renderRegExampleFields() {
-        document.getElementById('reg-examples-container').innerHTML = exampleFieldsHtml('reg', regExamples, regMeanings);
-    }
-    function renderRegDerivativeFields() {
-        document.getElementById('reg-derivatives-container').innerHTML = derivativeFieldsHtml('reg', regDerivatives);
-    }
-    function renderRegAntonymFields() {
-        document.getElementById('reg-antonyms-container').innerHTML = antonymFieldsHtml('reg', regAntonyms);
+        document.getElementById('reg-examples-container').innerHTML = exampleFieldsHtml('reg', regExamples);
     }
     function renderModalMeaningFields() {
         document.getElementById('modal-meanings-container').innerHTML = meaningFieldsHtml('modal', modalMeanings);
     }
     function renderModalExampleFields() {
-        document.getElementById('modal-examples-container').innerHTML = exampleFieldsHtml('modal', modalExamples, modalMeanings);
-    }
-    function renderModalDerivativeFields() {
-        document.getElementById('modal-derivatives-container').innerHTML = derivativeFieldsHtml('modal', modalDerivatives);
-    }
-    function renderModalAntonymFields() {
-        document.getElementById('modal-antonyms-container').innerHTML = antonymFieldsHtml('modal', modalAntonyms);
+        document.getElementById('modal-examples-container').innerHTML = exampleFieldsHtml('modal', modalExamples);
     }
 
     function syncRegMeanings() {
-        const texts = Array.from(document.querySelectorAll('.reg-meaning-input')).map(i => i.value);
-        const syns = Array.from(document.querySelectorAll('.reg-meaning-syn-input')).map(i => i.value);
-        regMeanings = texts.map((t, i) => ({ text: t, synonyms: syns[i] || '' }));
+        regMeanings = Array.from(document.querySelectorAll('.reg-meaning-input')).map(i => i.value);
     }
     function syncRegExamples() {
         const exs = Array.from(document.querySelectorAll('.reg-example-input')).map(i => i.value);
         const exms = Array.from(document.querySelectorAll('.reg-exmeaning-input')).map(i => i.value);
-        const midxs = Array.from(document.querySelectorAll('.reg-example-meaningidx-select')).map(i => i.dataset.value);
-        regExamples = exs.map((ex, i) => ({ ex, exm: exms[i] || '', meaningIndex: (midxs[i] !== undefined && midxs[i] !== '') ? Number(midxs[i]) : null }));
-    }
-    function syncRegDerivatives() {
-        const words = Array.from(document.querySelectorAll('.reg-derivative-word-input')).map(i => i.value);
-        const poses = Array.from(document.querySelectorAll('.reg-derivative-pos-select')).map(i => i.dataset.value);
-        const meanings = Array.from(document.querySelectorAll('.reg-derivative-meaning-input')).map(i => i.value);
-        regDerivatives = words.map((w, i) => ({ word: w, pos: poses[i] || '', meaning: meanings[i] || '' }));
-    }
-    function syncRegAntonyms() {
-        const words = Array.from(document.querySelectorAll('.reg-antonym-word-input')).map(i => i.value);
-        const poses = Array.from(document.querySelectorAll('.reg-antonym-pos-select')).map(i => i.dataset.value);
-        const meanings = Array.from(document.querySelectorAll('.reg-antonym-meaning-input')).map(i => i.value);
-        regAntonyms = words.map((w, i) => ({ word: w, pos: poses[i] || '', meaning: meanings[i] || '' }));
+        regExamples = exs.map((ex, i) => ({ ex, exm: exms[i] || '' }));
     }
     function syncModalMeanings() {
-        const texts = Array.from(document.querySelectorAll('.modal-meaning-input')).map(i => i.value);
-        const syns = Array.from(document.querySelectorAll('.modal-meaning-syn-input')).map(i => i.value);
-        modalMeanings = texts.map((t, i) => ({ text: t, synonyms: syns[i] || '' }));
+        modalMeanings = Array.from(document.querySelectorAll('.modal-meaning-input')).map(i => i.value);
     }
     function syncModalExamples() {
         const exs = Array.from(document.querySelectorAll('.modal-example-input')).map(i => i.value);
         const exms = Array.from(document.querySelectorAll('.modal-exmeaning-input')).map(i => i.value);
-        const midxs = Array.from(document.querySelectorAll('.modal-example-meaningidx-select')).map(i => i.dataset.value);
-        modalExamples = exs.map((ex, i) => ({ ex, exm: exms[i] || '', meaningIndex: (midxs[i] !== undefined && midxs[i] !== '') ? Number(midxs[i]) : null }));
-    }
-    function syncModalDerivatives() {
-        const words = Array.from(document.querySelectorAll('.modal-derivative-word-input')).map(i => i.value);
-        const poses = Array.from(document.querySelectorAll('.modal-derivative-pos-select')).map(i => i.dataset.value);
-        const meanings = Array.from(document.querySelectorAll('.modal-derivative-meaning-input')).map(i => i.value);
-        modalDerivatives = words.map((w, i) => ({ word: w, pos: poses[i] || '', meaning: meanings[i] || '' }));
-    }
-    function syncModalAntonyms() {
-        const words = Array.from(document.querySelectorAll('.modal-antonym-word-input')).map(i => i.value);
-        const poses = Array.from(document.querySelectorAll('.modal-antonym-pos-select')).map(i => i.dataset.value);
-        const meanings = Array.from(document.querySelectorAll('.modal-antonym-meaning-input')).map(i => i.value);
-        modalAntonyms = words.map((w, i) => ({ word: w, pos: poses[i] || '', meaning: meanings[i] || '' }));
-    }
-
-    /* 새로 추가된 뜻/예문/파생어 입력칸으로 커서를 자동 이동시켜 바로 입력할 수 있도록 함 */
-    function focusLastInput(selector) {
-        const items = document.querySelectorAll(selector);
-        if (items.length === 0) return;
-        const target = items[items.length - 1];
-        target.focus();
+        modalExamples = exs.map((ex, i) => ({ ex, exm: exms[i] || '' }));
     }
 
     function addDynField(target, type) {
         if (target === 'reg') {
             if (type === 'meaning') {
                 syncRegMeanings();
-                regMeanings.push({ text: '', synonyms: '' });
+                if (regMeanings.length < 3) regMeanings.push('');
                 renderRegMeaningFields();
-                focusLastInput('.reg-meaning-input');
+            } else {
                 syncRegExamples();
+                if (regExamples.length < 3) regExamples.push({ ex: '', exm: '' });
                 renderRegExampleFields();
-            } else if (type === 'example') {
-                syncRegExamples();
-                regExamples.push({ ex: '', exm: '' });
-                renderRegExampleFields();
-                focusLastInput('.reg-example-input');
-            } else if (type === 'derivative') {
-                syncRegDerivatives();
-                regDerivatives.push({ word: '', pos: '', meaning: '' });
-                renderRegDerivativeFields();
-                focusLastInput('.reg-derivative-word-input');
-            } else if (type === 'antonym') {
-                syncRegAntonyms();
-                regAntonyms.push({ word: '', pos: '', meaning: '' });
-                renderRegAntonymFields();
-                focusLastInput('.reg-antonym-word-input');
             }
         } else {
             if (type === 'meaning') {
                 syncModalMeanings();
-                modalMeanings.push({ text: '', synonyms: '' });
+                if (modalMeanings.length < 3) modalMeanings.push('');
                 renderModalMeaningFields();
-                focusLastInput('.modal-meaning-input');
+            } else {
                 syncModalExamples();
+                if (modalExamples.length < 3) modalExamples.push({ ex: '', exm: '' });
                 renderModalExampleFields();
-            } else if (type === 'example') {
-                syncModalExamples();
-                modalExamples.push({ ex: '', exm: '' });
-                renderModalExampleFields();
-                focusLastInput('.modal-example-input');
-            } else if (type === 'derivative') {
-                syncModalDerivatives();
-                modalDerivatives.push({ word: '', pos: '', meaning: '' });
-                renderModalDerivativeFields();
-                focusLastInput('.modal-derivative-word-input');
-            } else if (type === 'antonym') {
-                syncModalAntonyms();
-                modalAntonyms.push({ word: '', pos: '', meaning: '' });
-                renderModalAntonymFields();
-                focusLastInput('.modal-antonym-word-input');
             }
         }
     }
@@ -1711,88 +1196,54 @@
             if (type === 'meaning') {
                 syncRegMeanings();
                 regMeanings.splice(idx, 1);
-                if (regMeanings.length === 0) regMeanings = [{ text: '', synonyms: '' }];
+                if (regMeanings.length === 0) regMeanings = [''];
                 renderRegMeaningFields();
-                syncRegExamples();
-                renderRegExampleFields();
-            } else if (type === 'example') {
+            } else {
                 syncRegExamples();
                 regExamples.splice(idx, 1);
+                if (regExamples.length === 0) regExamples = [{ ex: '', exm: '' }];
                 renderRegExampleFields();
-            } else if (type === 'derivative') {
-                syncRegDerivatives();
-                regDerivatives.splice(idx, 1);
-                renderRegDerivativeFields();
-            } else if (type === 'antonym') {
-                syncRegAntonyms();
-                regAntonyms.splice(idx, 1);
-                renderRegAntonymFields();
             }
         } else {
             if (type === 'meaning') {
                 syncModalMeanings();
                 modalMeanings.splice(idx, 1);
-                if (modalMeanings.length === 0) modalMeanings = [{ text: '', synonyms: '' }];
+                if (modalMeanings.length === 0) modalMeanings = [''];
                 renderModalMeaningFields();
-                syncModalExamples();
-                renderModalExampleFields();
-            } else if (type === 'example') {
+            } else {
                 syncModalExamples();
                 modalExamples.splice(idx, 1);
+                if (modalExamples.length === 0) modalExamples = [{ ex: '', exm: '' }];
                 renderModalExampleFields();
-            } else if (type === 'derivative') {
-                syncModalDerivatives();
-                modalDerivatives.splice(idx, 1);
-                renderModalDerivativeFields();
-            } else if (type === 'antonym') {
-                syncModalAntonyms();
-                modalAntonyms.splice(idx, 1);
-                renderModalAntonymFields();
             }
         }
     }
 
-    /* 단어 추가 등록 (뜻/예문/파생어는 없어도, 1개만 있어도 저장 가능) */
+    /* 단어 추가 등록 */
     document.getElementById('voca-form').addEventListener('submit', function(e) {
         e.preventDefault();
         const day = document.getElementById('day-select').value;
-        if (!day) return showAlert('단어장을 먼저 추가하고 선택해 주세요.');
+        if (!day) return alert('단어장을 먼저 추가하고 선택해 주세요.');
 
-        let word = document.getElementById('word').value.trim();
-        if (!word) return showAlert('영어 단어를 입력해 주세요.');
-        word = lowerFirstLetter(word);
+        const word = document.getElementById('word').value.trim();
+        if (!word) return alert('영어 단어를 입력해 주세요.');
 
         syncRegMeanings();
         syncRegExamples();
-        syncRegDerivatives();
-        syncRegAntonyms();
-        const meanings = regMeanings
-            .map(m => ({ text: m.text.trim(), synonyms: m.synonyms.trim() }))
-            .filter(m => m.text);
-        const examples = regExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim(), meaningIndex: ex.meaningIndex !== undefined ? ex.meaningIndex : null })).filter(ex => ex.ex);
-        const derivatives = regDerivatives
-            .map(d => ({ word: d.word.trim(), pos: d.pos, meaning: d.meaning.trim() }))
-            .filter(d => d.word);
-        const antonyms = regAntonyms
-            .map(d => ({ word: d.word.trim(), pos: d.pos, meaning: d.meaning.trim() }))
-            .filter(d => d.word);
+        const meanings = regMeanings.map(m => m.trim()).filter(m => m);
+        const examples = regExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim() })).filter(ex => ex.ex);
 
-        vocaData.push({ id: Date.now(), day, word, meanings, examples, derivatives, antonyms, starred: false });
+        if (meanings.length === 0) return alert('뜻을 최소 1개 입력해 주세요.');
+
+        vocaData.push({ id: Date.now(), day, word, meanings, examples, starred: false });
         saveData();
+        alert('단어가 저장되었습니다!');
         this.reset();
-        regMeanings = [{ text: '', synonyms: '' }, { text: '', synonyms: '' }];
-        regExamples = [{ ex: '', exm: '' }, { ex: '', exm: '' }];
-        regDerivatives = [{ word: '', pos: '', meaning: '' }];
-        regAntonyms = [{ word: '', pos: '', meaning: '' }];
+        regMeanings = [''];
+        regExamples = [{ ex: '', exm: '' }];
         renderRegMeaningFields();
         renderRegExampleFields();
-        renderRegDerivativeFields();
-        renderRegAntonymFields();
         updateDaySelects();
-        document.getElementById('day-select').value = day;
-        showAlert('단어가 저장되었습니다!', () => {
-            document.getElementById('word').focus();
-        });
     });
 
     /* 단어장 목록 화면에서 편집 모드 토글 */
@@ -1809,7 +1260,7 @@
             actionArea.classList.remove('hidden');
             hint.classList.remove('hidden');
         } else {
-            btn.innerText = "✏️";
+            btn.innerText = "편집";
             selectAllArea.classList.add('hidden');
             actionArea.classList.add('hidden');
             hint.classList.add('hidden');
@@ -1875,23 +1326,23 @@
     /* 선택된 단어장 삭제 기능 */
     function deleteSelectedCategories() {
         const checkboxes = document.querySelectorAll('.category-checkbox:checked');
-        if (checkboxes.length === 0) return showAlert('삭제할 단어장을 선택해 주세요.');
-        showConfirm('선택한 단어장과 해당 단어장 안의 모든 단어가 함께 삭제됩니다. 삭제하시겠습니까?', () => {
-            const targetDays = Array.from(checkboxes).map(cb => cb.value);
+        if (checkboxes.length === 0) return alert('삭제할 단어장을 선택해 주세요.');
+        if (!confirm('선택한 단어장과 해당 단어장 안의 모든 단어가 함께 삭제됩니다. 삭제하시겠습니까?')) return;
 
-            dayList = dayList.filter(d => !targetDays.includes(d));
-            vocaData = vocaData.filter(w => !targetDays.includes(w.day));
+        const targetDays = Array.from(checkboxes).map(cb => cb.value);
+        
+        dayList = dayList.filter(d => !targetDays.includes(d));
+        vocaData = vocaData.filter(w => !targetDays.includes(w.day));
 
-            saveData();
-            isCategoryEditMode = false;
-            document.getElementById('category-edit-toggle-btn').innerText = "✏️";
-            document.getElementById('category-select-all-area').classList.add('hidden');
-            document.getElementById('category-delete-action-area').classList.add('hidden');
-            document.getElementById('category-edit-hint').classList.add('hidden');
-            document.getElementById('category-select-all-checkbox').checked = false;
-            renderCategories();
-            showAlert('선택한 단어장이 삭제되었습니다.');
-        });
+        saveData();
+        isCategoryEditMode = false;
+        document.getElementById('category-edit-toggle-btn').innerText = "편집";
+        document.getElementById('category-select-all-area').classList.add('hidden');
+        document.getElementById('category-delete-action-area').classList.add('hidden');
+        document.getElementById('category-edit-hint').classList.add('hidden');
+        document.getElementById('category-select-all-checkbox').checked = false;
+        renderCategories();
+        alert('선택한 단어장이 삭제되었습니다.');
     }
 
     /* 단어장 순서 변경 */
@@ -1915,9 +1366,8 @@
         if (isCategoryEditMode) return;
         currentSelectedCategory = cat;
         isWordEditMode = false;
-        currentWordPage = 1;
         showView('word-list-view');
-        document.getElementById('word-edit-toggle-btn').innerText = "✏️";
+        document.getElementById('word-edit-toggle-btn').innerText = "편집";
         document.getElementById('word-select-all-area').classList.add('hidden');
         document.getElementById('word-delete-action-area').classList.add('hidden');
         document.getElementById('word-edit-hint').classList.add('hidden');
@@ -1942,7 +1392,7 @@
             hint.classList.remove('hidden');
             cardBtn.classList.add('hidden');
         } else {
-            btn.innerText = "✏️";
+            btn.innerText = "편집";
             selectAllArea.classList.add('hidden');
             actionArea.classList.add('hidden');
             hint.classList.add('hidden');
@@ -1957,13 +1407,12 @@
         checkboxes.forEach(cb => cb.checked = source.checked);
     }
 
-    /* 영단어 목록 노출 뷰 (한 페이지에 15개씩) */
+    /* 영단어 목록 노출 뷰 */
     function renderWordList() {
         const container = document.getElementById('words-container');
         const titleEl = document.getElementById('selected-folder-title');
-        const paginationArea = document.getElementById('word-pagination-area');
 
-        if (currentSelectedCategory === 'all') titleEl.innerText = '전체 단어';
+        if (currentSelectedCategory === 'all') titleEl.innerText = '전체 단어 목록';
         else if (currentSelectedCategory === 'starred') titleEl.innerText = '⭐ 즐겨찾기';
         else titleEl.innerText = `📖 ${currentSelectedCategory}`;
 
@@ -1971,29 +1420,19 @@
 
         if (currentFilteredWords.length === 0) {
             container.innerHTML = `<p style="opacity:0.6; text-align:center; padding: 40px 0; font-size:16px;">등록된 단어가 없습니다.</p>`;
-            paginationArea.innerHTML = '';
             return;
         }
 
-        const totalWords = currentFilteredWords.length;
-        const totalPages = Math.max(1, Math.ceil(totalWords / WORDS_PER_PAGE));
-        if (currentWordPage > totalPages) currentWordPage = totalPages;
-        if (currentWordPage < 1) currentWordPage = 1;
-        const startIdx = (currentWordPage - 1) * WORDS_PER_PAGE;
-        const pageItems = currentFilteredWords.slice(startIdx, startIdx + WORDS_PER_PAGE);
-
-        container.innerHTML = pageItems.map((item, i) => {
-            const index = startIdx + i; // 페이지 슬라이스가 아닌 전체 필터링된 목록에서의 실제 위치
+        container.innerHTML = currentFilteredWords.map((item, index) => {
             if (isWordEditMode) {
                 return `
                     <div class="clean-word-item" style="cursor: default;">
                         <input type="checkbox" class="word-checkbox" value="${item.id}" style="width: 20px; height: 20px; cursor: pointer;">
                         <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
-                        <button type="button" class="speak-btn" data-word="${escAttr(item.word)}" onclick="speakText(event, this.dataset.word)">🔊</button>
                         <div class="word-text-title" style="flex:1;">${item.word}</div>
                         <div class="reorder-btn-group">
                             <button type="button" class="reorder-btn" onclick="moveWordUp(${item.id})" ${index === 0 ? 'disabled' : ''}>▲</button>
-                            <button type="button" class="reorder-btn" onclick="moveWordDown(${item.id})" ${index === totalWords - 1 ? 'disabled' : ''}>▼</button>
+                            <button type="button" class="reorder-btn" onclick="moveWordDown(${item.id})" ${index === currentFilteredWords.length - 1 ? 'disabled' : ''}>▼</button>
                         </div>
                         <button style="background:none; border:none; color:var(--primary-color); font-size:18px; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️</button>
                     </div>
@@ -2002,55 +1441,35 @@
                 return `
                     <div class="clean-word-item">
                         <span class="star-btn ${item.starred ? 'active' : ''}" onclick="toggleStar(event, ${item.id})">★</span>
-                        <button type="button" class="speak-btn" data-word="${escAttr(item.word)}" onclick="speakText(event, this.dataset.word)">🔊</button>
                         <div class="word-text-title" style="flex:1;" onclick="openCardViewAtIndex(${index})">${item.word}</div>
                         <button style="background:none; border:none; color:var(--primary-color); font-size:18px; cursor:pointer; padding:5px;" onclick="openWordDetailModal(event, ${item.id})">✏️</button>
                     </div>
                 `;
             }
         }).join('');
-
-        renderWordPagination(totalPages);
-    }
-
-    /* 페이지 이동 버튼 및 "N / M 페이지" 표시 렌더링 */
-    function renderWordPagination(totalPages) {
-        const area = document.getElementById('word-pagination-area');
-        if (!area) return;
-        if (totalPages <= 1) { area.innerHTML = ''; return; }
-        area.innerHTML = `
-            <button type="button" class="reorder-btn" style="width:auto; height:auto; padding:8px 16px; font-size:14px;" onclick="changeWordPage(-1)" ${currentWordPage === 1 ? 'disabled' : ''}>◀ 이전</button>
-            <span style="font-size:13px; opacity:0.7; margin:0 12px;">${currentWordPage} / ${totalPages} 페이지</span>
-            <button type="button" class="reorder-btn" style="width:auto; height:auto; padding:8px 16px; font-size:14px;" onclick="changeWordPage(1)" ${currentWordPage === totalPages ? 'disabled' : ''}>다음 ▶</button>
-        `;
-    }
-
-    function changeWordPage(delta) {
-        currentWordPage += delta;
-        renderWordList();
     }
 
     /* 선택된 단어 삭제 기능 */
     function deleteSelectedWords() {
         const checkboxes = document.querySelectorAll('.word-checkbox:checked');
-        if (checkboxes.length === 0) return showAlert('삭제할 단어를 선택해 주세요.');
-        showConfirm('선택한 단어들을 삭제하시겠습니까?', () => {
-            const targetIds = Array.from(checkboxes).map(cb => Number(cb.value));
+        if (checkboxes.length === 0) return alert('삭제할 단어를 선택해 주세요.');
+        if (!confirm('선택한 단어들을 삭제하시겠습니까?')) return;
 
-            vocaData = vocaData.filter(w => !targetIds.includes(w.id));
-            saveData();
+        const targetIds = Array.from(checkboxes).map(cb => Number(cb.value));
+        
+        vocaData = vocaData.filter(w => !targetIds.includes(w.id));
+        saveData();
 
-            isWordEditMode = false;
-            document.getElementById('word-edit-toggle-btn').innerText = "✏️";
-            document.getElementById('word-select-all-area').classList.add('hidden');
-            document.getElementById('word-delete-action-area').classList.add('hidden');
-            document.getElementById('word-edit-hint').classList.add('hidden');
-            document.getElementById('card-view-btn').classList.remove('hidden');
-            document.getElementById('word-select-all-checkbox').checked = false;
+        isWordEditMode = false;
+        document.getElementById('word-edit-toggle-btn').innerText = "편집";
+        document.getElementById('word-select-all-area').classList.add('hidden');
+        document.getElementById('word-delete-action-area').classList.add('hidden');
+        document.getElementById('word-edit-hint').classList.add('hidden');
+        document.getElementById('card-view-btn').classList.remove('hidden');
+        document.getElementById('word-select-all-checkbox').checked = false;
 
-            renderWordList();
-            showAlert('선택한 단어가 삭제되었습니다.');
-        });
+        renderWordList();
+        alert('선택한 단어가 삭제되었습니다.');
     }
 
     function getFilteredWords() {
@@ -2110,7 +1529,7 @@
 
     function openCardViewFromList() {
         getFilteredWords();
-        if (currentFilteredWords.length === 0) return showAlert('보여줄 단어가 없습니다.');
+        if (currentFilteredWords.length === 0) return alert('보여줄 단어가 없습니다.');
         currentCardIdx = 0;
         showView('card-view');
         renderCard();
@@ -2122,10 +1541,9 @@
         const item = vocaData.find(w => w.id === id);
         if (!item) return;
         modalEditId = id;
-        modalMeanings = item.meanings && item.meanings.length ? item.meanings.map(m => ({ text: m.text, synonyms: m.synonyms })) : [{ text: '', synonyms: '' }];
-        modalExamples = (item.examples || []).map(ex => ({ ex: ex.ex, exm: ex.exm, meaningIndex: (ex.meaningIndex !== undefined ? ex.meaningIndex : null) }));
-        modalDerivatives = (item.derivatives || []).map(d => ({ word: d.word, pos: d.pos, meaning: d.meaning }));
-        modalAntonyms = (item.antonyms || []).map(d => ({ word: d.word, pos: d.pos, meaning: d.meaning }));
+        modalMeanings = item.meanings && item.meanings.length ? [...item.meanings] : [''];
+        modalExamples = (item.examples || []).map(ex => ({ ex: ex.ex, exm: ex.exm }));
+        if (modalExamples.length === 0) modalExamples = [{ ex: '', exm: '' }];
 
         const dayOptionsHtml = dayList.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d}</option>`).join('');
 
@@ -2137,23 +1555,15 @@
             </div>
             <div class="form-group" style="margin-bottom:12px;">
                 <label style="font-size:13px; opacity:0.8;">영어 단어</label>
-                <input type="text" id="modal-edit-word" value="${escAttr(item.word)}" autocapitalize="none" autocorrect="on" spellcheck="true">
+                <input type="text" id="modal-edit-word" value="${escAttr(item.word)}">
             </div>
             <div class="form-group" style="margin-bottom:12px;">
-                <label style="font-size:13px; opacity:0.8;">뜻</label>
+                <label style="font-size:13px; opacity:0.8;">뜻 (최대 3개)</label>
                 <div id="modal-meanings-container"></div>
             </div>
-            <div class="form-group" style="margin-bottom:12px;">
-                <label style="font-size:13px; opacity:0.8;">예문 (선택)</label>
-                <div id="modal-examples-container"></div>
-            </div>
-            <div class="form-group" style="margin-bottom:12px;">
-                <label style="font-size:13px; opacity:0.8;">파생어 (선택)</label>
-                <div id="modal-derivatives-container"></div>
-            </div>
             <div class="form-group" style="margin-bottom:15px;">
-                <label style="font-size:13px; opacity:0.8;">반의어 (선택)</label>
-                <div id="modal-antonyms-container"></div>
+                <label style="font-size:13px; opacity:0.8;">예문 (최대 3개, 선택)</label>
+                <div id="modal-examples-container"></div>
             </div>
             <div style="display:flex; gap:10px;">
                 <button class="submit-btn" style="background:#34C759; color: white;" onclick="saveModalWord()">수정 저장</button>
@@ -2162,8 +1572,6 @@
         `;
         renderModalMeaningFields();
         renderModalExampleFields();
-        renderModalDerivativeFields();
-        renderModalAntonymFields();
 
         document.getElementById('word-detail-modal').classList.remove('hidden');
     }
@@ -2172,44 +1580,32 @@
         const item = vocaData.find(w => w.id === modalEditId);
         if (!item) return;
 
-        let word = document.getElementById('modal-edit-word').value.trim();
-        if (!word) return showAlert('영어 단어를 입력해 주세요.');
-        word = lowerFirstLetter(word);
+        const word = document.getElementById('modal-edit-word').value.trim();
+        if (!word) return alert('영어 단어를 입력해 주세요.');
 
         syncModalMeanings();
         syncModalExamples();
-        syncModalDerivatives();
-        syncModalAntonyms();
-        const meanings = modalMeanings
-            .map(m => ({ text: m.text.trim(), synonyms: m.synonyms.trim() }))
-            .filter(m => m.text);
-        const examples = modalExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim(), meaningIndex: ex.meaningIndex !== undefined ? ex.meaningIndex : null })).filter(ex => ex.ex);
-        const derivatives = modalDerivatives
-            .map(d => ({ word: d.word.trim(), pos: d.pos, meaning: d.meaning.trim() }))
-            .filter(d => d.word);
-        const antonyms = modalAntonyms
-            .map(d => ({ word: d.word.trim(), pos: d.pos, meaning: d.meaning.trim() }))
-            .filter(d => d.word);
+        const meanings = modalMeanings.map(m => m.trim()).filter(m => m);
+        const examples = modalExamples.map(ex => ({ ex: ex.ex.trim(), exm: ex.exm.trim() })).filter(ex => ex.ex);
+
+        if (meanings.length === 0) return alert('뜻을 최소 1개 입력해 주세요.');
 
         item.day = document.getElementById('modal-edit-day').value;
         item.word = word;
         item.meanings = meanings;
         item.examples = examples;
-        item.derivatives = derivatives;
-        item.antonyms = antonyms;
         saveData();
+        alert('단어 정보가 수정되었습니다.');
         closeWordDetailModal();
         renderWordList();
-        showAlert('단어 정보가 수정되었습니다.');
     }
 
     function deleteModalWord() {
-        showConfirm('이 단어를 삭제하시겠습니까?', () => {
-            vocaData = vocaData.filter(w => w.id !== modalEditId);
-            saveData();
-            closeWordDetailModal();
-            renderWordList();
-        });
+        if (!confirm('이 단어를 삭제하시겠습니까?')) return;
+        vocaData = vocaData.filter(w => w.id !== modalEditId);
+        saveData();
+        closeWordDetailModal();
+        renderWordList();
     }
 
     function closeWordDetailModal() {
@@ -2220,153 +1616,37 @@
         if (e.target.id === 'word-detail-modal') closeWordDetailModal();
     }
 
-    /* 발음 재생 (Web Speech API 사용, 아이패드/아이폰 사파리 등 대부분 브라우저 지원) */
-    function speakText(e, text) {
-        if (e) e.stopPropagation();
-        if (!text) return;
-        if (!('speechSynthesis' in window)) {
-            showAlert('이 기기/브라우저에서는 음성 재생을 지원하지 않습니다.');
-            return;
-        }
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = 'en-US';
-        utter.rate = 0.9;
-        window.speechSynthesis.speak(utter);
-    }
-
-    function speakCurrentCardWord(e) {
-        if (e) e.stopPropagation();
-        const item = currentFilteredWords[currentCardIdx];
-        if (item) speakText(null, item.word);
-    }
-
-    /* 플래시카드 기능 - 3단계로 탭할 때마다 정보가 늘어남
-       0(앞면): 영단어만
-       1(뒷면-1): 영단어 + 뜻 + 예문
-       2(뒷면-2): 영단어 + 동의어(+연결된 예문) + 파생어 + 반의어 (뜻은 제외) */
-    let cardFlipState = 0;
-
+    /* 플래시카드 기능 - 등록된 뜻/예문을 모두 보여줌 (학습용 카드 보기이므로 전체 노출) */
     function renderCard() {
         const item = currentFilteredWords[currentCardIdx];
-        cardFlipState = 0;
-        document.getElementById('card-word-text').innerText = item.word;
+        document.getElementById('card-front').classList.remove('hidden');
+        document.getElementById('card-back').classList.add('hidden');
 
+        document.getElementById('card-word-text').innerText = item.word;
+        document.getElementById('card-meaning-text').innerText = (item.meanings || []).join(' / ');
+
+        const exContainer = document.getElementById('card-ex-container');
+        if (item.examples && item.examples.length > 0) {
+            exContainer.innerHTML = item.examples.map(ex => `
+                <div style="margin-top:10px;">
+                    <div class="card-ex-text">${escAttr(ex.ex)}</div>
+                    ${ex.exm ? `<div class="card-exmeaning-text">${escAttr(ex.exm)}</div>` : ''}
+                </div>
+            `).join('');
+        } else {
+            exContainer.innerHTML = '';
+        }
+        
         const starIcon = document.getElementById('card-star-icon');
         starIcon.style.color = item.starred ? '#FFC107' : 'var(--word-card-text)';
         starIcon.style.opacity = item.starred ? '1' : '0.5';
 
         document.getElementById('card-index-indicator').innerText = `${currentCardIdx + 1} / ${currentFilteredWords.length}`;
-
-        showCardFace();
-    }
-
-    /* 예문 뒤에 붙일 작은 스피커 버튼 (해당 문장을 읽어줌) */
-    function miniSpeakBtnHtml(text) {
-        return `<button type="button" class="card-mini-speak-btn" onclick="speakText(event, this.dataset.word)" data-word="${escAttr(text)}">🔊</button>`;
-    }
-
-    /* 뒷면-1: 영단어 + 뜻 + 예문 */
-    function renderCardBack1Html(item) {
-        let html = `<div class="card-word-title" style="font-size:36px; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <span>${escAttr(item.word)}</span>${miniSpeakBtnHtml(item.word)}
-        </div>`;
-
-        if (item.meanings && item.meanings.length > 0) {
-            const meaningTexts = item.meanings.filter(m => m.text);
-            if (meaningTexts.length > 0) {
-                html += meaningTexts.map(m => `<div class="card-meaning-text" style="margin-bottom:10px;">${escAttr(m.text)}</div>`).join('');
-            }
-        }
-
-        if (item.examples && item.examples.length > 0) {
-            html += item.examples.map(ex => `
-                <div style="margin-top:16px; text-align:center;">
-                    <span class="card-ex-text">${escAttr(ex.ex)}</span>${miniSpeakBtnHtml(ex.ex)}
-                    ${ex.exm ? `<div class="card-exmeaning-text" style="margin-top:8px;">${escAttr(ex.exm)}</div>` : ''}
-                </div>
-            `).join('');
-        }
-
-        return html;
-    }
-
-    /* 뒷면-2: 영단어 + 동의어(+연결된 예문) + 파생어 + 반의어 (뜻은 제외) */
-    function renderCardBack2Html(item) {
-        let html = `<div class="card-word-title" style="font-size:36px; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <span>${escAttr(item.word)}</span>${miniSpeakBtnHtml(item.word)}
-        </div>`;
-
-        const meaningsWithSyn = (item.meanings || [])
-            .map((m, idx) => ({ ...m, idx }))
-            .filter(m => m.synonyms && m.synonyms.trim());
-
-        if (meaningsWithSyn.length > 0) {
-            html += meaningsWithSyn.map(m => {
-                const linkedEx = (item.examples || []).find(ex =>
-                    ex.meaningIndex !== null && ex.meaningIndex !== undefined && Number(ex.meaningIndex) === m.idx
-                );
-                return `
-                    <div style="margin-bottom:16px;">
-                        <div style="font-size:22px; font-weight:bold; color:var(--word-card-text);">동의어: ${escAttr(m.synonyms)}</div>
-                        ${linkedEx ? `
-                            <div style="margin-top:8px;">
-                                <span class="card-ex-text">${escAttr(linkedEx.ex)}</span>${miniSpeakBtnHtml(linkedEx.ex)}
-                            </div>
-                            ${linkedEx.exm ? `<div class="card-exmeaning-text" style="margin-top:4px;">${escAttr(linkedEx.exm)}</div>` : ''}
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        if (item.derivatives && item.derivatives.length > 0) {
-            html += `<div style="margin-top:16px; text-align:center;">
-                ${item.derivatives.map(d => `
-                    <div class="card-derivative-text">
-                        ${escAttr(d.word)}${miniSpeakBtnHtml(d.word)}${d.pos ? ` <span style="opacity:0.7;">(${escAttr(d.pos)})</span>` : ''} ${escAttr(d.meaning)}
-                    </div>
-                `).join('')}
-            </div>`;
-        }
-
-        if (item.antonyms && item.antonyms.length > 0) {
-            html += `<div style="margin-top:16px; text-align:center;">
-                ${item.antonyms.map(d => `
-                    <div class="card-derivative-text">
-                        ⊖ ${escAttr(d.word)}${miniSpeakBtnHtml(d.word)}${d.pos ? ` <span style="opacity:0.7;">(${escAttr(d.pos)})</span>` : ''} ${escAttr(d.meaning)}
-                    </div>
-                `).join('')}
-            </div>`;
-        }
-
-        return html;
-    }
-
-    /* 현재 cardFlipState에 맞춰 앞면/뒷면을 표시하고, 왼쪽 위 스피커는 앞면에서만 보이게 함
-       (뒷면들은 예문/단어마다 개별 스피커가 있으므로 왼쪽 위 스피커는 숨김) */
-    function showCardFace() {
-        const item = currentFilteredWords[currentCardIdx];
-        const frontEl = document.getElementById('card-front');
-        const backEl = document.getElementById('card-back');
-        const topSpeakBtn = document.getElementById('card-speak-icon');
-
-        if (cardFlipState === 0) {
-            frontEl.classList.remove('hidden');
-            backEl.classList.add('hidden');
-            topSpeakBtn.classList.remove('hidden');
-        } else {
-            frontEl.classList.add('hidden');
-            backEl.classList.remove('hidden');
-            topSpeakBtn.classList.add('hidden');
-            document.getElementById('card-back-content').innerHTML =
-                cardFlipState === 1 ? renderCardBack1Html(item) : renderCardBack2Html(item);
-        }
     }
 
     function toggleCardFlip() {
-        cardFlipState = (cardFlipState + 1) % 3;
-        showCardFace();
+        document.getElementById('card-front').classList.toggle('hidden');
+        document.getElementById('card-back').classList.toggle('hidden');
     }
 
     function toggleStarCurrentCard(e) {
@@ -2387,24 +1667,6 @@
         renderCard();
     }
 
-    /* 단어 카드 순서 섞기: 항상 현재 보고 있던 단어와 다른 단어가 먼저 나오도록 보정 */
-    function shuffleCardOrder() {
-        if (currentFilteredWords.length === 0) return;
-        if (currentFilteredWords.length === 1) { renderCard(); return; }
-
-        const currentWord = currentFilteredWords[currentCardIdx];
-        let shuffled;
-        let tries = 0;
-        do {
-            shuffled = [...currentFilteredWords].sort(() => Math.random() - 0.5);
-            tries++;
-        } while (shuffled[0].id === currentWord.id && tries < 20);
-
-        currentFilteredWords = shuffled;
-        currentCardIdx = 0;
-        renderCard();
-    }
-
     /* 연습하기 기능 */
     function updateQuizFilterSelect() {
         const select = document.getElementById('quiz-filter');
@@ -2421,226 +1683,15 @@
     let activeQuizList = [];
     let currentQuizItem = null;
 
-    /* 예문 빈칸 동의어 객관식(다중 선택) 게임용 상태 */
-    let synonymBlankChoices = [];
-    let synonymBlankCorrect = [];
-    let synonymBlankSelected = [];
-
-    /* 동의어가 1개 이상 등록된 모든 뜻(meaning)을 인덱스와 함께 반환
-       (정답은 "단어 자신" + "그 뜻의 동의어 1개"를 모두 고르는 것이므로 동의어는 1개만 있어도 됨) */
-    function getMeaningsWithSynonyms(item) {
-        return (item.meanings || [])
-            .map((m, idx) => ({ ...m, idx, synonymList: (m.synonyms || '').split(',').map(s => s.trim()).filter(Boolean) }))
-            .filter(m => m.synonymList.length >= 1);
-    }
-
-    /* 단어의 여러 뜻 중, 실제로 동의어가 성립하는 그 "뜻"에 맞는 예문을 정확히 골라 짝짓는다.
-       - 예문에 "관련 뜻"이 지정되어 있으면 그 뜻의 동의어와만 매칭 (정확도 우선)
-       - 지정된 예문이 하나도 없으면(과거 데이터 등) 단어가 포함된 아무 예문이나 임시로 매칭 (동작 유지용 fallback) */
-    function findSynonymBlankCandidates(item) {
-        const qualMeanings = getMeaningsWithSynonyms(item);
-        if (qualMeanings.length === 0) return [];
-
-        const wordLower = (item.word || '').toLowerCase();
-        const examplesWithWord = (item.examples || []).filter(ex => ex.ex && ex.ex.toLowerCase().includes(wordLower));
-        if (examplesWithWord.length === 0) return [];
-
-        const linkedPairs = [];
-        qualMeanings.forEach(m => {
-            examplesWithWord.forEach(ex => {
-                if (ex.meaningIndex !== null && ex.meaningIndex !== undefined && Number(ex.meaningIndex) === m.idx) {
-                    linkedPairs.push({ meaning: m, example: ex });
-                }
-            });
-        });
-        if (linkedPairs.length > 0) return linkedPairs;
-
-        // 명시적으로 연결된 예문이 없을 때만 사용하는 fallback (뜻-예문 매칭이 부정확할 수 있음)
-        const fallbackPairs = [];
-        qualMeanings.forEach(m => {
-            examplesWithWord.forEach(ex => {
-                fallbackPairs.push({ meaning: m, example: ex });
-            });
-        });
-        return fallbackPairs;
-    }
-
-    /* 전체 단어장에서 동의어 후보(오답 보기용)를 모아 특정 정답 목록을 제외하고 반환 */
-    function collectAllSynonyms(excludeList) {
-        const excludeLower = excludeList.map(s => s.toLowerCase());
-        const pool = [];
-        const seen = new Set();
-        vocaData.forEach(item => {
-            (item.meanings || []).forEach(m => {
-                (m.synonyms || '').split(',').map(s => s.trim()).filter(Boolean).forEach(syn => {
-                    const key = syn.toLowerCase();
-                    if (!excludeLower.includes(key) && !seen.has(key)) {
-                        seen.add(key);
-                        pool.push(syn);
-                    }
-                });
-            });
-        });
-        return pool;
-    }
-
-    /* ===== 패러프레이징 단어 관리 ===== */
-    function resetParaphraseAddRows(count) {
-        count = count || 15;
-        paraphraseAddRows = [];
-        for (let i = 0; i < count; i++) paraphraseAddRows.push({ original: '', paraphrase: '' });
-    }
-
-    function openParaphraseManage() {
-        resetParaphraseAddRows();
-        showView('paraphrase-manage-view');
-    }
-
-    function renderParaphraseManageView() {
-        renderParaphraseExistingList();
-        renderParaphraseAddRows();
-    }
-
-    function renderParaphraseExistingList() {
-        const container = document.getElementById('paraphrase-existing-list');
-        if (paraphraseData.length === 0) {
-            container.innerHTML = `<p style="opacity:0.6; text-align:center; padding:20px 0; font-size:14px;">아직 등록된 패러프레이징 단어가 없습니다.</p>`;
-            return;
-        }
-        container.innerHTML = paraphraseData.map(p => `
-            <div class="clean-word-item">
-                <div style="flex:1; font-size:15px;">${escAttr(p.original)} <span style="opacity:0.5;">➡</span> ${escAttr(p.paraphrase)}</div>
-                <button style="background:none; border:none; color:#FF3B30; font-size:16px; cursor:pointer; padding:5px;" onclick="deleteParaphrasePair(${p.id})">✕</button>
-            </div>
-        `).join('');
-    }
-
-    function renderParaphraseAddRows() {
-        document.getElementById('paraphrase-add-container').innerHTML = paraphraseAddRows.map((r, i) => `
-            <div class="paraphrase-row">
-                <input type="text" class="paraphrase-original-input" data-idx="${i}" value="${escAttr(r.original)}" placeholder="본문 (예: celebration (축하 행사))" autocapitalize="none" autocorrect="on" spellcheck="true">
-                <span class="paraphrase-arrow">➡</span>
-                <input type="text" class="paraphrase-paraphrase-input" data-idx="${i}" value="${escAttr(r.paraphrase)}" placeholder="정답 (예: event (행사))" autocapitalize="none" autocorrect="on" spellcheck="true">
-            </div>
-        `).join('');
-    }
-
-    function syncParaphraseAddRows() {
-        const origs = Array.from(document.querySelectorAll('.paraphrase-original-input')).map(i => i.value);
-        const paras = Array.from(document.querySelectorAll('.paraphrase-paraphrase-input')).map(i => i.value);
-        paraphraseAddRows = origs.map((o, i) => ({ original: o, paraphrase: paras[i] || '' }));
-    }
-
-    function addMoreParaphraseRows() {
-        syncParaphraseAddRows();
-        for (let i = 0; i < 15; i++) paraphraseAddRows.push({ original: '', paraphrase: '' });
-        renderParaphraseAddRows();
-    }
-
-    function saveParaphraseEntries() {
-        syncParaphraseAddRows();
-        let added = 0;
-        paraphraseAddRows.forEach(r => {
-            const o = r.original.trim();
-            const p = r.paraphrase.trim();
-            if (o && p) {
-                paraphraseData.push({ id: Date.now() + Math.floor(Math.random() * 100000), original: o, paraphrase: p });
-                added++;
-            }
-        });
-        if (added === 0) { showAlert('추가할 단어 쌍을 입력해 주세요. (본문과 정답을 모두 입력해야 저장돼요.)'); return; }
-        saveParaphraseData();
-        resetParaphraseAddRows();
-        renderParaphraseManageView();
-        showAlert(`${added}쌍이 추가되었습니다.`);
-    }
-
-    function deleteParaphrasePair(id) {
-        showConfirm('이 패러프레이징 쌍을 삭제하시겠습니까?', () => {
-            paraphraseData = paraphraseData.filter(p => p.id !== id);
-            saveParaphraseData();
-            renderParaphraseManageView();
-        });
-    }
-
-    /* ===== 패러프레이징 짝 맞추기 게임 ===== */
-    function startParaphraseGame() {
-        syncParaphraseAddRows();
-        if (paraphraseData.length < 2) return showAlert('짝 맞추기 게임을 하려면 최소 2쌍 이상 등록해 주세요.');
-        showView('paraphrase-game-view');
-        initParaphraseMatchingGame();
-    }
-
-    function initParaphraseMatchingGame() {
-        const grid = document.getElementById('paraphrase-matching-grid');
-        grid.innerHTML = "";
-        selectedParaphraseMatchCards = [];
-
-        let samplePairs = [...paraphraseData].sort(() => Math.random() - 0.5).slice(0, 6);
-        let cardsData = [];
-        samplePairs.forEach(p => {
-            cardsData.push({ id: p.id, text: p.original });
-            cardsData.push({ id: p.id, text: p.paraphrase });
-        });
-        cardsData.sort(() => Math.random() - 0.5);
-
-        cardsData.forEach(c => {
-            const cardEl = document.createElement('div');
-            cardEl.className = 'match-card';
-            cardEl.innerText = c.text;
-            cardEl.dataset.id = c.id;
-            cardEl.onclick = () => handleParaphraseMatchCardClick(cardEl);
-            grid.appendChild(cardEl);
-        });
-    }
-
-    function handleParaphraseMatchCardClick(cardEl) {
-        if (cardEl.classList.contains('matched') || cardEl.classList.contains('selected')) return;
-
-        cardEl.classList.add('selected');
-        selectedParaphraseMatchCards.push(cardEl);
-
-        if (selectedParaphraseMatchCards.length === 2) {
-            const [c1, c2] = selectedParaphraseMatchCards;
-            if (c1.dataset.id === c2.dataset.id) {
-                setTimeout(() => {
-                    c1.classList.add('matched');
-                    c2.classList.add('matched');
-                    selectedParaphraseMatchCards = [];
-                    checkParaphraseMatchingComplete();
-                }, 300);
-            } else {
-                setTimeout(() => {
-                    c1.classList.remove('selected');
-                    c2.classList.remove('selected');
-                    selectedParaphraseMatchCards = [];
-                }, 500);
-            }
-        }
-    }
-
-    function checkParaphraseMatchingComplete() {
-        const remaining = document.querySelectorAll('#paraphrase-matching-grid .match-card:not(.matched)');
-        if (remaining.length === 0) {
-            showView('paraphrase-manage-view');
-            showAlert('🎉 패러프레이징 짝 맞추기를 완료했습니다!');
-        }
-    }
-
     function startQuiz() {
         const filter = document.getElementById('quiz-filter').value;
         const mode = document.getElementById('quiz-mode').value;
-
-        if (mode === 'paraphraseMatching') {
-            openParaphraseManage();
-            return;
-        }
 
         if (filter === 'all') activeQuizList = [...vocaData];
         else if (filter === 'starred') activeQuizList = vocaData.filter(w => w.starred);
         else activeQuizList = vocaData.filter(w => w.day === filter);
 
-        if (activeQuizList.length === 0) return showAlert('선택한 범위에 등록된 단어가 없습니다.');
+        if (activeQuizList.length === 0) return alert('선택한 범위에 등록된 단어가 없습니다.');
 
         showView('quiz-play-view');
 
@@ -2668,29 +1719,21 @@
         const questionEl = document.getElementById('quiz-question');
         const optionsEl = document.getElementById('quiz-options');
         const inputAreaEl = document.getElementById('quiz-input-area');
-        const subtextEl = document.getElementById('quiz-subtext');
 
         optionsEl.innerHTML = "";
         inputAreaEl.classList.add('hidden');
-        document.getElementById('quiz-multi-submit-area').classList.add('hidden');
-        subtextEl.innerText = "";
-        synonymBlankChoices = [];
-        synonymBlankCorrect = [];
-        synonymBlankSelected = [];
 
         if (mode === 'mc') {
             questionEl.innerText = currentQuizItem.word;
-            const meaningTexts = (currentQuizItem.meanings && currentQuizItem.meanings.length ? currentQuizItem.meanings.map(m => m.text) : ['']).filter(t => t);
-            const meaningsPool = meaningTexts.length ? meaningTexts : [''];
-            const correctMeaning = meaningsPool[Math.floor(Math.random() * meaningsPool.length)];
+            const meanings = currentQuizItem.meanings && currentQuizItem.meanings.length ? currentQuizItem.meanings : [''];
+            const correctMeaning = meanings[Math.floor(Math.random() * meanings.length)];
             let choices = [correctMeaning];
             let tries = 0;
             while (choices.length < Math.min(4, activeQuizList.length) && tries < 60) {
                 tries++;
                 const rndItem = activeQuizList[Math.floor(Math.random() * activeQuizList.length)];
-                const rndTexts = (rndItem.meanings && rndItem.meanings.length ? rndItem.meanings.map(m => m.text) : ['']).filter(t => t);
-                const rndPool = rndTexts.length ? rndTexts : [''];
-                const rndMeaning = rndPool[Math.floor(Math.random() * rndPool.length)];
+                const rndMeanings = rndItem.meanings && rndItem.meanings.length ? rndItem.meanings : [''];
+                const rndMeaning = rndMeanings[Math.floor(Math.random() * rndMeanings.length)];
                 if (!choices.includes(rndMeaning)) choices.push(rndMeaning);
             }
             choices.sort(() => Math.random() - 0.5);
@@ -2701,24 +1744,22 @@
                 btn.style.padding = '14px';
                 btn.innerText = choice;
                 btn.onclick = () => {
-                    const allMeaningTexts = (currentQuizItem.meanings || []).map(m => m.text);
-                    const isCorrect = allMeaningTexts.includes(choice);
-                    showQuizResult(isCorrect, allMeaningTexts.join(' / '));
+                    const isCorrect = (currentQuizItem.meanings || []).includes(choice);
+                    showQuizResult(isCorrect, (currentQuizItem.meanings || []).join(' / '));
                 };
                 optionsEl.appendChild(btn);
             });
         } else if (mode === 'subjective') {
-            const meaningTexts = (currentQuizItem.meanings && currentQuizItem.meanings.length ? currentQuizItem.meanings.map(m => m.text) : ['']).filter(t => t);
-            const meaningsPool = meaningTexts.length ? meaningTexts : [''];
-            const meaning = meaningsPool[Math.floor(Math.random() * meaningsPool.length)];
+            const meanings = currentQuizItem.meanings && currentQuizItem.meanings.length ? currentQuizItem.meanings : [''];
+            const meaning = meanings[Math.floor(Math.random() * meanings.length)];
             questionEl.innerText = `뜻: ${meaning}`;
             inputAreaEl.classList.remove('hidden');
         } else if (mode === 'blank') {
             const validExamples = (currentQuizItem.examples || []).filter(ex => ex.ex && ex.ex.toLowerCase().includes(currentQuizItem.word.toLowerCase()));
             if (validExamples.length === 0) {
                 if (attempt > 60) {
+                    alert('예문에 단어가 포함된 항목이 부족해서 이 모드를 진행할 수 없습니다. 예문을 등록해 주세요.');
                     showView('quiz-select-view');
-                    showAlert('예문에 단어가 포함된 항목이 부족해서 이 모드를 진행할 수 없습니다. 예문을 등록해 주세요.');
                     return;
                 }
                 nextStandardQuestion(attempt + 1);
@@ -2727,91 +1768,7 @@
             const chosenEx = validExamples[Math.floor(Math.random() * validExamples.length)];
             const regex = new RegExp(currentQuizItem.word, 'gi');
             questionEl.innerText = chosenEx.ex.replace(regex, '_____');
-            subtextEl.innerText = chosenEx.exm || '';
             inputAreaEl.classList.add('hidden');
-        } else if (mode === 'synonymBlank') {
-            const candidates = findSynonymBlankCandidates(currentQuizItem);
-            if (candidates.length === 0) {
-                if (attempt > 60) {
-                    showView('quiz-select-view');
-                    showAlert('동의어가 1개 이상 등록되어 있고, 단어가 포함된 예문도 있어야 이 게임을 진행할 수 있습니다. 단어 등록 시 "동의어"와 "예문"을 채워 주세요. (여러 뜻이 있는 단어라면 예문마다 "관련 뜻"을 지정해 두면 더 정확해져요.)');
-                    return;
-                }
-                nextStandardQuestion(attempt + 1);
-                return;
-            }
-            const chosenPair = candidates[Math.floor(Math.random() * candidates.length)];
-            const qualMeaning = chosenPair.meaning;
-            const chosenEx = chosenPair.example;
-            const regex = new RegExp(currentQuizItem.word, 'gi');
-            questionEl.innerText = chosenEx.ex.replace(regex, '_____');
-            subtextEl.innerText = '빈칸에 들어갈 수 있는 단어와 그 동의어를 모두 골라보세요.';
-            inputAreaEl.classList.add('hidden');
-
-            const chosenSynonym = qualMeaning.synonymList[Math.floor(Math.random() * qualMeaning.synonymList.length)];
-            synonymBlankCorrect = [currentQuizItem.word, chosenSynonym];
-
-            const excludeLower = synonymBlankCorrect.map(s => s.toLowerCase());
-            const seenDistractor = new Set();
-            let distractorPool = [];
-            collectAllSynonyms(synonymBlankCorrect).forEach(s => {
-                const key = s.toLowerCase();
-                if (!seenDistractor.has(key)) { seenDistractor.add(key); distractorPool.push(s); }
-            });
-            vocaData.forEach(w => {
-                if (!w.word) return;
-                const key = w.word.toLowerCase();
-                if (!excludeLower.includes(key) && !seenDistractor.has(key)) {
-                    seenDistractor.add(key);
-                    distractorPool.push(w.word);
-                }
-            });
-            distractorPool.sort(() => Math.random() - 0.5);
-            const distractors = distractorPool.slice(0, 2);
-            synonymBlankChoices = [...synonymBlankCorrect, ...distractors].sort(() => Math.random() - 0.5);
-
-            synonymBlankChoices.forEach((choice, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'home-btn ms-option';
-                btn.style.padding = '14px';
-                btn.innerText = choice;
-                btn.dataset.idx = i;
-                btn.onclick = () => toggleSynonymChoice(i, btn);
-                optionsEl.appendChild(btn);
-            });
-            document.getElementById('quiz-multi-submit-area').classList.remove('hidden');
-        }
-    }
-
-    /* 동의어 객관식(다중 선택) 게임: 보기 토글 */
-    function toggleSynonymChoice(idx, btnEl) {
-        const pos = synonymBlankSelected.indexOf(idx);
-        if (pos === -1) synonymBlankSelected.push(idx);
-        else synonymBlankSelected.splice(pos, 1);
-        btnEl.classList.toggle('selected');
-    }
-
-    /* 동의어 두 개를 정확히 모두 선택해야만 정답 처리 + "다음 문제" 버튼이 열림 */
-    function checkSynonymBlankAnswer() {
-        const resultEl = document.getElementById('quiz-result');
-        if (synonymBlankSelected.length === 0) {
-            resultEl.innerText = '보기 중에서 빈칸에 들어갈 동의어를 선택해 주세요.';
-            resultEl.style.color = '#FF3B30';
-            return;
-        }
-        const selectedTexts = synonymBlankSelected.map(i => synonymBlankChoices[i]).slice().sort();
-        const correctSorted = [...synonymBlankCorrect].sort();
-        const isCorrect = selectedTexts.length === correctSorted.length &&
-            selectedTexts.every((v, i) => v.toLowerCase() === correctSorted[i].toLowerCase());
-
-        if (isCorrect) {
-            resultEl.innerText = "⭕ 정답입니다! 동의어를 모두 골랐어요.";
-            resultEl.style.color = "#34C759";
-            document.getElementById('next-quiz-btn').classList.remove('hidden');
-            document.getElementById('quiz-multi-submit-area').classList.add('hidden');
-        } else {
-            resultEl.innerText = `❌ 아직 정답이 아니에요. 정답 단어와 그 동의어를 모두 선택해야 다음으로 넘어갈 수 있어요.`;
-            resultEl.style.color = "#FF3B30";
         }
     }
 
@@ -2843,9 +1800,8 @@
         let cardsData = [];
 
         sampleWords.forEach(w => {
-            const meaningTexts = (w.meanings && w.meanings.length ? w.meanings.map(m => m.text) : ['']).filter(t => t);
-            const pool = meaningTexts.length ? meaningTexts : [''];
-            const pickedMeaning = pool[Math.floor(Math.random() * pool.length)];
+            const meanings = w.meanings && w.meanings.length ? w.meanings : [''];
+            const pickedMeaning = meanings[Math.floor(Math.random() * meanings.length)];
             cardsData.push({ id: w.id, text: w.word, type: 'word' });
             cardsData.push({ id: w.id, text: pickedMeaning, type: 'meaning' });
         });
@@ -2891,8 +1847,8 @@
     function checkMatchingComplete() {
         const remaining = document.querySelectorAll('.match-card:not(.matched)');
         if (remaining.length === 0) {
+            alert('🎉 모든 매칭을 완료했습니다!');
             showView('quiz-select-view');
-            showAlert('🎉 모든 매칭을 완료했습니다!');
         }
     }
 
@@ -2902,7 +1858,7 @@
     function closeModalOnBg(e) { if (e.target.id === 'backup-modal') closeBackupModal(); }
 
     function exportData() {
-        if (vocaData.length === 0) return showAlert('내보낼 단어 데이터가 없습니다.');
+        if (vocaData.length === 0) return alert('내보낼 단어 데이터가 없습니다.');
         const exportObj = { vocaData, dayList, appConfig };
         const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
@@ -2933,15 +1889,81 @@
                 saveData();
                 applyAppConfig();
                 updateDaySelects();
+                alert('단어장을 성공적으로 불러왔습니다!');
                 closeBackupModal();
                 goHome();
-                showAlert('단어장을 성공적으로 불러왔습니다!');
             } catch (err) {
-                showAlert('파일을 읽는 중 오류가 발생했습니다.');
+                alert('파일을 읽는 중 오류가 발생했습니다.');
             }
         };
         reader.readAsText(file);
     }
+
+    /* ===== 키보드 위/아래 화살표로 입력 칸 이동 (Tab 이동과 별개로 추가 지원) ===== */
+    function getVisibleNavInputs(scope) {
+        return Array.from(scope.querySelectorAll('input[type="text"], textarea'))
+            .filter(el => el.offsetParent !== null && !el.disabled);
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+
+        const active = document.activeElement;
+        if (!active) return;
+        const tag = active.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA') return;
+        if (tag === 'INPUT' && active.type !== 'text') return;
+
+        // 모달이 열려있으면 모달 안에서만, 아니면 현재 보이는 화면(container) 안에서 이동
+        const openModal = Array.from(document.querySelectorAll('.modal')).find(m => !m.classList.contains('hidden'));
+        const scope = openModal ? openModal : (active.closest('.container') || document.body);
+
+        const focusables = getVisibleNavInputs(scope);
+        const idx = focusables.indexOf(active);
+        if (idx === -1) return;
+
+        e.preventDefault();
+        const nextIdx = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
+        if (nextIdx >= 0 && nextIdx < focusables.length) {
+            focusables[nextIdx].focus();
+            if (typeof focusables[nextIdx].select === 'function') focusables[nextIdx].select();
+        }
+    });
+
+    /* ===== 커스텀 알림 팝업: 마우스로 버튼을 누르지 않아도 엔터 키로 바로 확인 가능 ===== */
+    const nativeAlert = window.alert.bind(window);
+
+    window.alert = function(message) {
+        const modal = document.getElementById('custom-alert-modal');
+        const msgEl = document.getElementById('custom-alert-message');
+        if (!modal || !msgEl) { nativeAlert(message); return; }
+
+        msgEl.innerText = message;
+        modal.classList.remove('hidden');
+
+        // 버튼에 포커스를 줘서 엔터/스페이스로도 바로 확인되게 함
+        const okBtn = document.getElementById('custom-alert-ok-btn');
+        setTimeout(() => { if (okBtn) okBtn.focus(); }, 0);
+    };
+
+    function closeCustomAlert() {
+        document.getElementById('custom-alert-modal').classList.add('hidden');
+    }
+    function closeCustomAlertBg(e) {
+        if (e.target.id === 'custom-alert-modal') closeCustomAlert();
+    }
+
+    /* 알림 팝업이 떠 있는 동안에는 입력 중이던 필드에 포커스가 남아 있어도
+       엔터 키를 누르면 바로 "확인" 처리되도록 최우선으로 가로챈다 */
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter') return;
+        const modal = document.getElementById('custom-alert-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeCustomAlert();
+        }
+    }, true);
 </script>
 
 </body>
