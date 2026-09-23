@@ -648,7 +648,7 @@
         </div>
     </div>
 
-    <!-- 4. 패러프레이징 허브 화면: 단어 추가 / 게임 시작하기 두 갈래로 진입 -->
+    <!-- 4. 패러프레이징 허브 화면: 단어 추가 / 단어 목록 / 게임 시작하기 세 갈래로 진입 -->
     <div id="paraphrase-hub-view" class="hidden">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <button class="nav-back-btn" style="margin-bottom: 0;" onclick="showView('quiz-select-view')">← 뒤로가기</button>
@@ -658,6 +658,7 @@
         <p style="font-size:13px; opacity:0.65; margin:0 0 20px; line-height:1.5;" id="paraphrase-hub-count-text"></p>
         <div class="home-menu-group">
             <button class="home-btn" onclick="openParaphraseManage()">➕ 단어 추가</button>
+            <button class="home-btn" onclick="showView('paraphrase-list-view')">📋 단어 목록</button>
             <button class="home-btn" onclick="startParaphraseGame()">🎮 게임 시작하기</button>
         </div>
     </div>
@@ -671,8 +672,6 @@
         <h3 style="margin: 0 0 6px; font-size: 20px; color: var(--text-color);">패러프레이징 단어 관리</h3>
         <p style="font-size:13px; opacity:0.65; margin:0 0 15px; line-height:1.5;">본문 단어와 그 패러프레이징(정답) 단어를 한 쌍씩 입력해 주세요. (예: celebration (축하 행사) ➡ event (행사))</p>
 
-        <div id="paraphrase-existing-list" class="clean-word-list" style="margin-bottom:15px;"></div>
-
         <div class="form-group">
             <label>새 쌍 추가</label>
             <div id="paraphrase-add-container"></div>
@@ -681,6 +680,17 @@
 
         <button type="button" class="submit-btn" style="background-color:#34C759; margin-top:10px;" onclick="saveParaphraseEntries()">저장하기</button>
         <button type="button" class="submit-btn" style="margin-top:10px;" onclick="startParaphraseGame()">🎮 패러프레이징 게임 시작</button>
+    </div>
+
+    <!-- 4-1-2. 패러프레이징 단어 목록 화면 -->
+    <div id="paraphrase-list-view" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <button class="nav-back-btn" style="margin-bottom: 0;" onclick="showView('paraphrase-hub-view')">← 뒤로가기</button>
+            <button type="button" class="home-icon-btn" onclick="goHome()" title="홈으로">🏠</button>
+        </div>
+        <h3 style="margin: 0 0 6px; font-size: 20px; color: var(--text-color);">패러프레이징 단어 목록</h3>
+        <p style="font-size:13px; opacity:0.65; margin:0 0 15px; line-height:1.5;">단어를 눌러 수정하거나 삭제할 수 있어요.</p>
+        <div id="paraphrase-list-container" class="clean-word-list"></div>
     </div>
 
     <!-- 4-2. 패러프레이징 짝 맞추기 게임 화면 -->
@@ -817,6 +827,26 @@
     </div>
 </div>
 
+<!-- 패러프레이징 단어 수정/삭제 팝업 모달 -->
+<div id="paraphrase-edit-modal" class="modal hidden" onclick="closeParaphraseEditModalBg(event)">
+    <div class="modal-content">
+        <button class="close-x" onclick="closeParaphraseEditModal()">✕</button>
+        <h3 style="margin-top:0; color:var(--primary-color); font-size: 20px; margin-bottom: 15px;">✏️ 패러프레이징 단어 수정</h3>
+        <div class="form-group" style="margin-bottom:12px;">
+            <label style="font-size:13px; opacity:0.8;">본문</label>
+            <input type="text" id="paraphrase-edit-original" autocapitalize="none" autocorrect="on" spellcheck="true">
+        </div>
+        <div class="form-group" style="margin-bottom:15px;">
+            <label style="font-size:13px; opacity:0.8;">정답(패러프레이징)</label>
+            <input type="text" id="paraphrase-edit-paraphrase" autocapitalize="none" autocorrect="on" spellcheck="true">
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button class="submit-btn" style="background:#34C759; color: white;" onclick="saveParaphraseEdit()">수정 저장</button>
+            <button class="submit-btn" style="background:#FF3B30; color: white;" onclick="deleteParaphraseEditItem()">삭제</button>
+        </div>
+    </div>
+</div>
+
 <!-- 백업 / 복구 모달 -->
 <div id="backup-modal" class="modal hidden" onclick="closeModalOnBg(event)">
     <div class="modal-content">
@@ -904,6 +934,7 @@
     let paraphraseData = [];
     let paraphraseAddRows = [];
     let selectedParaphraseMatchCards = [];
+    let paraphraseEditId = null;
 
     /* ===== 손그림 느낌 SVG 스티커 라이브러리 (전부 고정, 애니메이션 없음) ===== */
     const VOCA_ICONS = {
@@ -1287,7 +1318,7 @@
     }
 
     function showView(viewId) {
-        const views = ['home-view', 'input-view', 'category-view', 'word-list-view', 'card-view', 'quiz-select-view', 'quiz-play-view', 'paraphrase-hub-view', 'paraphrase-manage-view', 'paraphrase-game-view'];
+        const views = ['home-view', 'input-view', 'category-view', 'word-list-view', 'card-view', 'quiz-select-view', 'quiz-play-view', 'paraphrase-hub-view', 'paraphrase-manage-view', 'paraphrase-list-view', 'paraphrase-game-view'];
         views.forEach(v => document.getElementById(v).classList.add('hidden'));
         document.getElementById(viewId).classList.remove('hidden');
 
@@ -1303,6 +1334,7 @@
         if (viewId === 'input-view') updateDaySelects();
         if (viewId === 'paraphrase-hub-view') renderParaphraseHubView();
         if (viewId === 'paraphrase-manage-view') renderParaphraseManageView();
+        if (viewId === 'paraphrase-list-view') renderParaphraseListView();
     }
 
     function updateDaySelects() {
@@ -2499,7 +2531,7 @@
         return pool;
     }
 
-    /* ===== 패러프레이징 허브 화면: 단어 추가 / 게임 시작하기 진입점 ===== */
+    /* ===== 패러프레이징 허브 화면: 단어 추가 / 단어 목록 / 게임 시작하기 진입점 ===== */
     function renderParaphraseHubView() {
         const countText = document.getElementById('paraphrase-hub-count-text');
         if (countText) {
@@ -2509,7 +2541,7 @@
         }
     }
 
-    /* ===== 패러프레이징 단어 관리 ===== */
+    /* ===== 패러프레이징 단어 관리 (새 쌍 추가 전용) ===== */
     function resetParaphraseAddRows(count) {
         count = count || 15;
         paraphraseAddRows = [];
@@ -2522,22 +2554,7 @@
     }
 
     function renderParaphraseManageView() {
-        renderParaphraseExistingList();
         renderParaphraseAddRows();
-    }
-
-    function renderParaphraseExistingList() {
-        const container = document.getElementById('paraphrase-existing-list');
-        if (paraphraseData.length === 0) {
-            container.innerHTML = `<p style="opacity:0.6; text-align:center; padding:20px 0; font-size:14px;">아직 등록된 패러프레이징 단어가 없습니다.</p>`;
-            return;
-        }
-        container.innerHTML = paraphraseData.map(p => `
-            <div class="clean-word-item">
-                <div style="flex:1; font-size:15px;">${escAttr(p.original)} <span style="opacity:0.5;">➡</span> ${escAttr(p.paraphrase)}</div>
-                <button style="background:none; border:none; color:#FF3B30; font-size:16px; cursor:pointer; padding:5px;" onclick="deleteParaphrasePair(${p.id})">✕</button>
-            </div>
-        `).join('');
     }
 
     function renderParaphraseAddRows() {
@@ -2580,11 +2597,60 @@
         showAlert(`${added}쌍이 추가되었습니다.`);
     }
 
-    function deleteParaphrasePair(id) {
+    /* ===== 패러프레이징 단어 목록 (조회/수정/삭제) ===== */
+    function renderParaphraseListView() {
+        const container = document.getElementById('paraphrase-list-container');
+        if (!container) return;
+        if (paraphraseData.length === 0) {
+            container.innerHTML = `<p style="opacity:0.6; text-align:center; padding:20px 0; font-size:14px;">아직 등록된 패러프레이징 단어가 없습니다.</p>`;
+            return;
+        }
+        container.innerHTML = paraphraseData.map(p => `
+            <div class="clean-word-item" onclick="openParaphraseEditModal(${p.id})">
+                <div style="flex:1; font-size:15px;">${escAttr(p.original)} <span style="opacity:0.5;">➡</span> ${escAttr(p.paraphrase)}</div>
+                <button style="background:none; border:none; color:var(--primary-color); font-size:18px; cursor:pointer; padding:5px;" onclick="event.stopPropagation(); openParaphraseEditModal(${p.id})">✏️</button>
+            </div>
+        `).join('');
+    }
+
+    function openParaphraseEditModal(id) {
+        const item = paraphraseData.find(p => p.id === id);
+        if (!item) return;
+        paraphraseEditId = id;
+        document.getElementById('paraphrase-edit-original').value = item.original;
+        document.getElementById('paraphrase-edit-paraphrase').value = item.paraphrase;
+        document.getElementById('paraphrase-edit-modal').classList.remove('hidden');
+    }
+
+    function closeParaphraseEditModal() {
+        document.getElementById('paraphrase-edit-modal').classList.add('hidden');
+        paraphraseEditId = null;
+    }
+
+    function closeParaphraseEditModalBg(e) {
+        if (e.target.id === 'paraphrase-edit-modal') closeParaphraseEditModal();
+    }
+
+    function saveParaphraseEdit() {
+        const item = paraphraseData.find(p => p.id === paraphraseEditId);
+        if (!item) return;
+        const o = document.getElementById('paraphrase-edit-original').value.trim();
+        const p = document.getElementById('paraphrase-edit-paraphrase').value.trim();
+        if (!o || !p) return showAlert('본문과 정답을 모두 입력해 주세요.');
+        item.original = o;
+        item.paraphrase = p;
+        saveParaphraseData();
+        closeParaphraseEditModal();
+        renderParaphraseListView();
+        showAlert('수정되었습니다.');
+    }
+
+    function deleteParaphraseEditItem() {
         showConfirm('이 패러프레이징 쌍을 삭제하시겠습니까?', () => {
-            paraphraseData = paraphraseData.filter(p => p.id !== id);
+            paraphraseData = paraphraseData.filter(p => p.id !== paraphraseEditId);
             saveParaphraseData();
-            renderParaphraseManageView();
+            closeParaphraseEditModal();
+            renderParaphraseListView();
         });
     }
 
