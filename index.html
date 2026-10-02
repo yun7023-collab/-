@@ -741,12 +741,8 @@
         
         <div class="form-group" style="margin-bottom: 15px;">
             <label>테마 프리셋 선택</label>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 8px;">
                 <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #4A90E2; color: white;" onclick="applyPreset('simple')">심플</button>
-                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #E085A5; color: white;" onclick="applyPreset('cute')">큐트</button>
-                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #3B5998; color: white;" onclick="applyPreset('cute2')">큐트2</button>
-                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #FF6B35; color: white;" onclick="applyPreset('kitsch')">키치</button>
-                <button type="button" class="submit-btn" style="padding: 10px; font-size: 14px; background: #1F2937; color: white;" onclick="applyPreset('kitsch2')">키치2</button>
             </div>
         </div>
 
@@ -1160,7 +1156,10 @@
     }
 
     /* ===== 키보드 이동: 화살표(↑↓) 및 Tab 키로 입력칸/버튼/콤보박스 사이를 이동할 수 있도록 지원
-       (아이패드에서 Tab 키가 버튼을 건너뛰는 문제를 해결하기 위해 Tab도 직접 제어) ===== */
+       (아이패드에서 Tab 키가 버튼을 건너뛰는 문제를 해결하기 위해 Tab도 직접 제어)
+       ※ 한글 등 IME로 조합 중일 때(e.isComposing / keyCode 229) 이 로직이 끼어들면,
+          아직 입력칸에 커밋되지 않은 조합 중인 글자가 포커스가 이동한 "다음" 입력칸에
+          잘못 입력되는 문제가 있어, 조합 중에는 포커스 이동을 가로채지 않도록 막는다. ===== */
     function getFocusableInView() {
         const selector = 'input, select, textarea, button, .combo-select';
         return Array.from(document.querySelectorAll(selector)).filter(el => {
@@ -1175,6 +1174,9 @@
         const isArrow = e.key === 'ArrowDown' || e.key === 'ArrowUp';
         const isTab = e.key === 'Tab';
         if (!isArrow && !isTab) return;
+
+        // 한글/일본어 등 IME 조합 중에는 가로채지 않음 (조합 중 글자가 다음 칸에 끼어드는 문제 방지)
+        if (e.isComposing || e.keyCode === 229) return;
 
         const activeEl = document.activeElement;
         const tag = activeEl.tagName;
@@ -2288,10 +2290,10 @@
         if (item) speakText(null, item.word);
     }
 
-    /* 플래시카드 기능 - 3단계로 탭할 때마다 정보가 늘어남
+    /* 플래시카드 기능 - 탭할 때마다 정보가 늘어남
        0(앞면): 영단어만
-       1(뒷면-1): 영단어 + 뜻 + 예문
-       2(뒷면-2): 영단어 + 동의어(+연결된 예문) + 파생어 + 반의어 (뜻은 제외) */
+       1(뒷면-1): 뜻 + 예문 (단어는 이미 앞면에서 봤으므로 다시 반복하지 않음)
+       2(뒷면-2): 동의어(+연결된 예문) + 파생어 + 반의어 (단어/뜻은 제외, 역시 중복 노출하지 않음) */
     let cardFlipState = 0;
 
     function renderCard() {
@@ -2313,11 +2315,9 @@
         return `<button type="button" class="card-mini-speak-btn" onclick="speakText(event, this.dataset.word)" data-word="${escAttr(text)}">🔊</button>`;
     }
 
-    /* 뒷면-1: 영단어 + 뜻 + 예문 */
+    /* 뒷면-1: 뜻 + 예문 (영단어는 앞면에 이미 표시되므로 중복해서 다시 보여주지 않음) */
     function renderCardBack1Html(item) {
-        let html = `<div class="card-word-title" style="font-size:36px; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <span>${escAttr(item.word)}</span>${miniSpeakBtnHtml(item.word)}
-        </div>`;
+        let html = '';
 
         if (item.meanings && item.meanings.length > 0) {
             const meaningTexts = item.meanings.filter(m => m.text);
@@ -2338,11 +2338,9 @@
         return html;
     }
 
-    /* 뒷면-2: 영단어 + 동의어(+연결된 예문) + 파생어 + 반의어 (뜻은 제외) */
+    /* 뒷면-2: 동의어(+연결된 예문) + 파생어 + 반의어 (영단어/뜻은 앞면·뒷면-1에서 이미 봤으므로 중복 노출하지 않음) */
     function renderCardBack2Html(item) {
-        let html = `<div class="card-word-title" style="font-size:36px; margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <span>${escAttr(item.word)}</span>${miniSpeakBtnHtml(item.word)}
-        </div>`;
+        let html = '';
 
         const meaningsWithSyn = (item.meanings || [])
             .map((m, idx) => ({ ...m, idx }))
